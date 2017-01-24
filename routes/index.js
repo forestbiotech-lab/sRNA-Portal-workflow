@@ -5,5 +5,11 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
+/* GET home page. */
+router.get('/miRPursuit', function(req, res, next) {
+  res.render('miRPursuit');
+});
+
+
 
 module.exports = router;

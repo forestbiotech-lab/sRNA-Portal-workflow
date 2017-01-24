@@ -4,7 +4,6 @@ body {
 }
 .header{
     position:relative;
-    color:white;
     background-color: #ff9800;
     box-shadow: 0px 2px 5px rgba(0,0,0,0.26);
     height:100px;
@@ -15,7 +14,7 @@ body {
     bottom: 15px;
 }
 a{
-  color: #00B7FF;
+  color: #ffffff;
 }
 .menu{
 	position: relative; 
@@ -38,9 +37,10 @@ a{
     color: white;
     background-color: #FE9050;
 }
-.sidePanel{    
+.sidePanel{   
+    color: #ffffff; 
     border-right: 20px solid rgba(128, 128, 128, 0.4);
-    box-shadow: 2px 0px 0px rgba(0, 0, 0, 0.68);
+    box-shadow: 2px sspo0px 0px rgba(0, 0, 0, 0.68);
     height:1000px;
     background-color: green;
 }
@@ -66,3 +66,8 @@ img.expandPanel{
     border-radius: 3px;
     background-color: white;
     box-shadow: 0px 4px 5px black;
+}
+.mainPanel .content .title {
+    margin-left: 70px;
+
+}
