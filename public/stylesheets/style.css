@@ -38,16 +38,31 @@ a{
     color: white;
     background-color: #FE9050;
 }
-.sideBar{    
+.sidePanel{    
     border-right: 20px solid rgba(128, 128, 128, 0.4);
     box-shadow: 2px 0px 0px rgba(0, 0, 0, 0.68);
+    height:1000px;
     background-color: green;
 }
-.content {
-	margin: 40px;
+img.collapsePanel{
+    width: 15px;
+    position: absolute;
+    right: -18px;
+    margin-top: 200px;
+    margin-bottom: 400px;
+}
+img.expandPanel{
+    width: 15px;
+    position: absolute;
+    right: -18px;
+    margin-top: 200px;
+    margin-bottom: 400px;
+    display:none;
+}
+.mainPanel .content {
+	margin: 10px;
     padding: 30px;
     border: 1px solid rgba(204, 203, 203, 0.8);
     border-radius: 3px;
     background-color: white;
     box-shadow: 0px 4px 5px black;
-}
