@@ -8,8 +8,40 @@ block content
   h1.title miRPursuit
   br
   br 
-  p Welcome to mirPursuit this tool allows you to run your one sRNA data to produce annotated reads using the miRPursuit pipeline.
+  p #{text.summary}
   p Your data will remain confidential until you authorize it  
   p
-  p Upload data
+  h2 Upload data
+  .row  
+    .col-md-10
+      label.sr-only(for="upload-files") Upload file
+      input(hidden,type="file",id="upload-files",placeholder="Fastq/Fasta",required="",autofocus="",autocomplete="off",name="uploads[]", multiple="multiple")
+      .progress(style="position:relative;bottom:-12px;")
+        .progress-bar(role="progressbar",aria-valuenow="0",aria-valuemin="0",aria-valuemax="100")
+    .col-md-2
+      .button.btn.btn-primary.upload-btn(type="button") Upload files
   p 
+  p
+  form.form-inline  
+    label.mr-sm-2(for='inlineFormCustomAutocomplete') Ontologies:
+      input.typeahead(type="text",data-provide="typeahead",autocomplete="off")
+  h2 #{text.annotationTableHeader}
+  p #{text.annotationTableIntro}      
+  table.table.table-bordered.tablesorter.annotationTable(hasResizable)
+    thead
+      tr
+        th File Name
+        th 
+          input.ontoSelect(type="input",id="ontology1",placeholder="Ontology",required="",autofocus="",autocomplete="off",name="ontology1")
+        th
+          input.ontoSelect(type="input",id="ontology2",placeholder="Ontology",required="",autofocus="",autocomplete="off",name="ontology2")
+      tbody
+        tr.sample(hidden)
+          th(scope="row")  
+          td 
+          td 
+        tr
+          th(scope="row") Lib01.fasta 
+          td test2
+          td test3 
+
