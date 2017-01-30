@@ -26,7 +26,12 @@ block content
     label.mr-sm-2(for='inlineFormCustomAutocomplete') Ontologies:
       input.typeahead(type="text",data-provide="typeahead",autocomplete="off")
   h2 #{text.annotationTableHeader}
-  p #{text.annotationTableIntro}      
+  p #{text.annotationTableIntro}
+  <p>
+  a.btn.btn-primary(data-toggle="collapse",href="#collapseExample",aria-expanded="false",aria-controls="collapseExample") Advanced options
+  .collapse(id="collapseExample")
+    .card.card-block
+      | Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.      
   table.table.table-bordered.tablesorter.annotationTable(hasResizable)
     thead
       tr
@@ -42,6 +47,22 @@ block content
           td 
         tr
           th(scope="row") Lib01.fasta 
-          td test2
+          td 
+            .btn.btn-secondary(type="button",data-toggle="modal",data-target="#myModal") Search term
           td test3 
 
+
+
+  .modal.fade(id="myModal",aria-labelledby="exampleModal")
+    .modal-dialog(role="document")
+      .modal-content
+        .modal-header
+          h5.modal-title(id="exampleModal") Modal title
+          button.close(type="button",data-dismiss="modal",aria-label="Close")
+            span(aria-hidden="true") &times;
+        .modal-body
+          Modal 
+            input(type="text")
+        .modal-footer
+          button.btn.btn-primary(type="button") Save changes
+          button.btn.btn-secondary(type="button",data-dismiss="modal") Close

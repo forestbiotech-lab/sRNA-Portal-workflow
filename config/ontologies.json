@@ -1,0 +1,13 @@
+{
+  "termSearch": {
+    "bioportal": {
+      "HOST": "http://data.bioontology.org",
+      "PATH": "/search?q="
+    },
+    "agroportal": {
+      "HOST": "http://data.bioontology.org,",
+      "PATH": "/search?q="
+    }
+  },
+  "Authorization": "apikey token="
+}
