@@ -6,6 +6,10 @@ var path = require('path');
 var miRPursuit = require('./../views/strings/miRPursuit.json') 
 var config = require('./../config/ontologies.json') 
 
+//local only
+process.env.local ? require('./../.env') : ""; 
+//process.env.local ? console.log(process.env): "";
+
 
 
 /* GET home page. */
