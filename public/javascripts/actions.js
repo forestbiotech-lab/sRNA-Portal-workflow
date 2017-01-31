@@ -81,7 +81,7 @@ function toggleSidePanel(){
   });
 
   //Table Sorter: https://mottie.github.io/tablesorter/docs/example-widget-resizable.html
-  $('.annotationTable').tablesorter({
+  $('.resizableTable').tablesorter({
     // initialize zebra striping and resizable widgets on the table
     widgets: [ 'resizable' ],
     widgetOptions: {
@@ -125,9 +125,9 @@ function toggleSidePanel(){
             console.log('upload successful!\n' + data);
             uploads=formData.getAll("uploads[]");
             for(i=0; i<uploads.length; i++){
-              row=$('table tbody tr.sample').clone().removeAttr('hidden').removeClass('sample');
+              row=$('table.annotationTable tbody tr.sample').clone().removeAttr('hidden').removeClass('sample');
               row.children('th').text(formData.getAll("uploads[]")[i].name);
-              row.appendTo('table tbody');
+              row.appendTo('table.annotationTable tbody');
             }
         },
         xhr: function() {
@@ -162,4 +162,30 @@ function toggleSidePanel(){
   });
 
 
+  //
+  $('#myModal .termSearch .btn.search').click(function(){
+    term=$('#myModal .termSearch #inlineTextTerm').val();
+    $.ajax({
+      url: '/search-term?term='+term,
+      type: 'POST',
+      //data: 'term='+term,
+      //application/json;charset=utf-8
+      contentType: false,//'application/x-www-form-urlencoded;charset=UTF-8',
+      processData: false,
+      success: function(data,textStatus,jqXHR){  
+        console.log(data);
+        table=$('table.termTable');
+        $('table.termTable [class*=row]').remove();
+        table.removeAttr('hidden');
+        for(i=0; i<data.bioportal.length; i++){
+          row=$('table.termTable tr.sample').clone().removeAttr('hidden').removeClass('sample').addClass('row'+i);
+          row.children('.term').text(data.bioportal[i].prefLabel);
+          row.children('.ontology').text(data.bioportal[i].links.ontology.split("/").reverse()[0]);
+          row.children('.definition').text(data.bioportal[i].definition);
+          row.children('.definition').text(row.children('.definition').text().substring(0,100)+"...");
+          row.appendTo('table.termTable tbody');
+        }
+      }
+    })
+  })
 });

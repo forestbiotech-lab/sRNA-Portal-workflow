@@ -1,12 +1,12 @@
 {
   "termSearch": {
     "bioportal": {
-      "HOST": "http://data.bioontology.org",
-      "PATH": "/search?q="
+      "HOST": "data.bioontology.org",
+      "PATH": "/search"
     },
     "agroportal": {
-      "HOST": "http://data.bioontology.org,",
-      "PATH": "/search?q="
+      "HOST": "data.agroportal.lirmm.fr",
+      "PATH": "/search"
     }
   },
   "Authorization": "apikey token="
