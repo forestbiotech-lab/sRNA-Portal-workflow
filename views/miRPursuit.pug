@@ -48,25 +48,31 @@ block content
         tr
           th(scope="row") Lib01.fasta 
           td 
-            .btn.btn-secondary(type="button",data-toggle="modal",data-target="#myModal") Search term
-          td test3 
+            .btn.btn-secondary.row0.col0.searchTerm(modalButton,type="button",data-toggle="modal",data-target="#myModal") Search term
+          td
+            .btn.btn-secondary.row0.col1.searchTerm(modalButton,type="button",data-toggle="modal",data-target="#myModal") Search term
+
+  .btn.btn-secondary(type="button")
+    span.isatab.glyphicon(style="background-image: url('/images/isatools_logo.svg'); background-repeat: no-repeat; background-attachment: scroll; background-size: 75px 85px; background-position: 0% 48%;width:20px;height:15px;")
+    span.text Download in Isa-Tab 
 
 
 
   .modal.fade(id="myModal",aria-labelledby="exampleModal")
-    .modal-dialog(role="document")
+    .modal-dialog.modal-lg(role="document")
       .modal-content
         .modal-header
-          h5.modal-title(id="exampleModal") Modal title
+          h5.modal-title(id="exampleModal") #{text.termSearchTitle}
           button.close(type="button",data-dismiss="modal",aria-label="Close")
             span(aria-hidden="true") &times;
         .modal-body
           Modal
+            p #{text.termSearchSummary}
             form.form-inline.termSearch
               label.mr-sm-2(for='inlineTextTerm') Ontological term:   
                 input(type="text",name="term",id="inlineTextTerm")
               .btn.btn-primary.search(type="button") Search
-            table.table.table-bordered.tablesorter.termTable.resizableTable(hasResizable,hidden)
+            table.table.table-bordered.tablesorter.termTable.resizableTable.table-hover(hasResizable,hidden)
               thead
                 tr
                   th Term
@@ -74,7 +80,10 @@ block content
                   th Definition
                 tbody
                   tr.sample(hidden)
-                    th.term(scope="row")  
+                    th.term(scope="row")
+                      a(target="_blank")
+                        span.glyphicon.glyphicon-globe(aria-hidden="true",style="margin-right:5px",title="See in bioportal")
+                      span.text
                     td.ontology 
                     td.definition
         .modal-footer

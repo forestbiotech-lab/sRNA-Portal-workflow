@@ -3,15 +3,35 @@
     "summary": "Welcome to mirPursuit this tool allows you to run your one sRNA data to produce annotated reads using the miRPursuit pipeline.",
     "annotationTableHeader": "Annotate files",
     "annotationTableIntro": "Select the ontologies for each column."
+    ,"termSearchTitle":"Ontological term search"
+    ,"termSearchSummary":"Type an ontological term in the form input below (Ontological term) to search for terms in bioportal and agroportal. Click the globe icon to see term in ontology. Click on the row to select the term. Agroportal and Bioportal results are separated."
+    ,"":""
+    ,"":""
+    ,"":""
+    ,"":""
+
   },
   "pt": {
-    "summary": "",
-    "annotationTableHeader": "",
-    "annotationTableIntro": ""
+    "summary": ""
+    ,"annotationTableHeader": ""
+    ,"annotationTableIntro": ""
+    ,"termSearchTitle":""
+    ,"termSearchSummary":""
+    ,"":""
+    ,"":""
+    ,"":""
+
   },
   "fr": {
     "summary": "",
     "annotationTableHeader": "",
     "annotationTableIntro": ""
+    ,"termSearchTitle":""
+    ,"termSearchSummary":""
+    ,"":""
+    ,"":""
+    ,"":""
+    ,"":""
+    ,"":""
   }
 }

@@ -47,6 +47,9 @@ function toggleSidePanel(){
   $('img.collapsePanel').toggle('hidden');  
 }
 
+
+
+///Login Related
   //Set hover event for menu.
   $('.menu span.menuItem1').click(function(){window.location.replace('login')}).mouseover(function(){$(this).toggleClass('hover')}).mouseout(function(){$(this).toggleClass('hover')});
   $('.authElixir-button#authElixir').click(function(){window.location.replace('/elixir')}); 
@@ -60,6 +63,9 @@ function toggleSidePanel(){
  	var url=$('.form .resourceURL').val(),
   	$.post();
   }	*/
+
+
+
   //Auto complete with typeahead https://github.com/bassjobsen/Bootstrap-3-Typeahead
   $.get({
     url: 'javascripts/ontologies.json', 
@@ -80,6 +86,8 @@ function toggleSidePanel(){
     dataType:'json'
   });
 
+
+  //Currently applies to tables with CLASS .resizableTable
   //Table Sorter: https://mottie.github.io/tablesorter/docs/example-widget-resizable.html
   $('.resizableTable').tablesorter({
     // initialize zebra striping and resizable widgets on the table
@@ -161,8 +169,19 @@ function toggleSidePanel(){
     }
   });
 
+  // Setting attr to signal waiting for term
+  $('table.annotationTable .btn[modalButton]').click(function(){
+    //Set attibute to waiting
+    $(this).attr('modalButton','waiting');
 
-  //
+  });
+
+
+
+
+
+
+  //Adding terms
   $('#myModal .termSearch .btn.search').click(function(){
     term=$('#myModal .termSearch #inlineTextTerm').val();
     $.ajax({
@@ -178,11 +197,29 @@ function toggleSidePanel(){
         $('table.termTable [class*=row]').remove();
         table.removeAttr('hidden');
         for(i=0; i<data.bioportal.length; i++){
+          var dataSend={};
+          dataSend.termText= data.bioportal[i].prefLabel.toString();
+          dataSend.ontology=data.bioportal[i].links.ontology.split("/").reverse()[0];
+          dataSend.definition=data.bioportal[i].definition;
+          dataSend.ui=data.bioportal[i].links.ui;
+
           row=$('table.termTable tr.sample').clone().removeAttr('hidden').removeClass('sample').addClass('row'+i);
-          row.children('.term').text(data.bioportal[i].prefLabel);
-          row.children('.ontology').text(data.bioportal[i].links.ontology.split("/").reverse()[0]);
-          row.children('.definition').text(data.bioportal[i].definition);
+          row.children('.term').children('span.text').text(dataSend.termText);
+          row.children('.term').children('a').attr('href',dataSend.ui);
+          row.children('.ontology').text(dataSend.ontology);
+          row.children('.definition').text(dataSend.definition);
           row.children('.definition').text(row.children('.definition').text().substring(0,100)+"...");
+          row.click(dataSend, function(dataSend){
+            console.log(dataSend.data);
+            data=dataSend.data;
+            //$(this).children('.term').children('span.text').text().appendTo
+            var target=$('table.annotationTable .btn[modalButton=waiting]')
+            target.text(data.termText+" - "+data.ontology.substring(0,20))
+            target.attr('modalButton','');
+            typeof data.definition !== 'undefined'  ? target.attr('title',data.definition[0]): '';
+            
+            //hide modal
+          })
           row.appendTo('table.termTable tbody');
         }
       }
