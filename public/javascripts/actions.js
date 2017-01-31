@@ -171,9 +171,13 @@ function toggleSidePanel(){
 
   // Setting attr to signal waiting for term
   $('table.annotationTable .btn[modalButton]').click(function(){
-    //Set attibute to waiting
+    //Set attribute to waiting
     $(this).attr('modalButton','waiting');
-
+    //If modal Closes remove waiting from target and unbind this event. This is very specific to the element that triggered the event. It didn't really need to. But since it's done. Will be kept in case need in the future.
+    var origin=$(this);
+    $('.modal').off('hidden.bs.modal').on('hidden.bs.modal',{origin:origin},function(event){
+        event.data.origin.attr('modalButton','');
+    });
   });
 
 
@@ -182,10 +186,12 @@ function toggleSidePanel(){
 
 
   //Adding terms
-  $('#myModal .termSearch .btn.search').click(function(){
-    term=$('#myModal .termSearch #inlineTextTerm').val();
+  $('#termSearchModal .termSearch .btn.search').click(function(){
+    term=$('#termSearchModal .termSearch #inlineTextTerm').val();
+    console.log(encodeURI(term));
+    //Should use form to ensure sanitation from formidable check on sanitation
     $.ajax({
-      url: '/search-term?term='+term,
+      url: '/search-term?term='+encodeURI(term),
       type: 'POST',
       //data: 'term='+term,
       //application/json;charset=utf-8
@@ -210,7 +216,7 @@ function toggleSidePanel(){
           row.children('.definition').text(dataSend.definition);
           row.children('.definition').text(row.children('.definition').text().substring(0,100)+"...");
           row.click(dataSend, function(dataSend){
-            console.log(dataSend.data);
+            //console.log(dataSend.data);
             data=dataSend.data;
             //$(this).children('.term').children('span.text').text().appendTo
             var target=$('table.annotationTable .btn[modalButton=waiting]')
@@ -219,6 +225,7 @@ function toggleSidePanel(){
             typeof data.definition !== 'undefined'  ? target.attr('title',data.definition[0]): '';
             
             //hide modal
+            $('.modal#termSearchModal').modal('hide');
           })
           row.appendTo('table.termTable tbody');
         }
