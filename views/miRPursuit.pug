@@ -72,20 +72,53 @@ block content
               label.mr-sm-2(for='inlineTextTerm') Ontological term:   
                 input(type="text",name="term",id="inlineTextTerm")
               .btn.btn-primary.search(type="button") Search
-            table.table.table-bordered.tablesorter.termTable.resizableTable.table-hover(hasResizable,hidden)
-              thead
-                tr
-                  th Term
-                  th Ontology
-                  th Definition
-                tbody
-                  tr.sample(hidden)
-                    th.term(scope="row")
-                      a(target="_blank")
-                        span.glyphicon.glyphicon-globe(aria-hidden="true",style="margin-right:5px",title="See in bioportal")
-                      span.text
-                    td.ontology 
-                    td.definition
+            div(hidden,id="accordion",role="tablist",aria-multiselectable="true")
+              .card
+                .card-header(role="tab",id="headingOne")
+                  h5.mb-0
+                    a(data-toggle="collapse",data-parent="#accordion",href="#collapseOne",aria-expanded="false",aria-controls="collapseOne")
+                      | Bioportal terms
+                .collapse(id="collapseOne",role="tabpanel",aria-labelledby="headingOne")
+                  .card-block
+                    //Bioportal  
+                    table.table.table-bordered.tablesorter.termTable.resizableTable.table-hover.bioportal(hasResizable,hidden)
+                      thead
+                        tr
+                          th Term
+                          th Ontology
+                          th Definition
+                        tbody
+                          tr.sample(hidden)
+                            th.term(scope="row")
+                              a(target="_blank")
+                                span.glyphicon.glyphicon-globe(aria-hidden="true",style="margin-right:5px",title="See in bioportal")
+                              span.text
+                            td.ontology 
+                            td.definition
+                    //End Bioportal Table         
+              .card
+                .card-header(role="tab",id="headingTwo")
+                  h5.mb-0
+                    a(data-toggle="collapse",data-parent="#accordion",href="#collapseTwo",aria-expanded="true",aria-controls="collapseTwo")
+                      | Agroportal Terms
+                .collapse.show(id="collapseTwo",role="tabpanel",aria-labelledby="headingTwo")
+                  .card-block
+                    //Agroportal
+                    table.table.table-bordered.tablesorter.termTable.resizableTable.table-hover.agroportal(hasResizable,hidden)
+                      thead
+                        tr
+                          th Term
+                          th Ontology
+                          th Definition
+                        tbody
+                          tr.sample(hidden)
+                            th.term(scope="row")
+                              a(target="_blank")
+                                span.glyphicon.glyphicon-globe(aria-hidden="true",style="margin-right:5px",title="See in bioportal")
+                              span.text
+                            td.ontology 
+                            td.definition 
+                    //End Agroportal table                                               
         //.modal-footer
           //button.btn.btn-primary(type="button") Save changes
           //button.btn.btn-secondary(type="button",data-dismiss="modal") Close

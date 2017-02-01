@@ -199,9 +199,11 @@ function toggleSidePanel(){
       processData: false,
       success: function(data,textStatus,jqXHR){  
         console.log(data);
+        $('#termSearchModal #accordion').removeAttr('hidden');
         table=$('table.termTable');
         $('table.termTable [class*=row]').remove();
         table.removeAttr('hidden');
+//Attention - reduce this to one for with nested for.
         for(i=0; i<data.bioportal.length; i++){
           var dataSend={};
           dataSend.termText= data.bioportal[i].prefLabel.toString();
@@ -209,7 +211,7 @@ function toggleSidePanel(){
           dataSend.definition=data.bioportal[i].definition;
           dataSend.ui=data.bioportal[i].links.ui;
 
-          row=$('table.termTable tr.sample').clone().removeAttr('hidden').removeClass('sample').addClass('row'+i);
+          row=$('table.termTable.bioportal tr.sample').clone().removeAttr('hidden').removeClass('sample').addClass('row'+i);
           row.children('.term').children('span.text').text(dataSend.termText);
           row.children('.term').children('a').attr('href',dataSend.ui);
           row.children('.ontology').text(dataSend.ontology);
@@ -227,7 +229,35 @@ function toggleSidePanel(){
             //hide modal
             $('.modal#termSearchModal').modal('hide');
           })
-          row.appendTo('table.termTable tbody');
+          row.appendTo('table.termTable.bioportal tbody');
+        }
+
+        for(i=0; i<data.agroportal.length; i++){
+          var dataSend={};
+          dataSend.termText= data.agroportal[i].prefLabel.toString();
+          dataSend.ontology=data.agroportal[i].links.ontology.split("/").reverse()[0];
+          dataSend.definition=data.agroportal[i].definition;
+          dataSend.ui=data.agroportal[i].links.ui;
+
+          row=$('table.termTable.agroportal tr.sample').clone().removeAttr('hidden').removeClass('sample').addClass('row'+i);
+          row.children('.term').children('span.text').text(dataSend.termText);
+          row.children('.term').children('a').attr('href',dataSend.ui);
+          row.children('.ontology').text(dataSend.ontology);
+          row.children('.definition').text(dataSend.definition);
+          row.children('.definition').text(row.children('.definition').text().substring(0,100)+"...");
+          row.click(dataSend, function(dataSend){
+            //console.log(dataSend.data);
+            data=dataSend.data;
+            //$(this).children('.term').children('span.text').text().appendTo
+            var target=$('table.annotationTable .btn[modalButton=waiting]')
+            target.text(data.termText+" - "+data.ontology.substring(0,20))
+            target.attr('modalButton','');
+            typeof data.definition !== 'undefined'  ? target.attr('title',data.definition[0]): '';
+            
+            //hide modal
+            $('.modal#termSearchModal').modal('hide');
+          })
+          row.appendTo('table.termTable.agroportal tbody');
         }
       }
     })

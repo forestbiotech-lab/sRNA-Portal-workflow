@@ -5,6 +5,7 @@ var fs = require('fs');
 var path = require('path');
 var miRPursuit = require('./../views/strings/miRPursuit.json') 
 var config = require('./../config/ontologies.json') 
+var Promise = require("bluebird");
 var https = require('https');
 var http = require('http');
 //local only
@@ -85,10 +86,79 @@ router.post('/search-term',function(req,res){
 	form.parse(req, function(err,fields, files){
 		//console.log(fields);
 		//Get term from specific id
+		var output=[];		
 
-		var reqPlain = http.request(optionsBioportal,function(resPlain){
-		
-			console.log("Got response: " + resPlain.statusCode);
+		function bioportal(http){ 
+			return new Promise(function(resolve, reject){ 					
+				////////////////////////////////////////////////////////
+				var reqPlainBio=http.request(optionsBioportal,function(resPlain){
+					//NEEDS WORK HERE
+					console.log("Got response: " + resPlain.statusCode);
+
+					if(res.statusCode == 200 || 404) {
+		    			console.log("Got value (Bio): " + resPlain.statusMessage);
+		    			//Make sure you have the right thing
+						//if(res.headers.contentType=="application/json;charset=utf-8"){
+							var body = '';
+							resPlain.on("data",function(chunk){
+								body+= chunk;
+							})
+							resPlain.on("end",function(){
+								console.log('ended');
+								var data={bioportal: JSON.parse(body).collection};
+								//If all goes right callback function with var data;
+								resolve(data);
+							})
+		  		  	}else{
+		  		  		reject();
+		  		  	}
+				});
+				//reqPlain.write("q="+fields.term);
+				reqPlainBio.write("q="+req.query.term);
+				console.log(req.query.term);
+				reqPlainBio.end();
+				/////////////////////////////////////////////////////////7
+			})
+		}
+		function agroportal(http){ 
+			return new Promise(function(resolve, reject){ 					
+				////////////////////////////////////////////////////////
+				var reqPlainAgro=http.request(optionsAgroportal,function(resPlain){
+					//NEEDS WORK HERE
+					console.log("Got response : " + resPlain.statusCode);
+
+					if(res.statusCode == 200 || 404) {
+		    			console.log("Got value (Agro callback): " + resPlain.statusMessage);
+		    			//Make sure you have the right thing
+						//if(res.headers.contentType=="application/json;charset=utf-8"){
+							var body = '';
+							resPlain.on("data",function(chunk){
+								body+= chunk;
+							})
+							resPlain.on("end",function(){
+								console.log('agro ended');
+								var data={agroportal: JSON.parse(body).collection};
+								//If all goes right callback function with var data;
+								resolve(data);
+							})
+		  		  	}else{
+		  		  		reject();
+		  		  	}
+				});
+				//reqPlain.write("q="+fields.term);
+				reqPlainAgro.write("q="+req.query.term);
+				console.log(req.query.term);
+				reqPlainAgro.end();
+				/////////////////////////////////////////////////////////7
+			})
+		}
+		output.push(agroportal(http));
+		output.push(bioportal(http));
+
+//		console.log(bioportal(http).then(function(success){console.log(success);}));
+		/*var reqPlainAgro = http.request(optionsAgroportal,function(resPlain){
+			//NEEDS WORK HERE
+			console.log("Got response (Agro): " + resPlain.statusCode);
 
 			if(res.statusCode == 200 || 404) {
     			console.log("Got value: " + resPlain.statusMessage);
@@ -99,15 +169,25 @@ router.post('/search-term',function(req,res){
 						body+= chunk;
 					})
 					resPlain.on("end",function(){
-						res.json({bioportal: JSON.parse(body).collection});	
+						
+						res.json({agroportal: JSON.parse(body).collection});	
 					})
   		  	}
 		});
 		//reqPlain.write("q="+fields.term);
-		reqPlain.write("q="+req.query.term);
+		reqPlainAgro.write("q="+req.query.term);
 		console.log(req.query.term);
-		reqPlain.end();
+		reqPlainAgro.end();
+		*/
 
+
+
+		//if all else set these two for promise.
+		Promise.all(output).then(function(data){
+			res.json({"agroportal":data[0].agroportal,"bioportal":data[1].bioportal});
+			//console.log(data);
+
+		});
 
 	})
 })
