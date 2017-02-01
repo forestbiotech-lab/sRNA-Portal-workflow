@@ -11,58 +11,129 @@ block content
   p #{text.summary}
   p Your data will remain confidential until you authorize it  
   p
-  h2 Upload data
-  .row  
-    .col-md-10
-      label.sr-only(for="upload-files") Upload file
-      input(hidden,type="file",id="upload-files",placeholder="Fastq/Fasta",required="",autofocus="",autocomplete="off",name="uploads[]", multiple="multiple")
-      .progress(style="position:relative;bottom:-12px;")
-        .progress-bar(role="progressbar",aria-valuenow="0",aria-valuemin="0",aria-valuemax="100")
-    .col-md-2
-      .button.btn.btn-primary.upload-btn(type="button") Upload files
-  p 
-  p
-  form.form-inline  
-    label.mr-sm-2(for='inlineFormCustomAutocomplete') Ontologies:
-      input.typeahead(type="text",data-provide="typeahead",autocomplete="off")
-  h2 #{text.annotationTableHeader}
-  p #{text.annotationTableIntro}
-  <p>
-  a.btn.btn-primary(data-toggle="collapse",href="#collapseExample",aria-expanded="false",aria-controls="collapseExample") Advanced options
-  .collapse(id="collapseExample")
-    .card.card-block
-      | Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.      
-  table.table.table-bordered.tablesorter.resizableTable.annotationTable(hasResizable)
-    thead
-      tr
-        th File Name
-        th 
-          input.ontoSelect(type="input",id="ontology1",placeholder="Ontology",required="",autofocus="",autocomplete="off",name="ontology1")
-        th
-          input.ontoSelect(type="input",id="ontology2",placeholder="Ontology",required="",autofocus="",autocomplete="off",name="ontology2")
-      tbody
-        tr.sample(hidden)
-          th(scope="row")  
-          td 
-          td 
-        tr
-          th(scope="row") Lib01.fasta 
-          td 
-            .btn.btn-secondary.row0.col0.searchTerm(modalButton,type="button",data-toggle="modal",data-target="#termSearchModal") Search term
-          td
-            .btn.btn-secondary.row0.col1.searchTerm(modalButton,type="button",data-toggle="modal",data-target="#termSearchModal") Search term
 
-  .btn.btn-secondary(type="button")
-    span.isatab.glyphicon(style="background-image: url('/images/isatools_logo.svg'); background-repeat: no-repeat; background-attachment: scroll; background-size: 75px 85px; background-position: 0% 48%;width:20px;height:15px;")
-    span.text Download in Isa-Tab 
+  .card
+    .card-header
+      .container-fluid
+        .row.justify-content-center
+          h2 Upload Data
+    .card-block
+      .container-fluid
+        .row  
+          .col-md-10
+            label.sr-only(for="upload-files") Upload file
+            input(hidden,type="file",id="upload-files",placeholder="Fastq/Fasta",required="",autofocus="",autocomplete="off",name="uploads[]", multiple="multiple")
+            .progress(style="position:relative;bottom:-12px;")
+              .progress-bar(role="progressbar",aria-valuenow="0",aria-valuemin="0",aria-valuemax="100")
+          .col-md-2
+            .button.btn.btn-primary.upload-btn(type="button") Upload files
+  p          
+  .card
+    .card-header
+      .container-fluid
+        .row.justify-content-center
+          h2 #{text.annotationTableHeader}
+    .card-block
+      .container-fluid
+        .row.justify-content.center  
+          h6 #{text.annotationTableIntro}
+      .container-fluid.alert.alert-info
+        .row.justify-content-center
+          h2 Filter
+        .row.justify-content-center
+          .btn-group(role="group",aria-label="Basic example")
+            button.btn.btn-secondary(type="button") Investigation
+            button.btn.btn-secondary(type="button") Study
+            button.btn.btn-secondary(type="button") Assay
+        .row.justify-content-center    
+          .btn-group(role="group",aria-label="Basic example")
+            button.btn.btn-secondary(type="button") General MetaData
+            button.btn.btn-secondary(type="button") Timming and Location of study
+            button.btn.btn-secondary(type="button") Biosource
+
+      .btn-group(role="group",aria-label="Table functions")      
+        a.btn.btn-primary(data-toggle="collapse",href="#advancedOptions",aria-expanded="false",aria-controls="advancedOptions") Advanced options
+        button.btn.btn-secondary(type="button") Add Column
+      .collapse(id="advancedOptions")
+        .card.card-block
+          | Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. This will have buttons to exapand view and add extra functions to the table. Still a work in progress
+          btn-group(role="group",aria-label="Basic example")
+                button.btn.btn-secondary.advancedButton1(type="button") Advanced 1
+                button.btn.btn-secondary(type="button") Advanced 2
+                button.btn.btn-secondary(type="button") Advanced 3
 
 
 
+
+
+
+      //Annotation Table            
+      table.table.table-bordered.tablesorter.resizableTable.annotationTable(hasResizable)
+        thead
+          tr
+            th File Name 
+            th 
+              input.ontoSelect(type="input",id="ontology1",placeholder="Ontology",required="",autofocus="",autocomplete="off",name="ontology1")
+            th
+              input.ontoSelect(type="input",id="ontology2",placeholder="Ontology",required="",autofocus="",autocomplete="off",name="ontology2")
+          tbody
+            tr.sample(hidden)
+              th.col0(scope="row")  
+              td.col1
+                .btn.btn-secondary.col0.searchTerm(modalButton,type="button",data-toggle="modal",data-target="#termSearchModal") Search term
+                include includes/advancedButtons1.pug 
+              td.col2
+                .btn.btn-secondary.col1.searchTerm(modalButton,type="button",data-toggle="modal",data-target="#termSearchModal") Search term
+                include includes/advancedButtons1.pug 
+            tr.miappe
+              th(scope="row",title="Terms from Miappe 2.0 standards. MIAPPE 1.0 see miappe.org") Miappe terms
+              td Miappe term #1
+              td MIAPPE term #2  
+            tr.typeOfTerms
+              th(scope="row") Type
+              td(title="Quantitative has units. \n Qualitative only descriptive")  
+                select.form-control
+                  option(value="0") Qualitative
+                  option(value="1") Quantitative
+              td
+                select.form-control
+                  option(value="0") Qualitative    
+                  option(value="1") Quantitative
+            tr
+              th(scope="row") (Ex:) Lib01.fasta 
+              td 
+                .btn.btn-secondary.row0.col0.searchTerm(modalButton,type="button",data-toggle="modal",data-target="#termSearchModal") Search term
+                include includes/advancedButtons1.pug
+              td
+                .btn.btn-secondary.row0.col1.searchTerm(modalButton,type="button",data-toggle="modal",data-target="#termSearchModal") Search term
+                include includes/advancedButtons1.pug
+
+            tr.noFiles.table-warning
+              //   Must be set automatically to total table span //
+              th.align-middle.warning(colspan="3")
+                .container-fluid
+                  .row.justify-content-center
+                    .col-8 
+                      h3 No files have been uploaded yet.
+
+
+      .btn.btn-secondary(type="button")
+        span.isatab.glyphicon(style="background-image: url('/images/isatools_logo.svg'); background-repeat: no-repeat; background-attachment: scroll; background-size: 75px 85px; background-position: 0% 48%;width:20px;height:15px;")
+        span.text Download in Isa-Tab 
+
+
+
+
+                      
+
+  /// MODAL FOR TERM SEARCH      
   .modal.fade(id="termSearchModal",aria-labelledby="termSearchModalTitle")
     .modal-dialog.modal-lg(role="document")
       .modal-content
         .modal-header
           h5.modal-title(id="termSearchModalTitle") #{text.termSearchTitle}
+          //a(aria-label="More info") //Looks horrible Tackle this later
+            span.glyphicon.glyphicon-question-sign(aria-hidden="true")
           button.close(type="button",data-dismiss="modal",aria-label="Close")
             span(aria-hidden="true") &times;
         .modal-body

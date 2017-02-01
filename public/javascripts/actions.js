@@ -132,8 +132,9 @@ function toggleSidePanel(){
         success: function(data,textStatus,jqXHR){
             console.log('upload successful!\n' + data);
             uploads=formData.getAll("uploads[]");
+            $('table.annotationTable tbody tr.noFiles').hide()
             for(i=0; i<uploads.length; i++){
-              row=$('table.annotationTable tbody tr.sample').clone().removeAttr('hidden').removeClass('sample');
+              row=$('table.annotationTable tbody tr.sample').clone().removeAttr('hidden').removeClass('sample').addClass('row'+i);
               row.children('th').text(formData.getAll("uploads[]")[i].name);
               row.appendTo('table.annotationTable tbody');
             }
@@ -261,5 +262,15 @@ function toggleSidePanel(){
         }
       }
     })
-  })
+  });
+
+
+
+  // Advanced buttons 1 for annotation table
+  $('#advancedOptions button.advancedButton1').click(function(){
+      $('table.annotationTable .btn.advancedButton1').toggle('hidden');
+    });
+
+
+
 });

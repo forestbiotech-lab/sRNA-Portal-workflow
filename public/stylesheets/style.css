@@ -78,6 +78,19 @@ table thead input{
 table.annotationTable .btn.searchTerm{
   width:100%;
 }
+table.annotationTable .btn.advancedButton1{
+  display:none;
+}
+table.annotationTable .btn.advancedButton2{
+  display:none;
+}
+table.annotationTable .btn.advancedButton3{
+  display:none;
+}
+table.annotationTable tr.miappe{
+  background-color: darkgrey;
+}
+
 
 
 
