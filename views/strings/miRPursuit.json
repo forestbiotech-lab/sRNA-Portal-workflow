@@ -1,6 +1,6 @@
 {
   "en": {
-    "summary": "Welcome to mirPursuit this tool allows you to run your one sRNA data to produce annotated reads using the miRPursuit pipeline.",
+    "summary": "Welcome to mirPursuit this tool allows you to run your own sRNA data to produce annotated reads using the miRPursuit pipeline.",
     "annotationTableHeader": "Annotate files",
     "annotationTableIntro": "Select the ontologies for each column."
     ,"termSearchTitle":"Ontological term search"
