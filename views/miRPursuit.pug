@@ -3,7 +3,7 @@ extends layout
 block content
 
   a(href="https://github.com/forestbiotech-lab/miRPursuit")
-     img(style="position:absolute;top:10px;left:25px;border:0;",src="https://camo.githubusercontent.com/c6625ac1f3ee0a12250227cf83ce904423abf351/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f677261795f3664366436642e706e67",alt="Fork me on GitHub",data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_gray_6d6d6d.png")   
+     img(style="position:absolute;top:10px;left:10px;border:0;",src="https://camo.githubusercontent.com/c6625ac1f3ee0a12250227cf83ce904423abf351/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f677261795f3664366436642e706e67",alt="Fork me on GitHub",data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_gray_6d6d6d.png")   
 
   h1.title miRPursuit
   br
@@ -146,8 +146,10 @@ block content
             span s
             span
           .row.justify-content-center  
-            button.btn.btn-primary(type="button") Details
-
+            a.button.btn.btn-primary(type="button",data-toggle="collapse",href="#miRPursuitOptions",aria-expanded="false",aria-controls="miRPursuitOptions") Details
+            .collapse(id="miRPursuitOptions")
+              .card.card-block
+                | Shit stays here.... yeah Some buttons here.....
 
   /// MODAL FOR TERM SEARCH      
   .modal.fade(id="termSearchModal",aria-labelledby="termSearchModalTitle")
