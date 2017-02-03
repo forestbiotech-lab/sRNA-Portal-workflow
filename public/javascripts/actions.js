@@ -21,6 +21,7 @@ $(document).ready(function(){
     //$('.content').replaceClass('col-md-8','col-md-11')
   });  
   $('img.expandPanel').click(function() {
+    $('.miRPursuitPanel').width(sidePanelOriginalWidth.replace('px','')-20+"px");
     //Store current value for getting back to previous value.
     sidePanel.animate(
       { "width": sidePanelOriginalWidth, "padding-left": "15px", "padding-right" :"15px" }, 
@@ -43,8 +44,10 @@ $(document).ready(function(){
   });
 
 function toggleSidePanel(){
+  $('.sidePanel').toggleClass('collapsedPanel');
   $('img.expandPanel').toggle('hidden');
-  $('img.collapsePanel').toggle('hidden');  
+  $('img.collapsePanel').toggle('hidden');
+  $('.miRPursuitPanel').toggle('hidden');  
 }
 
 
@@ -265,12 +268,37 @@ function toggleSidePanel(){
   });
 
 
+  //Panel resize on move
+  var width=$('.sidePanel').css('width').replace('px','')-20+"px";
+  $('.miRPursuitPanel').css('width',width);
+  //On load set to size of sidePanel
+  $(window).resize(function(){  
+    //if panel is collapsed set main to bigger size
+    if( $('.sidePanel').hasClass('collapsedPanel') ){
+      $('.mainPanel').width('100%');
+      var mainPanel100=$('.mainPanel').width();
+      //20 for sidepanel and another 20 for spacing (optional)
+      $('.mainPanel').width(mainPanel100-20-20+"px");
+      sidePanelOriginalWidth=mainPanel100*0.2+50+"px";
+      console.log(mainPanel100*0.2+50);
+    }
+    else {
+      $('.sidePanel').width('20%');
+      $('.mainPanel').width('80%');
+      var mainPanel80=$('.mainPanel').width()-50+"px";
+      $('.mainPanel').width(mainPanel80);
+      sidePanelOriginalWidth=sidePanel.css('width');
+      console.log(sidePanelOriginalWidth);
+    }
+    var width=$('.sidePanel').css('width').replace('px','')-20+"px";
+    $('.miRPursuitPanel').css('width',width);
+  });
+
+
 
   // Advanced buttons 1 for annotation table
   $('#advancedOptions button.advancedButton1').click(function(){
       $('table.annotationTable .btn.advancedButton1').toggle('hidden');
     });
-
-
 
 });

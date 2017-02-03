@@ -5,7 +5,16 @@ Short-cutted
 ############
 1 - Passing args to post server not as form in ajax as query args instead of form args.
 2- Should add bogus security code to be passed. To ensure that it's not abused. Some algorithm based on time. Like steam.
+3- Hit enter closes modal.
 3- Fix panels to use all of the space.
 
+
+
+Console
+
+
+var exec = require('child_process').exec;
+function log(error, stdout, stderr) { console.log(stdout) }
+exec("ls -la", log);
 
 

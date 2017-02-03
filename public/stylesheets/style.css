@@ -38,11 +38,15 @@ a{
     background-color: #FE9050;
 }
 .sidePanel{   
+    position:relative;
     color: #ffffff; 
     border-right: 20px solid rgba(128, 128, 128, 0.4);
     box-shadow: 2px sspo0px 0px rgba(0, 0, 0, 0.68);
     height:1000px;
     background-color: green;
+}
+.sidePanel .content{
+ padding-left:15px; 
 }
 img.collapsePanel{
     width: 15px;
@@ -58,6 +62,9 @@ img.expandPanel{
     margin-top: 200px;
     margin-bottom: 400px;
     display:none;
+}
+.mainPanel{
+  position:relative;
 }
 .mainPanel .content {
 	margin: 10px;
@@ -92,6 +99,22 @@ table.annotationTable tr.miappe{
 }
 
 
+.miRPursuitPanel{
+  position: fixed;
+  top: 137px;
+  left:-1px;
+  /*width: 200px;*/
+  border: #615d5d;
+  
+}
+.miRPursuitPanel .card-block {
+  color: white;
+}
+.miRPursuitPanel .row{
+  padding-left:20px;
+  padding-right:20px;
+}
+  
 
 
 /*Added from bootstrap 3 https://getbootstrap.com/components/#glyphicons*/

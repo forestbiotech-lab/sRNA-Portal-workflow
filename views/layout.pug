@@ -5,17 +5,17 @@ html
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel="stylesheet",href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css",integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ",crossorigin="anonymous")
   body
-    .header()
+    .header
       img(style="margin-left:30px;height:100px",src="/images/logo.png")    
       a(target="blank_",href="http://elixir-europe.org")
         img.tiny-logo-header(src="/images/elixir-logo-transparent-ultrasmall.png")
     .menu
       span.menuItem1 Login
-    .container(style="margin:0px;padding:0px;")
+    .container-fluid(style="margin:0px;padding:0px;")
       .row.content-md-left(style="margin:0px")
-        .sidePanel.col-3.col-md-auto.col-xl-auto
+        .sidePanel(style="width:20%;")
           include includes/sidePanel.pug  
-        .mainPanel.col-9.col-md-auto.col-xl-auto
+        .mainPanel(style="width:79%")
           .content      
             block content
     script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js")
