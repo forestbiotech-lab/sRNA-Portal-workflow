@@ -320,7 +320,7 @@ function toggleSidePanel(){
           //console.log(data);
           $('.miRPursuitPanel .subMenu').empty();
           var row=$('.miRPursuitPanel .buildingBlock .row').clone();
-          var button=row.children('button').text("Previous Menu").removeClass('btn-info').addClass('btn-secondary').addClass('previousMenu0') ;
+          row.addClass("content").removeClass("row").empty();
           row.appendTo('.miRPursuitPanel .subMenu');
           for(i=0;i<data.length;i++){
             var row=$('.miRPursuitPanel .buildingBlock .row').clone();
@@ -329,7 +329,7 @@ function toggleSidePanel(){
             }else{
               button=row.children('button').text(data[i]);
             }
-            row.appendTo('.miRPursuitPanel .subMenu');
+            row.appendTo('.miRPursuitPanel .subMenu .content');
 
           }
           var row=$('.miRPursuitPanel .buildingBlock .row').clone();
@@ -340,7 +340,8 @@ function toggleSidePanel(){
             $('.miRPursuitPanel .subMenu').toggle('hidden');
             $('.miRPursuitPanel .mainMenu').toggle('hidden');
             $('.card.logs').hide();
-            $('.card.logs .logContent').empty();
+            $('.card.logs .logContent p').empty();
+            $('.miRPursuitPanel .subMenu').empty();
           })
           $('.miRPursuitPanel .logButton0').click(function(){
             //log intermediary should be another var
