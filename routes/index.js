@@ -8,6 +8,12 @@ var config = require('./../config/ontologies.json')
 var Promise = require("bluebird");
 var https = require('https');
 var http = require('http');
+var exec = require('child_process').exec;
+var miRPursuitVars= require('./../config/miRPursuit.json');
+var atob=require('atob');
+var btoa=require('btoa');
+
+
 //local only
 process.env.local ? require('./../.env') : ""; 
 //process.env.local ? console.log(process.env): "";
@@ -18,10 +24,107 @@ process.env.local ? require('./../.env') : "";
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
-/* GET home page. */
+
+/* GET home page. */     
 router.get('/miRPursuit', function(req, res, next) {
-  res.render('miRPursuit', {lang:"en",text: miRPursuit.en});
+  //exec command and get promise
+  function send(command){
+    return new Promise(function(resolve, reject){
+      exec(command, function(error,stdout,stderr){
+        
+        //If no stderr furfill promise else send stdr;
+        stderr.length==0 || error===null ? resolve(stdout) : reject({error:error,stderr:stderr});
+        //Implement error....... !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+      });
+    });  
+  }
+  command="cat "+miRPursuitVars.miRPursuitPath+miRPursuitVars.workdirs;
+  send(command).then(function(data){
+    var config={};
+    try{
+      workdirs=data.trim().split(/\r?\n|\r/g);
+      function configParseToJSON(item){
+        item.startsWith('#') ? "" :  config[item.split('=')[0]]=btoa(item.split('=')[1]);  
+      }
+      workdirs.filter(configParseToJSON);
+    }catch(exception){ 
+
+      console.trace(exception);
+      config={};
+    }finally{
+      res.render('miRPursuit', {lang:"en",text: miRPursuit.en,log:config,workdirs:config,miRPursuitPath:btoa(miRPursuitVars.miRPursuitPath)});
+    }
+  },function(err){
+    //If promise isn't fullfilled issue error but render page. Set config to ""
+    console.error("Error at index.js - "+err.stderr);
+    process.env.LOG>4 ? console.error("Error at index.js - "+err.stderr) : "";
+    var config={};
+    res.render('miRPursuit', {lang:"en",text: miRPursuit.en,log:config,workdirs:config,miRPursuitPath:btoa(miRPursuitVars.miRPursuitPath)});
+  });
 });
+
+
+// POST LIST                                          POST LIST
+router.post('/list',function(req,res){
+  //Gets a path to test
+  console.log(req.params);
+  //param.path
+
+
+  function send(command){
+    return new Promise(function(resolve, reject){
+      exec(command, function(error,stdout,stderr){
+        //on success;
+        //trim if necessary.q
+        stderr.length==0 || error===null ? resolve(stdout.trim().split(/\r?\n|\r/g)) : reject({error:error,stderr:stderr});
+      });
+    });  
+  }
+
+  //Some sanity should be done. Perhaps this isn't accessed directly.
+  //And ID server looks up the path and the calculated path is sent by the server. With a hashed code to ensure origin is legit
+  var path = req.query.path;
+  command="ls "+path.replace(";","");
+  send(command).then(function(data){
+    res.json(data);
+  });
+
+  console.log(req.query);
+
+})
+
+// POST CAT                                                 POST CAT        low level restriction but could give potential access to files that it shouldn't
+router.post('/cat',function(req,res){
+  
+  console.log(req.body);
+
+  function send(command){
+    return new Promise(function(resolve, reject){
+      exec(command, function(error,stdout,stderr){
+        //on success;
+        //trim if necessary.
+        stderr.length==0 || error===null ? resolve(stdout.trim()) : reject({error:error,stderr:stderr});
+      });
+    });  
+  }
+
+  //Some sanity should be done. Perhaps this isn't accessed directly.
+  //And ID server looks up the path and the calculated path is sent by the server. With a hashed code to ensure origin is legit
+
+  var path = atob(req.body.path);
+  var file = atob(req.body.file);
+  command='cat "'+path.replace(/["';,]/g,"")+file.replace(/["';,]/g,"")+'"';
+  console.log(command);
+  send(command).then(function(data){
+    data=data.trim().split(/\r?\n|\r/g);
+    res.json(data);
+  });
+
+})
+
+
+
 
 router.post('/test',function(req,res){
 	console.log(req.params);
@@ -29,6 +132,8 @@ router.post('/test',function(req,res){
 	res.status(200).json(config);
 })
 
+
+// POST SEARCH-TERM                                          POST SEARCH-TERM
 router.post('/search-term',function(req,res){
 	console.log(req.query.term);
 	var optionsBioportal = {
@@ -155,33 +260,6 @@ router.post('/search-term',function(req,res){
 		output.push(agroportal(http));
 		output.push(bioportal(http));
 
-//		console.log(bioportal(http).then(function(success){console.log(success);}));
-		/*var reqPlainAgro = http.request(optionsAgroportal,function(resPlain){
-			//NEEDS WORK HERE
-			console.log("Got response (Agro): " + resPlain.statusCode);
-
-			if(res.statusCode == 200 || 404) {
-    			console.log("Got value: " + resPlain.statusMessage);
-    			//Make sure you have the right thing
-				//if(res.headers.contentType=="application/json;charset=utf-8"){
-					var body = '';
-					resPlain.on("data",function(chunk){
-						body+= chunk;
-					})
-					resPlain.on("end",function(){
-						
-						res.json({agroportal: JSON.parse(body).collection});	
-					})
-  		  	}
-		});
-		//reqPlain.write("q="+fields.term);
-		reqPlainAgro.write("q="+req.query.term);
-		console.log(req.query.term);
-		reqPlainAgro.end();
-		*/
-
-
-
 		//if all else set these two for promise.
 		Promise.all(output).then(function(data){
 			res.json({"agroportal":data[0].agroportal,"bioportal":data[1].bioportal});
@@ -191,6 +269,11 @@ router.post('/search-term',function(req,res){
 
 	})
 })
+
+
+
+//POST UPLOAD                                     POST UPLOAD    //RESTRICT access required
+
 
 router.post('/upload', function(req, res){
   // create an incoming form object

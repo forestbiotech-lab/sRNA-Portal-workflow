@@ -1,4 +1,6 @@
 { 
-	"miRPursuitPath" : ""
-	
+	"miRPursuitPath" : "/home/brunocosta/Downloads/git/miRPursuit/"
+	,"workdirs" : "config/workdirs.cfg"
+	,"userLogs" : "logs/"
+	,"userReports" : "reports"
 }

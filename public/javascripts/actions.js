@@ -295,6 +295,91 @@ function toggleSidePanel(){
   });
 
 
+  //Hide .miRPursuitPanel
+  $('.miRPursuitPanel button.close').click(function(){
+    $('.miRPursuitPanel').hide();
+  })
+  // Advanced buttons 1 for to show miRPursuit panel (Temporary)
+  $('#advancedOptions button.advancedButton2').click(function(){
+      $('.miRPursuitPanel').toggle('hidden');
+    });
+
+  //Toggle Logs
+  $('.miRPursuitPanel .openLogMenu').click(function(){
+    if($('.miRPursuitPanel .subMenu').css('display') == "none"){
+      path=$('.miRPursuitPanel .openLogMenu').attr('path');
+      path=atob(path)+"log/";
+      $.ajax({
+        url: "/list?path="+path,
+        type: 'POST',
+        //data: 'term='+term,
+        //application/json;charset=utf-8
+        contentType: false,//'application/x-www-form-urlencoded;charset=UTF-8',
+        processData: false,
+        success: function(data,textStatus,jqXHR){
+          //console.log(data);
+          $('.miRPursuitPanel .subMenu').empty();
+          var row=$('.miRPursuitPanel .buildingBlock .row').clone();
+          var button=row.children('button').text("Previous Menu").removeClass('btn-info').addClass('btn-secondary').addClass('previousMenu0') ;
+          row.appendTo('.miRPursuitPanel .subMenu');
+          for(i=0;i<data.length;i++){
+            var row=$('.miRPursuitPanel .buildingBlock .row').clone();
+            if(data[i].match(/\.log$/g)==".log"){
+              button=row.children('button').text(data[i].replace(/\.log/g,"")).removeClass('btn-info').addClass('btn-warning').addClass('logButton0');
+            }else{
+              button=row.children('button').text(data[i]);
+            }
+            row.appendTo('.miRPursuitPanel .subMenu');
+
+          }
+          var row=$('.miRPursuitPanel .buildingBlock .row').clone();
+          button=row.children('button').text("Previous menu").removeClass('btn-info').addClass('btn-secondary').addClass('previousMenu0');
+          row.appendTo('.miRPursuitPanel .subMenu');
+            //Return to main menu.
+          $('.miRPursuitPanel .subMenu .previousMenu0').click(function(){
+            $('.miRPursuitPanel .subMenu').toggle('hidden');
+            $('.miRPursuitPanel .mainMenu').toggle('hidden');
+            $('.card.logs').hide();
+            $('.card.logs .logContent').empty();
+          })
+          $('.miRPursuitPanel .logButton0').click(function(){
+            //log intermediary should be another var
+            var path=$('.miRPursuitPanel .openLogMenu').attr('path');
+            path=path;
+            level="log/"
+            var file=btoa(level+$(this).text()+".log");
+            $.ajax({
+              url:"/cat",
+              contentType: 'application/json', 
+              type: "POST",
+              data: JSON.stringify({path:path,file:file}),
+              success: function(data,textStatus,jqXHR){
+                //if textStatys 200 or OK
+                var logContent=$(".logs .card-block .logContent p");
+                logContent.empty();
+                for(i=0;i<data.length; i++){
+                  $(".logs .card-block .logContent p").append(data[i]+"<br>");
+                }
+                
+              }
+            })
+
+          })
+        }  
+      })
+      $('.card.logs').show();
+      $('.miRPursuitPanel .subMenu').toggle('hidden');
+      $('.miRPursuitPanel .mainMenu').toggle('hidden');
+      //end for submenu hidden
+    }else{
+      $('.miRPursuitPanel .mainMenu').toggle('hidden');
+      $('.miRPursuitPanel .subMenu').toggle('hidden');
+
+    }
+  })
+
+
+
 
   // Advanced buttons 1 for annotation table
   $('#advancedOptions button.advancedButton1').click(function(){

@@ -12,6 +12,58 @@ block content
   p Your data will remain confidential until you authorize it  
   p
 
+  .card.reports(style="display:none;")
+    .card-header
+      .container-fluid
+        .row.justify-content-center
+          h2 Reports
+    .card-block
+      .container-fluid
+        .row  
+          .col-md-10
+            | Reports
+
+  .card.logs(style="display:none;")
+    .card-header
+      .container-fluid
+        .row.justify-content-center
+          h2 Logs
+    .card-block
+      .container-fluid
+        .row.justify-content-center
+          .col-md-10.logContent
+            p  
+
+  .card
+    .card-header
+      .container-fluid
+        .row.justify-content-center
+          h2 miRPursuit settings
+    .card-block
+      .container-fluid
+        .row  
+          .col-md-5
+            .form-inline
+              label(for="runName") 
+                h4 Run name:
+              input.form-control(id="runName",placeholder="ID9999999",type="text",style="margin-left:10px") 
+            .form-inline  
+              label(for="genome") 
+                h4 Select Genome:
+              select.custom-select(id="genome",style="margin-left:10px")
+                option Pinus pinaster
+                option Pinus taeda
+            .form-inline  
+              laber(for="miRBase") 
+                h4 Select miRBase:
+              select.custom-select(id="miRBase",style="margin-left:10px") 
+                option v16
+                option v18
+          .col-md-5.align-self-end
+            button.btn.btn-primary(role="button") Start miRPursuit
+
+
+
   .card
     .card-header
       .container-fluid
@@ -147,76 +199,19 @@ block content
             span
           .row.justify-content-center  
             a.button.btn.btn-primary(type="button",data-toggle="collapse",href="#miRPursuitOptions",aria-expanded="false",aria-controls="miRPursuitOptions") Details
-            .collapse(id="miRPursuitOptions")
-              .card.card-block
-                | Shit stays here.... yeah Some buttons here.....
+            .collapse(id="miRPursuitOptions",style="width:100%;")
+              .card.card-block.container-fluid(style="padding:1px;")
+                .buildingBlock(hidden)
+                  .row
+                    button.col-12.btn.btn-info.btn-sm(style="overflow-x:hidden")
+                .subMenu
+                .mainMenu
+                  .container-fluid
+                    .row.justify-content-center(style="padding:0px;")
+                      button.btn.btn-info.openReportMenu.col-6(role="button") Reports
+                      - var path = workdirs.workdir;
+                      button.btn.btn-info.openLogMenu.col-6(role="button",path=''+path) Logs
 
   /// MODAL FOR TERM SEARCH      
-  .modal.fade(id="termSearchModal",aria-labelledby="termSearchModalTitle")
-    .modal-dialog.modal-lg(role="document")
-      .modal-content
-        .modal-header
-          h5.modal-title(id="termSearchModalTitle") #{text.termSearchTitle}
-          //a(aria-label="More info") //Looks horrible Tackle this later
-            span.glyphicon.glyphicon-question-sign(aria-hidden="true")
-          button.close(type="button",data-dismiss="modal",aria-label="Close")
-            span(aria-hidden="true") &times;
-        .modal-body
-          Modal
-            p #{text.termSearchSummary}
-            .form-inline.termSearch
-              label.mr-sm-2(for='inlineTextTerm') Ontological term:   
-                input(type="text",name="term",id="inlineTextTerm")
-              .btn.btn-primary.search(type="button") Search
-            div(hidden,id="accordion",role="tablist",aria-multiselectable="true")
-              .card
-                .card-header(role="tab",id="headingOne")
-                  h5.mb-0
-                    a(data-toggle="collapse",data-parent="#accordion",href="#collapseOne",aria-expanded="false",aria-controls="collapseOne")
-                      | Bioportal terms
-                .collapse(id="collapseOne",role="tabpanel",aria-labelledby="headingOne")
-                  .card-block
-                    //Bioportal  
-                    table.table.table-bordered.tablesorter.termTable.resizableTable.table-hover.bioportal(hasResizable,hidden)
-                      thead
-                        tr
-                          th Term
-                          th Ontology
-                          th Definition
-                        tbody
-                          tr.sample(hidden)
-                            th.term(scope="row")
-                              a(target="_blank")
-                                span.glyphicon.glyphicon-globe(aria-hidden="true",style="margin-right:5px",title="See in bioportal")
-                              span.text
-                            td.ontology 
-                            td.definition
-                    //End Bioportal Table         
-              .card
-                .card-header(role="tab",id="headingTwo")
-                  h5.mb-0
-                    a(data-toggle="collapse",data-parent="#accordion",href="#collapseTwo",aria-expanded="true",aria-controls="collapseTwo")
-                      | Agroportal Terms
-                .collapse.show(id="collapseTwo",role="tabpanel",aria-labelledby="headingTwo")
-                  .card-block
-                    //Agroportal
-                    table.table.table-bordered.tablesorter.termTable.resizableTable.table-hover.agroportal(hasResizable,hidden)
-                      thead
-                        tr
-                          th Term
-                          th Ontology
-                          th Definition
-                        tbody
-                          tr.sample(hidden)
-                            th.term(scope="row")
-                              a(target="_blank")
-                                span.glyphicon.glyphicon-globe(aria-hidden="true",style="margin-right:5px",title="See in bioportal")
-                              span.text
-                            td.ontology 
-                            td.definition 
-                    //End Agroportal table                                               
-        //.modal-footer
-          //button.btn.btn-primary(type="button") Save changes
-          //button.btn.btn-secondary(type="button",data-dismiss="modal") Close
-
+  include includes/termSearchModal.pug
 
