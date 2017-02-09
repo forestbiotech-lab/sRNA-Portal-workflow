@@ -2,7 +2,7 @@ extends layout
 
 block content
 
-  a(href="https://github.com/forestbiotech-lab/miRPursuit")
+  a(href="https://github.com/forestbiotech-lab/miRPursuit",target="_blank")
      img(style="position:absolute;top:10px;left:10px;border:0;",src="https://camo.githubusercontent.com/c6625ac1f3ee0a12250227cf83ce904423abf351/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f677261795f3664366436642e706e67",alt="Fork me on GitHub",data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_gray_6d6d6d.png")   
 
   h1.title miRPursuit
@@ -34,7 +34,7 @@ block content
           .col-md-10.logContent
             p  
 
-  .card
+  .card.miRPursuitSettings
     .card-header
       .container-fluid
         .row.justify-content-center
@@ -59,7 +59,7 @@ block content
               select.custom-select(id="miRBase",style="margin-left:10px") 
                 option v16
                 option v18
-          .col-md-5.align-self-end
+          .col-md-5.align-self-end.runMiRPursuit
             button.btn.btn-primary(role="button") Start miRPursuit
 
 
@@ -190,14 +190,15 @@ block content
                 .progress-bar(role="progressbar",aria-valuenow="0",aria-valuemin="0",aria-valuemax="100")
           .row.currentState    
             span State:
-            span Filtering
+            span.state
           .row.runID
             span Run:  
             span ID292929
           .row          
-            span s
-            span
-          .row.justify-content-center  
+            span Step
+            span.step
+          .row.justify-content-center
+            //replace with button with on click  
             a.button.btn.btn-primary(type="button",data-toggle="collapse",href="#miRPursuitOptions",aria-expanded="false",aria-controls="miRPursuitOptions") Details
             .collapse(id="miRPursuitOptions",style="width:100%;")
               .card.card-block.container-fluid(style="padding:1px;")

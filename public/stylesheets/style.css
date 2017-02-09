@@ -110,6 +110,7 @@ table.annotationTable tr.miappe{
 
 .miRPursuitPanel{
   position: fixed;
+  disply:none;
   top: 137px;
   left:-1px;
   /*width: 200px;*/

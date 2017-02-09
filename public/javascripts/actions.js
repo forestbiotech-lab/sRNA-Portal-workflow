@@ -380,6 +380,54 @@ function toggleSidePanel(){
   })
 
 
+  //Start miRPursuit
+  $('.miRPursuitSettings .runMiRPursuit button').click(function(){
+    var path=$('.miRPursuitPanel .openLogMenu').attr('path');
+
+    $.ajax({
+      url:"/run",
+      type:"POST",
+      contentType: 'application/json',
+      data: JSON.stringify({path:path}),
+      success: function(){
+        console.log('done');
+        $('.miRPursuitPanel').show();
+        //updateProgress();//Might be to soon.
+        setInterval(updateProgress,9000);
+        //clearInterval() //code to remove setInterval();
+      }
+    })
+
+
+
+  })
+
+  //Start miRPursuit
+  function updateProgress(){
+    var path=$('.miRPursuitPanel .openLogMenu').attr('path');
+    $.ajax({
+      url:"/progress",
+      type:"POST",
+      contentType: 'application/json',
+      data: JSON.stringify({path:path}),
+      success: function(data,textStatus,jqXHR){
+        console.log(data);
+        var state=$('.miRPursuitPanel .row span.state');
+        var topState=$('.menu .miRPursuit-bar span.activity');
+        var progress=$('.miRPursuitPanel .row .progress-bar');
+        var topProgress=$('.menu .miRPursuit-bar .progress-bar');
+        var step=$('.miRPursuitPanel .row span.step');
+        state.text(data.state);
+        topState.text(data.state);
+        progress.text(data.progress).width(data.progress);
+        topProgress.text(data.progress).width(data.progress);
+        step.text(data.step);
+
+      }
+    })
+  };
+
+
 
 
   // Advanced buttons 1 for annotation table

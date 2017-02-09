@@ -68,11 +68,7 @@ router.get('/miRPursuit', function(req, res, next) {
 // POST LIST                                          POST LIST
 router.post('/list',function(req,res){
   //Gets a path to test
-  console.log(req.params);
-  //param.path
-
-
-  function send(command){
+   function send(command){
     return new Promise(function(resolve, reject){
       exec(command, function(error,stdout,stderr){
         //on success;
@@ -89,8 +85,6 @@ router.post('/list',function(req,res){
   send(command).then(function(data){
     res.json(data);
   });
-
-  console.log(req.query);
 
 })
 
@@ -124,6 +118,66 @@ router.post('/cat',function(req,res){
 })
 
 
+// POST CAT                                                 POST CAT        low level restriction but could give potential access to files that it shouldn't
+router.post('/run',function(req,res){
+  
+  console.log(req.body);
+
+  function send(command){
+    return new Promise(function(resolve, reject){
+      exec(command, function(error,stdout,stderr){
+        //on success;
+        //trim if necessary.
+        stderr.length==0 || error===null ? resolve(stdout.trim()) : reject({error:error,stderr:stderr});
+      });
+    });  
+  }
+
+  //Some sanity should be done. Perhaps this isn't accessed directly.
+  //And ID server looks up the path and the calculated path is sent by the server. With a hashed code to ensure origin is legit
+
+  var path = atob(req.body.path);
+//  var file = atob(req.body.file); //If first time folder might not exist to store log.
+  var command=miRPursuitVars.miRPursuitPath+'./miRPursuit.sh -f 1 -l 2 --fasta - --no-prompt --headless > '+path+'log/TEST.log';
+  //command='cat "'+path.replace(/["';,]/g,"")+file.replace(/["';,]/g,"")+'"';
+  console.log(command);
+  send(command)/*.then(function(data){
+    data=data.trim().split(/\r?\n|\r/g);
+    res.json(data);
+  })*/;
+  res.send('OK');
+})
+
+// POST CAT                                                 POST CAT        low level restriction but could give potential access to files that it shouldn't
+router.post('/progress',function(req,res){
+  
+  console.log(req.body);
+  //ADD ID to post so we know what to look for Well for now path will do.
+  function send(command){
+    return new Promise(function(resolve, reject){
+      exec(command, function(error,stdout,stderr){
+        //on success;
+        //trim if necessary.
+        stderr.length==0 || error===null ? resolve(stdout.trim()) : reject({error:error,stderr:stderr});
+      });
+    });  
+  }
+
+  //Some sanity should be done. Perhaps this isn't accessed directly.
+  //And ID server looks up the path and the calculated path is sent by the server. With a hashed code to ensure origin is legit
+
+  var path = atob(req.body.path);
+//  var file = atob(req.body.file);
+  var command="cat "+path+"PROGRESS";
+  //command='cat "'+path.replace(/["';,]/g,"")+file.replace(/["';,]/g,"")+'"';
+  console.log(command);
+  send(command).then(function(data){
+    data=data.trim().split(/\t/g);
+    var response={progress: data[0]+"%",state:data[1],step:data[2]};
+    res.json(response);
+  });
+  //res.send('OK');
+})
 
 
 router.post('/test',function(req,res){
@@ -273,8 +327,6 @@ router.post('/search-term',function(req,res){
 
 
 //POST UPLOAD                                     POST UPLOAD    //RESTRICT access required
-
-
 router.post('/upload', function(req, res){
   // create an incoming form object
   var form = new formidable.IncomingForm();

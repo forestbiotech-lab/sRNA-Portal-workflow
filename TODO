@@ -6,12 +6,33 @@ Short-cutted
 1 - Passing args to post server not as form in ajax as query args instead of form args.
 2- Should add bogus security code to be passed. To ensure that it's not abused. Some algorithm based on time. Like steam.
 3- Hit enter closes modal.
-3- Fix panels to use all of the space.
+4- Replace details with button and listener.
+5- MiRPursuit panel hidden pop-up only when miRPursuit is running. On click show plus a var to see if miRPursuit is running. 
+6- Grab shell process number to know if it's running. Listen for exit code of process
+7- Remove multiparty from package.json and uninstall it
+
+MiRPursuit adaptation
+#####################
+-Markdown reports
+-Progress in ROOT user folder, tab separated. Percentage xx% State description and number(?)
+-First run must have already been done for node to be able to run miRPursuit or else get a work around to say yes and accept conditions.
+
+-Dealing with errors. How to highlight errors. Parse global log or run log for warnings. Set logs to have warnings or fatal warnings whatever. 
 
 
+
+
+Standards
+#########
+Progress
+	Percentage: xx% 
+	State: Short description (Limited chars #not defined yet) 
+	and number(?)
+RUN ID
+	Not sure what is the requirement of uniqueness. Unique to machine, database? Depends on deployment strategy.
 
 Console
-
+========
 
 var exec = require('child_process').exec;
 function log(error, stdout, stderr) { console.log(stdout) }
