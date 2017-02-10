@@ -7,9 +7,10 @@ Short-cutted
 2- Should add bogus security code to be passed. To ensure that it's not abused. Some algorithm based on time. Like steam.
 3- Hit enter closes modal.
 4- Replace details with button and listener.
-5- MiRPursuit panel hidden pop-up only when miRPursuit is running. On click show plus a var to see if miRPursuit is running. 
+5- MiRPursuit panel hidden pop-up only when miRPursuit is running. On click show plus a var to see if miRPursuit is running. Issues with closing panel.
 6- Grab shell process number to know if it's running. Listen for exit code of process
-7- Remove multiparty from package.json and uninstall it
+7- Is Mirpursuit still running when page is refreshed?
+8- Deal with problems if log folder doesn't exist yet. Any how this panel will be absent before running. 
 
 MiRPursuit adaptation
 #####################
@@ -20,6 +21,12 @@ MiRPursuit adaptation
 -Dealing with errors. How to highlight errors. Parse global log or run log for warnings. Set logs to have warnings or fatal warnings whatever. 
 
 
+Global Issues
+#############
+miRPursuit is not designed for concurrent runs on the same machine.
+For concurrent runs: 
+	on the same machine it should be encapsulated in a docker image.
+	Spin up another copy of this vm. Or a vm only with 
 
 
 Standards
@@ -30,6 +37,11 @@ Progress
 	and number(?)
 RUN ID
 	Not sure what is the requirement of uniqueness. Unique to machine, database? Depends on deployment strategy.
+
+
+
+
+
 
 Console
 ========
