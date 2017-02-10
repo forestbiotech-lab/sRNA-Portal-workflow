@@ -138,7 +138,7 @@ router.post('/run',function(req,res){
 
   var path = atob(req.body.path);
 //  var file = atob(req.body.file); //If first time folder might not exist to store log. //temp fix for now.
-  var command='mkdir -p'+path+'log'+';'+miRPursuitVars.miRPursuitPath+'./miRPursuit.sh -f 1 -l 2 --fasta - --no-prompt --headless > '+path+'log/TEST.log';
+  var command='mkdir -p '+path+'log'+';'+miRPursuitVars.miRPursuitPath+'./miRPursuit.sh -f 1 -l 2 --fasta - --no-prompt --headless > '+path+'log/TEST.log';
   //command='cat "'+path.replace(/["';,]/g,"")+file.replace(/["';,]/g,"")+'"';
   console.log(command);
   send(command)/*.then(function(data){
