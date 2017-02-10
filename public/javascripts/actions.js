@@ -394,7 +394,7 @@ function toggleSidePanel(){
         $('.miRPursuitPanel').show();
         //updateProgress();//Might be to soon.
         setInterval(updateProgress,9000);
-        //clearInterval() //code to remove setInterval();
+        
       }
     })
 
@@ -422,6 +422,9 @@ function toggleSidePanel(){
         progress.text(data.progress).width(data.progress);
         topProgress.text(data.progress).width(data.progress);
         step.text(data.step);
+
+        //code to remove setInterval(); Does it remove all of them? For now this is the only one
+        data.progress=="100%" ? clearInterval() : "";
 
       }
     })
