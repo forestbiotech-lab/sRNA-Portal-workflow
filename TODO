@@ -19,6 +19,8 @@ MiRPursuit adaptation
 -First run must have already been done for node to be able to run miRPursuit or else get a work around to say yes and accept conditions.
 
 -Dealing with errors. How to highlight errors. Parse global log or run log for warnings. Set logs to have warnings or fatal warnings whatever. 
+- Stop and warn error occurred.
+
 
 
 Global Issues

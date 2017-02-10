@@ -138,13 +138,20 @@ router.post('/run',function(req,res){
 
   var path = atob(req.body.path);
 //  var file = atob(req.body.file); //If first time folder might not exist to store log. //temp fix for now.
-  var command='mkdir -p '+path+'log'+';'+miRPursuitVars.miRPursuitPath+'./miRPursuit.sh -f 1 -l 2 --fasta - --no-prompt --headless > '+path+'log/TEST.log';
+  var command='mkdir -p '+path+'log'+';'+miRPursuitVars.miRPursuitPath+'./miRPursuit.sh -f 1 -l 2 --fasta - --no-prompt --headless 2>&1 > '+path+'log/TEST.log';
   //command='cat "'+path.replace(/["';,]/g,"")+file.replace(/["';,]/g,"")+'"';
   console.log(command);
-  send(command)/*.then(function(data){
+  send(command).then(function(data){
     data=data.trim().split(/\r?\n|\r/g);
-    res.json(data);
-  })*/;
+    console.log(data);
+    //res.json(data);
+  },function(err){
+    //If promise isn't fullfilled issue error but render page. Set config to ""
+    console.error("Error at index.js - "+err.stderr);
+    process.env.LOG>4 ? console.error("Error at index.js - "+err.stderr) : "";
+    var config={};
+    //res.render('miRPursuit', {lang:"en",text: miRPursuit.en,log:config,workdirs:config,miRPursuitPath:btoa(miRPursuitVars.miRPursuitPath)});
+  });
   res.send('OK');
 })
 

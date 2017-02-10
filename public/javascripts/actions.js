@@ -424,7 +424,7 @@ function toggleSidePanel(){
         step.text(data.step);
 
         //code to remove setInterval(); Does it remove all of them? For now this is the only one
-        data.progress=="100%" ? clearInterval() : "";
+        data.progress=="100%" ? clearInterval() : console.log(data.progress);
 
       }
     })
