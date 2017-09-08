@@ -10,7 +10,9 @@ Short-cutted
 5- MiRPursuit panel hidden pop-up only when miRPursuit is running(Done). On click show plus a var to see if miRPursuit is running (Where?). Issues with closing side panel.
 6- Grab shell process number to know if it's running. Listen for exit code of process
 7- Is Mirpursuit still running when page is refreshed?
-8- Deal with problems if log folder doesn't exist yet. Any how this panel will be absent before running. 
+8- Deal with problems if log folder doesn't exist yet. Any how this panel will be absent before running.
+9- Can a post request send an answer only when progress changes instead of sending various requests Constantly pinging the server. Will it time-out? Default is 60s is it reasonable to use this with a changed value? setTimeout in on complete
+
 
 MiRPursuit adaptation
 #####################
@@ -32,7 +34,7 @@ For concurrent runs:
 
 
 Standards
-#########
+#########  
 Progress
 	Percentage: xx% 
 	State: Short description (Limited chars #not defined yet) 
