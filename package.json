@@ -14,9 +14,14 @@
     "debug": "~2.2.0",
     "express": "~4.14.0",
     "formidable": "^1.1.1",
+    "glob": "^7.1.2",
     "jstransformer-markdown-it": "^2.0.0",
     "morgan": "~1.7.0",
+    "mysql": "^2.14.1",
+    "mysql2": "^1.4.2",
+    "path": "^0.12.7",
     "pug": "~2.0.0-beta6",
+    "sequelize": "^3.27.0",
     "serve-favicon": "~2.3.0"
   }
 }
