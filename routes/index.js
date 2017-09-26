@@ -366,7 +366,50 @@ router.post('/upload', function(req, res){
 
 });
 
+router.get('/db', function(req, res){
+  res.render('db', { title: 'Express' });
+})
 
 
+
+//################################# Should be seperated #############################
+var sequenceSearch = require('./../components/miRNADB/sequenceSearch');
+router.get('/db/sequence/:sequence', function(req, res){
+  req.query.searchText=req.params.sequence;
+  sequenceSearch(req.query)
+  .then(function(sequenceSearchRes){
+    console.log(sequenceSearchRes)
+    res.render('db',{tableValues: sequenceSearchRes});
+  }).catch(function(err){
+    var statusCode;
+    try{
+      statusCode=err.metadata.status[0].code;
+    }
+    catch(error){
+      statusCode=500;
+    }
+    res.status(statusCode).json(err.err);
+  })  
+
+})
+var nameSearch = require('./../components/miRNADB/nameSearch');
+router.get('/db/name/:name', function(req, res){
+  req.query.searchText=req.params.name;
+  nameSearch(req.query)
+  .then(function(nameSearchRes){
+    console.log(nameSearchRes)
+    res.render('db',{tableValues: nameSearchRes});
+  }).catch(function(err){
+    var statusCode;
+    try{
+      statusCode=err.metadata.status[0].code;
+    }
+    catch(error){
+      statusCode=500;
+    }
+    res.status(statusCode).json(err.err);
+  })  
+
+})
 
 module.exports = router;

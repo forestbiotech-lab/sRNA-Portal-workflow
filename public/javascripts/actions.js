@@ -71,7 +71,7 @@ function toggleSidePanel(){
 
   //Auto complete with typeahead https://github.com/bassjobsen/Bootstrap-3-Typeahead
   $.get({
-    url: 'javascripts/ontologies.json', 
+    url: '/javascripts/ontologies.json', 
     success: function(data){
       processedData=[];
       for(i=0;i<data.length;i++){

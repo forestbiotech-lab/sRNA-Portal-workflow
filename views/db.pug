@@ -1,0 +1,42 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  .card-block
+    .container-fluid
+      .row  
+        .col-md-12
+          .form-inline.searchDBform   
+            label(for="searchBox") 
+              h4 Query Database:
+            select.custom-select(id="searchOptions",style="margin-left:10px")
+              option(call="sequence") Sequence
+              option(call="") Species
+              option(call="name") miRNA name
+              option(call="") Accession
+              option(call="") Source
+            input.form-control(id="searchText",placeholder="Search",type="text",style="margin-left:10px") 
+            button.form-control.btn.btn-primary.DBsearch(role="button") Search DB
+        
+        .col-md-12
+          //Annotation Table            
+          table.table.table-bordered.tablesorter.resizableTable.DBvalues(hasResizable)
+            thead
+              tr.tableHeader
+                th(title="Hint") Sequence 
+                th(title="Hint") Name
+                th(title="Hint") Species
+                th(title="Hint") Accession
+              tbody
+                tr.sampleSource(hidden)
+                  td(scope="row",dbAttr="SRNA_sequence_sequence")
+                  td(dbAttr="Annotation_name")
+                  td(dbAttr="Organism_species")
+                  td(dbAttr="Annotation_accession")
+                each row in tableValues
+                  tr.tableRow.DBvalues
+                    td(scope="row")=row.SRNA_sequence_sequence
+                    td(title="Unique identifier so follow the annotations")=row.Annotation_name
+                    td(title="Unique identifier so follow the annotations")=row.Organism_species
+                    td(title="Unique identifier so follow the annotations")=row.Annotation_accession
