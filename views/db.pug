@@ -34,7 +34,7 @@ block content
                   td(dbAttr="Annotation_name")
                   td(dbAttr="Organism_species")
                   td(dbAttr="Annotation_accession")
-                each row in tableValues
+                each row in tableValues 
                   tr.tableRow.DBvalues
                     td(scope="row")=row.SRNA_sequence_sequence
                     td(title="Unique identifier so follow the annotations")=row.Annotation_name
