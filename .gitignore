@@ -38,3 +38,7 @@ uploads/*
 
 #Don't add config files
 .config_res.js
+
+#NCBI FILES
+SQL/ncbitaxonDUMP.tar.gz
+SQL/NCBItaxon-processing
