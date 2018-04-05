@@ -24,7 +24,7 @@ process.env.local ? require('./../.env') : "";
 
 function fullAccess(req,res){
   var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
-  req.cookies.apikey==token ? null : res.render('indexNoSidePanel', { title: 'sRNA Plant Portal'});
+  req.cookies.apikey==token ? null : res.render('indexNoSidePanel', { title: 'Under construction!'});
 }
 
 
@@ -35,9 +35,9 @@ router.get('/', function(req, res, next) {
   var query = req.query;
   if (query.access=="full"){
     cookies.set( "access", token ).set( "apikey", token, { signed: true, maxAge: (1000 * 60 * 60 * 30 * 12) } );
-    res.render('index', { title: 'sRNA Plant Portal'});
+    res.render('index', { title: 'Under construction!'});
   }else{
-    req.cookies.apikey==token ? res.render('index', { title: 'sRNA Plant Portal'}) : res.render('indexNoSidePanel', { title: 'sRNA Plant Portal'});
+    req.cookies.apikey==token ? res.render('index', { title: 'sRNA Plant Portal'}) : res.render('indexNoSidePanel', { title: 'Under construction!'});
     
   }
 

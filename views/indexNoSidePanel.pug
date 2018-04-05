@@ -1,8 +1,12 @@
 extends layoutNoSidePanel
 
 block content
-  h1= title
-  p Welcome to #{title}
+  //h1= title
+  
+  img.logo(style="width:30%",src="/images/under-construction.png")
+  br
+  br
+
   include:markdown-it report.md
 
 
