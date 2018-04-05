@@ -13,6 +13,11 @@ body {
     right: 30px;
     bottom: 15px;
 }
+.header .biodata-logo-header{
+  position: absolute;
+    right: 90px;
+    bottom: 15px;
+}
 a{
   color: #ffffff;
 }
