@@ -12,7 +12,11 @@ var exec = require('child_process').exec;
 var miRPursuitVars= require('./../config/miRPursuit.json');
 var atob=require('atob');
 var btoa=require('btoa');
-
+var Cookies = require('cookies');
+var Keygrip = require("keygrip");
+var keylist=["SEKRIT2", "SEKRIT1"];
+var keys = new Keygrip(keylist,'sha256','hex')
+var token="qawsaffsfkjahf3728fh93qo38gfwqig3qq82gdq93yd9wqd39qdxeaiwhah";
 
 //local only
 process.env.local ? require('./../.env') : ""; 
@@ -22,7 +26,17 @@ process.env.local ? require('./../.env') : "";
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
+  
+  var query = req.query;
+  if (query.access=="full"){
+    cookies.set( "access", token ).set( "apikey", token, { signed: true, maxAge: (1000 * 60 * 60 * 30 * 12) } );
+    res.render('index', { title: 'sRNA Plant Portal'});
+  }else{
+    req.cookies.apikey==token ? res.render('index', { title: 'sRNA Plant Portal'}) : res.render('indexNoSidePanel', { title: 'sRNA Plant Portal'});
+    
+  }
+
 });
 
 /* GET home page. */     
