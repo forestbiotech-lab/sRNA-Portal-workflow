@@ -22,12 +22,16 @@ var token="qawsaffsfkjahf3728fh93qo38gfwqig3qq82gdq93yd9wqd39qdxeaiwhah";
 process.env.local ? require('./../.env') : ""; 
 //process.env.local ? console.log(process.env): "";
 
+function fullAccess(req,res){
+  var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
+  req.cookies.apikey==token ? null : res.render('indexNoSidePanel', { title: 'sRNA Plant Portal'});
+}
+
 
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
-  
   var query = req.query;
   if (query.access=="full"){
     cookies.set( "access", token ).set( "apikey", token, { signed: true, maxAge: (1000 * 60 * 60 * 30 * 12) } );
@@ -41,6 +45,7 @@ router.get('/', function(req, res, next) {
 
 /* GET home page. */     
 router.get('/miRPursuit', function(req, res, next) {
+  fullAccess(req,res)
   //exec command and get promise
   function send(command){
     return new Promise(function(resolve, reject){
@@ -381,6 +386,7 @@ router.post('/upload', function(req, res){
 });
 
 router.get('/db', function(req, res){
+  fullAccess(req,res)
   res.render('db', { title: 'Express' });
 })
 
@@ -389,6 +395,7 @@ router.get('/db', function(req, res){
 //################################# Should be seperated #############################
 var sequenceSearch = require('./../components/miRNADB/sequenceSearch');
 router.get('/db/sequence/:sequence', function(req, res){
+  fullAccess(req,res)
   req.query.searchText=req.params.sequence;
   sequenceSearch(req.query)
   .then(function(sequenceSearchRes){
@@ -408,6 +415,7 @@ router.get('/db/sequence/:sequence', function(req, res){
 })
 var nameSearch = require('./../components/miRNADB/nameSearch');
 router.get('/db/name/:name', function(req, res){
+  fullAccess(req,res)
   req.query.searchText=req.params.name;
   nameSearch(req.query)
   .then(function(nameSearchRes){
@@ -424,6 +432,11 @@ router.get('/db/name/:name', function(req, res){
     res.status(statusCode).json(err.err);
   })  
 
+})
+
+router.get('/*', function(req,res){
+  fullAccess(req,res)
+  res.render('index',{title: "Other"})
 })
 
 module.exports = router;
