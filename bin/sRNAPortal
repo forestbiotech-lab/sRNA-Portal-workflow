@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+#Executable script for systemd
+cd /home/brunocosta/git/BrAPI
+sudo user=brunocosta DEBUG=brapi:server mode=PRODUCTION nodemon start
+
