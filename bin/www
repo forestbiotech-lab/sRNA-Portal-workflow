@@ -24,7 +24,7 @@ function approveDomains(opts, certs, cb) {
   else {
     opts.email = 'brunovasquescosta@gmail.com';
     opts.agreeTos = true;
-    opts.approveDomains= [ 'brapi.ddns.net','www.brapi.ddns.net'];
+    opts.approveDomains= [ 'srna-portal.biodata.pt'];
   }
   // NOTE: you can also change other options such as `challengeType` and `challenge`
   opts.challengeType = 'http-01';
@@ -39,7 +39,7 @@ function approveDomains(opts, certs, cb) {
 var options={
   server: 'https://acme-v01.api.letsencrypt.org/directory'
 
-, challenges: { 'http-01': require('le-challenge-fs').create({ webrootPath: '/tmp/acme-challenges' }) }
+, challenges: { 'http-01': require('le-challenge-fs').create({ webrootPath: '/tmp/acme-challenges' }) }  //,loopback(opts, domain, token, keyAuthorization, cb)
 , store: require('le-store-certbot').create({ webrootPath: '/tmp/acme-challenges' })
 
 // You probably wouldn't need to replace the default sni handler
@@ -49,8 +49,8 @@ var options={
 , approveDomains: approveDomains
 }
 
-var lex = lex.create(options);
 
+var lex = lex.create(options);
 /**
  * Get port from environment and store in Express.
  */
