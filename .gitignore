@@ -42,3 +42,4 @@ uploads/*
 #NCBI FILES
 SQL/ncbitaxonDUMP.tar.gz
 SQL/NCBItaxon-processing
+SQL/ncbitaxonDUMP/*
