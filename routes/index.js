@@ -18,13 +18,21 @@ var keylist=["SEKRIT2", "SEKRIT1"];
 var keys = new Keygrip(keylist,'sha256','hex')
 var token="qawsaffsfkjahf3728fh93qo38gfwqig3qq82gdq93yd9wqd39qdxeaiwhah";
 
+var nameSearch = require('./../components/miRNADB/nameSearch');
+
 //local only
 process.env.local ? require('./../.env') : ""; 
 //process.env.local ? console.log(process.env): "";
 
 function fullAccess(req,res){
   var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
-  req.cookies.apikey==token ? null : res.render('indexNoSidePanel', { title: 'Under construction!'});
+  if (req.cookies.apikey!=token){ 
+    res.render('indexNoSidePanel', { title: 'Under construction!'})
+    return false
+  }else{
+    return true
+  }
+
 }
 
 
@@ -37,15 +45,14 @@ router.get('/', function(req, res, next) {
     cookies.set( "access", token ).set( "apikey", token, { signed: true, maxAge: (1000 * 60 * 60 * 30 * 12) } );
     res.render('index', { title: 'Under construction!'});
   }else{
-    req.cookies.apikey==token ? res.render('index', { title: 'sRNA Plant Portal'}) : res.render('indexNoSidePanel', { title: 'Under construction!'});
-    
+    if(fullAccess(req,res)) res.render('index', { title: 'sRNA Plant Portal'}) 
   }
 
 });
 
 /* GET home page. */     
 router.get('/miRPursuit', function(req, res, next) {
-  fullAccess(req,res)
+  if (!fullAccess(req,res)) return null;
   //exec command and get promise
   function send(command){
     return new Promise(function(resolve, reject){
@@ -386,7 +393,7 @@ router.post('/upload', function(req, res){
 });
 
 router.get('/db', function(req, res){
-  fullAccess(req,res)
+  if (!fullAccess(req,res)) return null;
   res.render('db', { title: 'Express' });
 })
 
@@ -413,9 +420,11 @@ router.get('/db/sequence/:sequence', function(req, res){
   })  
 
 })
-var nameSearch = require('./../components/miRNADB/nameSearch');
+
+
+
 router.get('/db/name/:name', function(req, res){
-  fullAccess(req,res)
+  if (!fullAccess(req,res)) return null;
   req.query.searchText=req.params.name;
   nameSearch(req.query)
   .then(function(nameSearchRes){
@@ -435,7 +444,7 @@ router.get('/db/name/:name', function(req, res){
 })
 
 router.get('/*', function(req,res){
-  fullAccess(req,res)
+  if (!fullAccess(req,res)) return null;
   res.render('index',{title: "Other"})
 })
 
