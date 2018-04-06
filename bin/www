@@ -50,7 +50,7 @@ var options={
 }
 
 
-var lex = lex.create(options);
+
 /**
  * Get port from environment and store in Express.
  */
@@ -60,10 +60,10 @@ var port_https = normalizePort(process.env.PORT_HTTPS || '443');
 //app.set('port', port_http);
 
 
-var http_server = process.env.mode=="PRODUCTION" ? http.createServer(lex.middleware(require('redirect-https')())) : http.createServer(app);
+var http_server = process.env.mode=="PRODUCTION" ? http.createServer(lex.create(options).middleware(require('redirect-https')())) : http.createServer(app);
 
 function productionServer(http_server){
-  console.log("Running Production MODE")
+  console.log("Running PRODUCTION mode")
   /**
    * Create HTTP server.
    */
@@ -150,7 +150,7 @@ function onListening() {
 }
 
 function localServer(server){
-  console.log("Running in local mode")
+  console.log("Running in LOCAL mode")
   /**
    * Get port from environment and store in Express.
    */
@@ -171,6 +171,6 @@ function localServer(server){
   server.on('listening', onListening);
 }
 
-console.log(process.env.mode)
+
 //Start server
 process.env.mode == "PRODUCTION" ? productionServer(http_server) : localServer(http_server);
