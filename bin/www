@@ -50,7 +50,7 @@ var options={
 }
 
 
-
+if (process.env.mode=="PRODUCTION") var lex = lex.create(options);
 /**
  * Get port from environment and store in Express.
  */
@@ -60,7 +60,7 @@ var port_https = normalizePort(process.env.PORT_HTTPS || '443');
 //app.set('port', port_http);
 
 
-var http_server = process.env.mode=="PRODUCTION" ? http.createServer(lex.create(options).middleware(require('redirect-https')())) : http.createServer(app);
+var http_server = process.env.mode=="PRODUCTION" ? http.createServer(lex.middleware(require('redirect-https')())) : http.createServer(app);
 
 function productionServer(http_server){
   console.log("Running PRODUCTION mode")
