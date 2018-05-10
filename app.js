@@ -12,7 +12,7 @@ var api = require('./routes/api');
 
 
 // redirect stdout / stderr
-if (process.env.mode=="PRODUCTION") process.__defineGetter__('stdout', function() { return fs.createWriteStream('/var/log/brapiServer.log', {flags:'a'}) })
+if (process.env.mode=="PRODUCTION") process.__defineGetter__('stdout', function() { return fs.createWriteStream('/var/log/sRNAServer.log', {flags:'a'}) })
 
 var app = express();
 
