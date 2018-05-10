@@ -394,7 +394,7 @@ router.post('/upload', function(req, res){
 
 router.get('/db', function(req, res){
   if (!fullAccess(req,res)) return null;
-  res.render('db', { title: 'Express' });
+  res.render('db', { title: 'Express',tableValues:[] });
 })
 
 
