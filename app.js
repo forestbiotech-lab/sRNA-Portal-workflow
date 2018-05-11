@@ -9,6 +9,7 @@ var fs= require('fs');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var api = require('./routes/api');
+var other = require('./routes/other');
 
 
 // redirect stdout / stderr
@@ -36,6 +37,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/users', users);
 app.use('/db/v1/api',api);
+app.use('/', other);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

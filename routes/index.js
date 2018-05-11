@@ -443,9 +443,6 @@ router.get('/db/name/:name', function(req, res){
 
 })
 
-router.get('/*', function(req,res){
-  if (!fullAccess(req,res)) return null;
-  res.render('index',{title: "Other"})
-})
+
 
 module.exports = router;
