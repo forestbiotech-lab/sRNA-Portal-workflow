@@ -1,0 +1,44 @@
+/* ALTER TABLE `Target` DROP FOREIGN KEY `Target_fk0`;
+
+ALTER TABLE `Target` DROP FOREIGN KEY `Target_fk1`;
+
+ALTER TABLE `Transcript` DROP FOREIGN KEY `Transcript_fk0`;
+
+ALTER TABLE `Transcript` DROP FOREIGN KEY `Transcript_fk1`;
+
+ALTER TABLE `Protein` DROP FOREIGN KEY `Protein_fk0`;
+
+ALTER TABLE `Gene` DROP FOREIGN KEY `Gene_fk0`;
+
+ALTER TABLE `Feature` DROP FOREIGN KEY `Feature_fk0`;
+
+ALTER TABLE `Genome` DROP FOREIGN KEY `Genome_fk0`;
+
+ALTER TABLE `Pre_miRNA` DROP FOREIGN KEY `Pre_miRNA_fk0`;
+
+ALTER TABLE `Pre_miRNA` DROP FOREIGN KEY `Pre_miRNA_fk1`;
+
+ALTER TABLE `HasStar` DROP FOREIGN KEY `HasStar_fk0`;
+
+ALTER TABLE `HasStar` DROP FOREIGN KEY `HasStar_fk1`;
+*/
+DROP TABLE IF EXISTS `Target`;
+
+DROP TABLE IF EXISTS `Transcript`;
+
+DROP TABLE IF EXISTS `Protein`;
+
+DROP TABLE IF EXISTS `Gene`;
+
+DROP TABLE IF EXISTS `Feature`;
+
+DROP TABLE IF EXISTS `Genome`;
+
+DROP TABLE IF EXISTS `Pre_miRNA`;
+
+DROP TABLE IF EXISTS `Mature_miRNA`;
+
+DROP TABLE IF EXISTS `HasStar`;
+
+DROP TABLE IF EXISTS `Organism`;
+
