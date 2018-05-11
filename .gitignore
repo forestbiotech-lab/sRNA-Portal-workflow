@@ -41,6 +41,7 @@ uploads/*
 
 #Database backups
 SQL/DB_backup/*
+SQL/OLD/*
 
 #NCBI FILES
 SQL/ncbitaxonDUMP.tar.gz
