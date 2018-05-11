@@ -5,7 +5,7 @@
 'use strict';
 
 module.exports = function(sequelize, DataTypes) {
-  const Organism = sequelize.define('Organism', {
+  const Protein = sequelize.define('Protein', {
     id: { 
       type: DataTypes.INTEGER(11),
       autoIncrement: true,
@@ -13,24 +13,24 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       unique: true,
     },
+    gene_id: DataTypes.INTEGER(11),
+    protein_id: DataTypes.STRING(254),
+    gi: DataTypes.STRING(254),
+    name: DataTypes.STRING(254),
   }, {
-    tableName: 'Organism',
+    tableName: 'Protein',
     timestamps: false,
     underscored: false,
 
    classMethods: {
       associate: function associate(models) {    
-        Organism.belongsTo(models.Genome, {
-          foreignKey: 'id',              //on Organism
-          targetKey: 'organism_id',  //foreign key  
-        });
-        Organism.belongsTo(models.Transcript, {
-          foreignKey: 'id',              //on Organism
-          targetKey: 'organism_id',  //foreign key  
+        Protein.belongsTo(models.Gene, {
+          foreignKey: 'gene_id',              //on Protein
+          targetKey: 'id',  //foreign key  
         }); 
       }
     },
   });
 
-  return Organism;
+  return Protein;
 };
