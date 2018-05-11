@@ -16,6 +16,7 @@ module.exports = function(query,options){
   if(typeof query.searchText == "string"){
   	query.where.sequence=query.searchText;
   }
+  
   //runs a model function with options.
   //return models.[a function name](options); 
   return new Promise(function(resolve,reject){

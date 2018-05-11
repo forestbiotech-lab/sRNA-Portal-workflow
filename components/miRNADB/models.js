@@ -4,20 +4,13 @@
 
 
 //Calls Index to load sql tables
-var db = require('./sqldb');
+var db = require('./sqldb/index');
 
 //getSequence search for the sequence in the database
 function getSequence(attributes){
-  return db.SRNA_sequence
+  console.log(attributes);
+  return db.Mature_miRNA
   .findAll({
-    include: [{
-      model:db.Annotation,
-      include:[{
-        model:db.Provenance,
-      },{
-        model:db.Organism,
-      }]
-    }],
     where: attributes.where,
   })
   .then(function(res){
@@ -30,15 +23,8 @@ function getSequence(attributes){
 }
 //getSequence search for the sequence in the database
 function getName(attributes){
-  return db.Annotation
+  return db.Mature_miRNA
   .findAll({
-    include:[{
-        model:db.Provenance,
-      },{
-        model:db.SRNA_sequence,
-      },{
-        model:db.Organism,
-    }],
     where: attributes.where,
   })
   .then(function(res){

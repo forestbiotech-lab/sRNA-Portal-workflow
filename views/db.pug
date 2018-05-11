@@ -24,19 +24,19 @@ block content
           table.table.table-bordered.tablesorter.resizableTable.DBvalues(hasResizable)
             thead
               tr.tableHeader
-                th(title="Hint") Sequence 
-                th(title="Hint") Name
-                th(title="Hint") Species
                 th(title="Hint") Accession
+                th(title="Hint") Name
+                th(title="Hint") Arm
+                th(title="Hint") Sequence
               tbody
                 tr.sampleSource(hidden)
-                  td(scope="row",dbAttr="SRNA_sequence_sequence")
-                  td(dbAttr="Annotation_name")
-                  td(dbAttr="Organism_species")
-                  td(dbAttr="Annotation_accession")
+                  td(scope="row",dbAttr="Mature_miRNA_accession")
+                  td(dbAttr="Mature_miRNA_name")
+                  td(dbAttr="Mature_miRNA_arm")
+                  td(dbAttr="Mature_miRNA_sequence")
                 each row in tableValues 
                   tr.tableRow.DBvalues
-                    td(scope="row")=row.SRNA_sequence_sequence
-                    td(title="Unique identifier so follow the annotations")=row.Annotation_name
-                    td(title="Unique identifier so follow the annotations")=row.Organism_species
-                    td(title="Unique identifier so follow the annotations")=row.Annotation_accession
+                    td(scope="row")=row.Mature_miRNA_accession
+                    td(title="Unique identifier so follow the annotations")=row.Mature_miRNA_name
+                    td(title="Unique identifier so follow the annotations")=row.Mature_miRNA_arm
+                    td(title="Unique identifier so follow the annotations")=row.Mature_miRNA_sequence
