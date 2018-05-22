@@ -92,6 +92,22 @@ img.expandPanel{
     margin-left: 70px;
 }
 
+.footer{
+  background: #505659;
+  color: white;
+  padding: 20px;
+  height: 500px;
+  border-top: 5px solid grey;
+}
+
+.footer .eu{
+  background-image: url(/images/EU_flag_footer.png);
+  width: 160px;
+  height: 60px;
+}
+.footer p{
+  font-size: 10px;
+}
 
 table thead input{
     width:100%;
