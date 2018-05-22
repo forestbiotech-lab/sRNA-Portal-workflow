@@ -16,6 +16,7 @@
     "express": "~4.14.0",
     "formidable": "^1.1.1",
     "glob": "^7.1.2",
+    "hoek": "^5.0.3",
     "jstransformer-markdown-it": "^2.0.0",
     "keygrip": "^1.0.2",
     "letsencrypt-express": "^2.0.6",
