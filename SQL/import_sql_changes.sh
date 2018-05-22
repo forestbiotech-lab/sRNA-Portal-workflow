@@ -6,6 +6,11 @@ grep -A1 -E ".*-miR[0-9]+"  ~/Downloads/git/source_data/mirbase/mature.fa | sed 
 
 #Populate Mature_miRNA with arabidopsis data from miRBase
 grep -w ath miRNA.tsv | awk -F "\t" '{print "INSERT INTO Mature_miRNA (accession,name,arm,sequence) VALUES (\""$5"\",\""$6"\",\""$3"\",\"5p\",\""$7"\");"}' > ath_mature.sql
+#Populate organism
+grep "Viridiplantae" organisms.txt |  awk -F "\t" '{split($3, species, " ");print "INSERT INTO Organism (abbreviation,genus,species,ncbi_taxon_id) VALUES (\""$1"\",\""species[1]"\",\""species[2]"\",\""$5"\");"}' > organisms.sql
+#Populate Genome
+#insert into Genome (organism_id,genome_build,genome_build_id) VALUES (5,"TAIR10","NCBI_Assembly:GCA_000001735.1");
+grep -v "#" ath.gff3.txt | awk -F "\t" '{split($9, attr, ";");split(attr[1], ID, "=");print "INSERT INTO Organism (genome_id,name,source,type,start,end,score,strand,phase,attribute_list,attr,_id) VALUES (1,\""$1"\",\"miRBase\",\""$3"\",\""$4"\",\""$5"\",\""$6"\",\""$7"\",\""$8"\",\""ID[2]"\");"}' > feature_ath.sql
 
 
 

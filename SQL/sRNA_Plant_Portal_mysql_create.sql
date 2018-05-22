@@ -45,18 +45,6 @@ CREATE TABLE `Feature` (
 	PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `Genome` (
-	`id` INT NOT NULL AUTO_INCREMENT,
-	`genus` varchar(254) NOT NULL,
-	`species` varchar(254) NOT NULL,
-	`ncbi_taxon_id` varchar(254) NOT NULL,
-	`assembly` varchar(254) NOT NULL,
-	`external_id` varchar(254) NOT NULL,
-	`organism_id` INT NOT NULL,
-	`abbreviation` varchar(3) NOT NULL,
-	PRIMARY KEY (`id`)
-);
-
 CREATE TABLE `Pre_miRNA` (
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`accession` varchar(254) NOT NULL,
@@ -86,6 +74,12 @@ CREATE TABLE `HasStar` (
 
 CREATE TABLE `Organism` (
 	`id` INT NOT NULL AUTO_INCREMENT,
+	`abbreviation` varchar(3) NOT NULL,
+	`common_name` varchar(254),
+	`genus` varchar(254) NOT NULL,
+	`species` varchar(254) NOT NULL,
+	`sub_species` varchar(254),
+	`ncbi_taxon_id` varchar(254) NOT NULL,
 	PRIMARY KEY (`id`)
 );
 
