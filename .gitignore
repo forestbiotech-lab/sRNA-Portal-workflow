@@ -36,8 +36,6 @@ npm-debug.log
 #files in upload folter
 uploads/*
 
-#Don't add config files
-.config_res.js
 
 #Database backups
 SQL/DB_backup/*
