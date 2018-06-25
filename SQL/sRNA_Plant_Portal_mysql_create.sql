@@ -45,6 +45,16 @@ CREATE TABLE `Feature` (
 	PRIMARY KEY (`id`)
 );
 
+CREATE TABLE `Genome` (
+	`id` INT NOT NULL AUTO_INCREMENT,
+	`assembly` varchar(254) NOT NULL,
+	`external_id` varchar(254) NOT NULL,
+	`organism_id` INT NOT NULL,
+	`genome_build` varchar(254),
+	`genome_build_id` varchar(254),
+	PRIMARY KEY (`id`)
+);
+
 CREATE TABLE `Pre_miRNA` (
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`accession` varchar(254) NOT NULL,
