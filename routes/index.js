@@ -443,6 +443,8 @@ router.get('/db/name/:name', function(req, res){
 
 })
 
-
+router.get('/areyouup', function(req, res, next) {
+  res.json('yes');
+});
 
 module.exports = router;
