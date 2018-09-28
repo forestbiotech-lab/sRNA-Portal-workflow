@@ -30,13 +30,13 @@ block content
                 th(title="Hint") Sequence
               tbody
                 tr.sampleSource(hidden)
-                  td(scope="row",dbAttr="Mature_miRNA_accession")
-                  td(dbAttr="Mature_miRNA_name")
-                  td(dbAttr="Mature_miRNA_arm")
-                  td(dbAttr="Mature_miRNA_sequence")
+                  td(scope="row",dbAttr="Mature_miRNA_accession",title="mature miRNA accession")
+                  td(dbAttr="Mature_miRNA_name",title="mature miRNA name")
+                  td(dbAttr="Mature_miRNA_arm",title="mature miRNA arm")
+                  td(dbAttr="Mature_miRNA_sequence",title="mature miRNA sequence")
                 each row in tableValues 
                   tr.tableRow.DBvalues
-                    td(scope="row")=row.Mature_miRNA_accession
-                    td(title="Unique identifier so follow the annotations")=row.Mature_miRNA_name
-                    td(title="Unique identifier so follow the annotations")=row.Mature_miRNA_arm
-                    td(title="Unique identifier so follow the annotations")=row.Mature_miRNA_sequence
+                    td(scope="row",title="mature miRNA accession")=row.Mature_miRNA_accession
+                    td(title="mature miRNA name")=row.Mature_miRNA_name
+                    td(title="mature miRNA arm")=row.Mature_miRNA_arm
+                    td(title="mature miRNA sequence")=row.Mature_miRNA_sequence
