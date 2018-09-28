@@ -1,8 +1,8 @@
--- MySQL dump 10.16  Distrib 10.1.32-MariaDB, for Linux (x86_64)
+-- MySQL dump 10.16  Distrib 10.1.36-MariaDB, for Linux (x86_64)
 --
--- Host: localhost    Database: sRNAPlantService
+-- Host: localhost    Database: sRNAPlantPortal
 -- ------------------------------------------------------
--- Server version	10.1.32-MariaDB
+-- Server version	10.1.36-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -85,17 +85,15 @@ DROP TABLE IF EXISTS `Genome`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Genome` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `genus` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `species` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ncbi_taxon_id` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `organism_id` int(11) NOT NULL,
   `assembly` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
   `external_id` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `organism_id` int(11) NOT NULL,
-  `abbreviation` varchar(3) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `genome_build` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `genome_build_id` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `Genome_fk0` (`organism_id`),
   CONSTRAINT `Genome_fk0` FOREIGN KEY (`organism_id`) REFERENCES `Organism` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -104,6 +102,7 @@ CREATE TABLE `Genome` (
 
 LOCK TABLES `Genome` WRITE;
 /*!40000 ALTER TABLE `Genome` DISABLE KEYS */;
+INSERT INTO `Genome` VALUES (1,1,'NCBI_Assembly:GCA_000001735.1','BioProject:PRJNA10719','RefSeq assembly accession:GCF_000001735.3','TAIR10');
 /*!40000 ALTER TABLE `Genome` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -172,8 +171,14 @@ DROP TABLE IF EXISTS `Organism`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Organism` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `abbreviation` varchar(3) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `common_name` varchar(254) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `genus` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `species` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sub_species` varchar(254) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ncbi_taxon_id` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -182,6 +187,7 @@ CREATE TABLE `Organism` (
 
 LOCK TABLES `Organism` WRITE;
 /*!40000 ALTER TABLE `Organism` DISABLE KEYS */;
+INSERT INTO `Organism` VALUES (1,'ath','thale-cress','Arabidopsis','thaliana',NULL,'3702');
 /*!40000 ALTER TABLE `Organism` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -310,4 +316,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-05-11 11:13:57
+-- Dump completed on 2018-09-28 12:35:10
