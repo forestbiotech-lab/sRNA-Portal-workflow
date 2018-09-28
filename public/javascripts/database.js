@@ -9,12 +9,21 @@ $(document).ready(function(){
       url: '/db/v1/api/'+call+'?searchText='+searchText, 
       success: function(data){
         changeButtonStyle(button,'btn-primary','btn-success')
-        for (var i = 0; i < data.length; i++) {
+        if (data.length>0){
+          for (var i = 0; i < data.length; i++) {
+            var row=$('table.DBvalues tr.sampleSource').clone()
+            row=fillRow(row,data[i]);
+            //Add values into cell
+            $('table.DBvalues tbody').append(row); 
+          }
+        }else{
           var row=$('table.DBvalues tr.sampleSource').clone()
-          
-          row=fillRow(row,data[i]);
-          //Add values into cell
-          $('table.DBvalues tbody').append(row); 
+          let data={}
+          data.type='warning';          
+          data.text='<p>No results found for query: '+searchText+'</p>';
+
+          row=addInfo(row,data);
+          $('table.DBvalues tbody').append(row);
         }
         restoreButtonStyle(button,'btn-success')
       }
@@ -22,22 +31,18 @@ $(document).ready(function(){
       changeButtonStyle(button,'btn-primary','btn-danger')
 
       var row=$('table.DBvalues tr.sampleSource').clone()
-      row.addClass('tableRow').addClass('DBvalues').removeClass('sampleSource').removeAttr('hidden');
-      row.addClass('tableRow').addClass('error').removeClass('sampleSource').removeAttr('hidden');
-
-      let uniqueCell=row.children('td:nth(0)').clone();
-      row.children('td').remove();
-
-      uniqueCell.attr('colspan',4);
-
+      
       let status=response.status;
       let statusText=response.statusText;
       let responseText=response.responseText;
       
-      uniqueCell.append('<p><strong>An error occurred</strong></p>');
-      uniqueCell.append('<p>Status: '+status+' '+statusText+'</p>');
-      uniqueCell.append('<p>'+responseText+'</p>');
-      row.append(uniqueCell);
+      let data={}
+      data.type="error"
+      data.status=status;
+      data.statusText=statusText;
+      data.responseText=responseText;
+
+      row=addInfo(row,data)
       $('table.DBvalues tbody').append(row); 
       restoreButtonStyle(button,'btn-danger')
     })
@@ -51,14 +56,34 @@ $(document).ready(function(){
     $('table.DBvalues tr.tableRow.DBvalues').remove();
   }
   //Function to add values to row???????
-  function fillRow(row,data,rowSpecificClass){
-    let rowSpecificClass=rowSpecificClass || 'DBvalues';
-    row.addClass('tableRow').addClass(rowSpecificClass).removeClass('sampleSource').removeAttr('hidden');
+  function fillRow(row,data){
+    row.addClass('tableRow').addClass('DBvalues').removeClass('sampleSource').removeAttr('hidden');
     row.children('td').each(function(){
       var attribute=$(this).attr('dbAttr');
       var value=data[attribute];
       $(this).text(value);
     })
+    return row;
+  }
+  function addInfo(row,data){
+    row.addClass('tableRow').addClass('DBvalues').addClass(data.type).removeClass('sampleSource').removeAttr('hidden');
+
+    let uniqueCell=row.children('td:nth(0)').clone();
+    row.children('td').remove();
+
+    uniqueCell.attr('colspan',4);
+
+    
+    if( data.type=='warning'){
+      uniqueCell.append(data.text);
+    }  
+    if( data.type=='error' ){    
+      uniqueCell.append('<p><strong>An error occurred</strong></p>');
+      uniqueCell.append('<p>Status: '+data.status+' '+data.statusText+'</p>');
+      uniqueCell.append('<p>'+data.responseText+'</p>');
+    }  
+    row.append(uniqueCell);
+
     return row;
   }
   function restoreButtonStyle(button,style){
