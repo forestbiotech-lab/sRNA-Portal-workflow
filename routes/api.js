@@ -7,7 +7,7 @@ var nameSearch = require('./../components/miRNADB/nameSearch');
 
 /// --------------End -------------------------------------------------
 
-console.log("api")
+
 
 /* GET sequences search */
 router.get('/sequence', function(req, res, next) {
