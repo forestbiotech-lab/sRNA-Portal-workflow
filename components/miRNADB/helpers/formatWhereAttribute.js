@@ -1,4 +1,9 @@
-module.exports= function formatWhereAttribute(attribute,type){
+Sequelize=require('sequelize');
+const Op = Sequelize.Op;
+
+module.exports= function formatWhereAttribute(attribute,operator){
+  //http://docs.sequelizejs.com/manual/tutorial/querying.html#operators
+  operator=Op[operator]
   result={}
   if(typeof attribute == "string"){
     attribute=[attribute]
@@ -6,7 +11,7 @@ module.exports= function formatWhereAttribute(attribute,type){
     attribute=attribute || ""
   }
   if(attribute){
-    result[type]=attribute;
+    result[operator]=attribute;
     return result
   }
 }

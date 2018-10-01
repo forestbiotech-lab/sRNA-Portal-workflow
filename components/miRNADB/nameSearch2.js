@@ -18,10 +18,11 @@ module.exports = function(options){
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   //Where logic
   //Do this for each where attribute needed.
+  
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   attribute=options.query.searchText
   delete options.query.searchText;
-  options.where.name=fmtWhereAttr('%'+attribute+'%',"$like")
+  options.where.name=fmtWhereAttr('%'+attribute+'%','like')
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   return controller(options,call,callback)

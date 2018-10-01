@@ -21,7 +21,7 @@ module.exports = function(options){
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   attribute=options.query.searchText
   delete options.query.searchText;
-  options.where.sequence=fmtWhereAttr(attribute,"$in")
+  options.where.sequence=fmtWhereAttr(attribute,'in')
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   return controller(options,call,callback)
