@@ -1,5 +1,29 @@
 $(document).ready(function(){
 
+  //Auto complete with typeahead https://github.com/bassjobsen/Bootstrap-3-Typeahead
+  $.get({
+    url: '/javascripts/DB_mature_miRNA_name.json', 
+    success: function(data){
+     
+/*      $('.typeahead').typeahead({ 
+        source:data,
+        autoSelect:true
+      });*/ 
+      $('select.custom-select#searchOptions').change(function(){
+        let select=$('select.custom-select#searchOptions')[0]
+        let selectedIndex=select.selectedIndex;
+        if(select[selectedIndex].text=="miRNA name"){
+          $('.form-control#searchText').typeahead({ 
+            source:data,
+            autoSelect:true
+          });
+        }
+      })     
+    }, 
+    dataType:'json'
+  });
+
+
   $('.searchDBform button.DBsearch').on('click',function(){
     let button=$(this);
     clearTable();
@@ -8,6 +32,7 @@ $(document).ready(function(){
     $.get({
       url: '/db/v1/api/'+call+'?searchText='+searchText, 
       success: function(data){
+
         changeButtonStyle(button,'btn-primary','btn-success')
         if (data.length>0){
           for (var i = 0; i < data.length; i++) {
