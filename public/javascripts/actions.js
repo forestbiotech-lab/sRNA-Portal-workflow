@@ -43,12 +43,12 @@ $(document).ready(function(){
     //toggleSidePanel()
   });
 
-function toggleSidePanel(){
-  $('.sidePanel').toggleClass('collapsedPanel');
-  $('img.expandPanel').toggle('hidden');
-  $('img.collapsePanel').toggle('hidden');
-  $('.miRPursuitPanel').toggle('hidden');  
-}
+  function toggleSidePanel(){
+    $('.sidePanel').toggleClass('collapsedPanel');
+    $('img.expandPanel').toggle('hidden');
+    $('img.collapsePanel').toggle('hidden');
+    $('.miRPursuitPanel').toggle('hidden');  
+  }
 
 
 

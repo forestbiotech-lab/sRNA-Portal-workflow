@@ -7,10 +7,13 @@
 var db = require('./sqldb/index');
 
 //getSequence search for the sequence in the database
-function getSequence(attributes){
+function sequenceSearch(attributes){
   console.log(attributes);
   return db.Mature_miRNA
-  .findAll({
+  .findAndCountAll({
+    include: [{
+      model: db.Pre_miRNA,
+    }],
     where: attributes.where,
   })
   .then(function(res){
@@ -22,9 +25,9 @@ function getSequence(attributes){
   });
 }
 //getSequence search for the sequence in the database
-function getName(attributes){
+function nameSearch(attributes){
   return db.Mature_miRNA
-  .findAll({
+  .findAndCountAll({
     where: attributes.where,
   })
   .then(function(res){
@@ -42,7 +45,7 @@ function getName(attributes){
 module.exports = {
   //Add all query functions for export below
   //name a function to run one of the functions above
-    getName: getName,
-    getSequence: getSequence,
+    nameSearch: nameSearch,
+    sequenceSearch: sequenceSearch,
 }
 

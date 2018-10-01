@@ -4,11 +4,8 @@ $(document).ready(function(){
   $.get({
     url: '/javascripts/DB_mature_miRNA_name.json', 
     success: function(data){
-     
-/*      $('.typeahead').typeahead({ 
-        source:data,
-        autoSelect:true
-      });*/ 
+   
+      //Switch with function -->(data,change,target)
       $('select.custom-select#searchOptions').change(function(){
         let select=$('select.custom-select#searchOptions')[0]
         let selectedIndex=select.selectedIndex;
@@ -29,15 +26,18 @@ $(document).ready(function(){
     clearTable();
     var call=$('.searchDBform select#searchOptions option:selected').attr('call');
     var searchText=$('.searchDBform input#searchText').val()
+
     $.get({
       url: '/db/v1/api/'+call+'?searchText='+searchText, 
       success: function(data){
-
+        let results=data.result.data
         changeButtonStyle(button,'btn-primary','btn-success')
-        if (data.length>0){
-          for (var i = 0; i < data.length; i++) {
+
+        const totalCount=data.metadata.pagination.totalCount;
+        if (totalCount>0){
+          for (var i = 0; i < totalCount; i++) {
             var row=$('table.DBvalues tr.sampleSource').clone()
-            row=fillRow(row,data[i]);
+            row=fillRow(row,results[i]);
             //Add values into cell
             $('table.DBvalues tbody').append(row); 
           }

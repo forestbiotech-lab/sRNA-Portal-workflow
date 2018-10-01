@@ -1,9 +1,11 @@
 var express = require('express');
 var router = express.Router();
-
+var getOptions = require('./../components/miRNADB/helpers/getOptions.js');
+var resolveHelper=require('./../components/miRNADB/helpers/resolveHelper');
+var resolveCall = resolveHelper.resolveCall
 /// --------- Call Declaration ----------------------------------------
-var sequenceSearch = require('./../components/miRNADB/sequenceSearch');
-var nameSearch = require('./../components/miRNADB/nameSearch');
+var sequenceSearch = require('./../components/miRNADB/sequenceSearch2');
+var nameSearch = require('./../components/miRNADB/nameSearch2');
 
 /// --------------End -------------------------------------------------
 
@@ -11,36 +13,16 @@ var nameSearch = require('./../components/miRNADB/nameSearch');
 
 /* GET sequences search */
 router.get('/sequence', function(req, res, next) {
-  sequenceSearch(req.query)
-  .then(function(sequenceSearchRes){
-    res.status(200).json(sequenceSearchRes);
-  }).catch(function(err){
-    var statusCode;
-    try{
-      statusCode=err.metadata.status[0].code;
-    }
-    catch(error){
-      statusCode=500;
-    }
-    res.status(statusCode).json(err.err);
-  })
+  var errMsg="API Router /sequence get - "
+  var call=sequenceSearch
+  resolveCall(call,req,res,errMsg)  
 });
 
 /* GET names search */
 router.get('/name', function(req, res, next) {
-  nameSearch(req.query)
-  .then(function(nameSearchRes){
-    res.status(200).json(nameSearchRes);
-  }).catch(function(err){
-    var statusCode;
-    try{
-      statusCode=err.metadata.status[0].code;
-    }
-    catch(error){
-      statusCode=500;
-    }
-    res.status(statusCode).json(err.err);
-  })
+  var errMsg="API Router /name get - "
+  var call=nameSearch
+  resolveCall(call,req,res,errMsg)
 });
 
 

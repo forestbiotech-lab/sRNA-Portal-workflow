@@ -19,7 +19,7 @@ module.exports = function(query,options){
   //runs a model function with options.
   //return models.[a function name](options); 
   return new Promise(function(resolve,reject){
-  	models.getName(query).then(function(res){
+  	models.nameSearch(query).then(function(res){
   		console.log(query.where);
   		if(res instanceof Error){
   			//What is the correct code to send?
@@ -58,7 +58,7 @@ module.exports = function(query,options){
           }
           databaseValues.push(databaseLine);
         }
-  			resolve(databaseValues);
+        resolve(databaseValues);
   		}
   	})
   })
