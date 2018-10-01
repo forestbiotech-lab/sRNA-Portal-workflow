@@ -11,9 +11,9 @@ function sequenceSearch(attributes){
   console.log(attributes);
   return db.Mature_miRNA
   .findAndCountAll({
-    include: [{
+/*    include: [{
       model: db.Pre_miRNA,
-    }],
+    }],*/
     where: attributes.where,
   })
   .then(function(res){
