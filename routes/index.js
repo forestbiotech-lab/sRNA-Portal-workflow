@@ -447,4 +447,9 @@ router.get('/areyouup', function(req, res, next) {
   res.json('yes');
 });
 
+//Security issues? this might allow rendering pages that it shouldn't allow.
+router.get('/getParts/:part', function(req, res, next){
+  res.render('parts/'+req.params.part);
+})
+
 module.exports = router;
