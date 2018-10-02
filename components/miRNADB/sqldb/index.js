@@ -31,10 +31,11 @@ for( index in tables){
 
 //Foreign key association
 Object.keys(db).forEach(function(modelName) {
-  if ('associate' in db[modelName]) {
-    db[modelName].associate(db);
+  if ('classMethods' in db[modelName].options) {
+    db[modelName].options.classMethods.associate(db);
   }
 });
+
 
 
 module.exports = db;
