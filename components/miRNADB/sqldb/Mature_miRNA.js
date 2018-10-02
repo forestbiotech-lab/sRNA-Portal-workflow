@@ -13,17 +13,17 @@
         allowNull: false,
         unique: true,
       },
-    accession: DataTypes.STRING(254),
-    name: DataTypes.STRING(254),
-    description: DataTypes.STRING(254),
-    arm: DataTypes.STRING(254),
-    sequence: DataTypes.STRING(254),
-  }, {
+      accession: DataTypes.STRING(254),
+      name: DataTypes.STRING(254),
+      description: DataTypes.STRING(254),
+      arm: DataTypes.STRING(254),
+      sequence: DataTypes.STRING(254),
+    }, {
       tableName: 'Mature_miRNA',
       timestamps: false,
       underscored: false,
 
-     classMethods: {
+      classMethods: {
         associate: function associate(models) {    
           Mature_miRNA.belongsTo(models.HasStar, {
             foreignKey: 'id',              //on Mature_miRNA
@@ -44,6 +44,5 @@
         }
       },
     });
-
     return Mature_miRNA;
   };
