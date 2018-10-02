@@ -59,7 +59,7 @@ $(document).ready(function(){
 
   //Function to add values to row???????
   function fillRow(row,data){
-    changeClasses(row,['DBvalues'],['sampleSource']);
+    changeClasses(row,['tableRow','DBvalues'],['sampleSource']);
     changeAttrs(row,[],['hidden']);
 
     row.children('td').each(function(){
@@ -87,7 +87,7 @@ $(document).ready(function(){
       uniqueCell.append('<p>Status: '+data.status+' '+data.statusText+'</p>');
       uniqueCell.append('<p>'+data.responseText+'</p>');
     }  
-    
+
     row.append(uniqueCell);
     return row;
   }
