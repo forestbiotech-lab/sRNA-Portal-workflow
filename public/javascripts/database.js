@@ -52,16 +52,26 @@ $(document).ready(function(){
 
 
   //Auto complete with typeahead https://github.com/bassjobsen/Bootstrap-3-Typeahead
-  $.get({
-    url: '/javascripts/DB_mature_miRNA_name.json', 
-    success: function(data){
-      let element=$('select.custom-select#searchOptions')
-      let target=$('.form-control#searchText')
-      addTypeaheadListenerTo(element,target,data,"miRNA name")     
-    }, 
+  var autocomplete_name=$.get({
+    url: '/javascripts/DB_mature_miRNA_name.json',  
+    dataType:'json'
+  });
+  var autocomplete_sequence=$.get({
+    url: '/javascripts/DB_mature_miRNA_sequence.json', 
     dataType:'json'
   });
 
+  Promise.all([autocomplete_name,autocomplete_sequence]).then(function(values){
+    //texts in order
+    let data={
+      "miRNA name": values[0],
+      "Sequence": values[1]
+    }
+    let element=$('select.custom-select#searchOptions')
+    let target=$('.form-control#searchText')
+    console.log(values);
+    addTypeaheadListenerTo(element,target,data)
+  })
 
   //Clear table function
   function clearTable(){
@@ -138,18 +148,32 @@ $(document).ready(function(){
   function cloneElement(element){
     return element.clone()
   }
-  function addTypeaheadListenerTo(element,target,data,text){
+
+  function addTypeaheadListenerTo(element,target,data){
+    let select=element[0]
+    let selectedIndex=select.selectedIndex;
+    let selectedText=select[selectedIndex].text
+    let values=data[selectedText]
+    target.typeahead({ 
+      source:values,
+      autoSelect:true
+    });
+
     element.change(function(){
+      target.typeahead('destroy')
+   
       let select=element[0]
       let selectedIndex=select.selectedIndex;
-      if(select[selectedIndex].text==text){
-        target.typeahead({ 
-          source:data,
-          autoSelect:true
-        });
-      }
-    })
+      let selectedText=select[selectedIndex].text;      
+      let values=data[selectedText];
+
+      target.typeahead({ 
+        source:values,
+        autoSelect:true
+      });
+    })    
   }
+
   function successfulQuery(results,totalCount,row){
     if (totalCount>0){
       for (var i = 0; i < totalCount; i++) {
