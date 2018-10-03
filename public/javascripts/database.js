@@ -80,7 +80,7 @@ $(document).ready(function(){
   //Function to add values to row???????
   function fillRow(row,data){
     let organism=data.Organism.id
-
+    row=cloneElement(row) 
     changeClasses(row,['tableRow','DBvalues'],['sampleSource']);
     changeAttrs(row,[],['hidden']);
     row.attr('organism_id',organism)
@@ -176,9 +176,9 @@ $(document).ready(function(){
   function successfulQuery(results,totalCount,row){
     if (totalCount>0){
       for (var i = 0; i < totalCount; i++) {
-        row=fillRow(row,results[i]);
+        let fullRow=fillRow(row,results[i]);
         //Add values into cell
-        $('table.DBvalues tbody').append(row); 
+        $('table.DBvalues tbody').append(fullRow); 
       }
     }else{
       let data={}
