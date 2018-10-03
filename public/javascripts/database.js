@@ -50,7 +50,6 @@ $(document).ready(function(){
     })
   })
 
-
   //Auto complete with typeahead https://github.com/bassjobsen/Bootstrap-3-Typeahead
   var autocomplete_name=$.get({
     url: '/javascripts/DB_mature_miRNA_name.json',  
@@ -69,9 +68,9 @@ $(document).ready(function(){
     }
     let element=$('select.custom-select#searchOptions')
     let target=$('.form-control#searchText')
-    console.log(values);
     addTypeaheadListenerTo(element,target,data)
   })
+  //Ends - Auto complete with typeahead https://github.com/bassjobsen/Bootstrap-3-Typeahead
 
   //Clear table function
   function clearTable(){
@@ -225,7 +224,19 @@ $(document).ready(function(){
         checkbox.children('label').text(data[keys[k]])
         checkbox.children('label').attr('for',keys[k])
         form.append(checkbox)
+        checkbox.children('input').change(filter);
       }
+    }
+  }
+
+  function filter(){
+    let element=$(this);
+    let id=element.attr('id');
+    let filterRows=$('.DBvalues.tableRow[organism_id|="'+id+'"]')
+    if(element.prop('checked')){
+      changeAttrs(filterRows,[],['hidden'])
+    }else{
+      changeAttrs(filterRows,['hidden'],[])
     }
   }
 
