@@ -1,0 +1,34 @@
+.miRPursuitPanel{
+  position: fixed;
+  display: none;
+  top: 137px;
+  left:-1px;
+  /*width: 200px;*/
+  border: #615d5d;
+  
+}
+.miRPursuitPanel .card-block {
+  color: white;
+}
+.miRPursuitPanel .row{
+  padding-left:20px;
+  padding-right:20px;
+}
+.miRPursuitPanel .subMenu{
+  display: none;
+  padding: 1px;
+}
+.miRPursuitPanel .subMenu .row{
+  padding-left:15px;
+  padding-right:15px;
+
+}    
+.miRPursuitPanel .subMenu .content{
+  margin: 0px;
+  height:100px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding:1px;
+  padding-right:1px;
+
+}  

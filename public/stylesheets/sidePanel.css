@@ -1,0 +1,23 @@
+.sidePanel{   
+    position:relative;
+    color: #ffffff; 
+    border-right: 20px solid rgba(128, 128, 128, 0.4);
+    box-shadow: 2px sspo0px 0px rgba(0, 0, 0, 0.68);
+    height:1000px;
+    background-color: green;
+}
+.sidePanel .content{
+  padding-left:15px; 
+}
+
+.sidePanel .database .filters .checkbox-group{
+    padding-left: 20px;
+    font-size: small;
+}
+.sidePanel .database .filters .checkbox-group .title{
+    text-decoration: underline;
+}
+.sidePanel .database .filters .form-group.form-check{
+    background-color: #24a724f0;
+    border-radius: 10px;
+}

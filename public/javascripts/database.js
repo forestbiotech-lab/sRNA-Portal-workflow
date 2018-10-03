@@ -10,13 +10,24 @@ $(document).ready(function(){
     $.get({
       url: '/db/v1/api/'+call+'?searchText='+searchText, 
       success: function(data){
+        //Head
         changeButtonStyle(button,'btn-primary','btn-success')
         
+        //Defintion of vars
         let results=data.result.data
+        let organisms=getOrganisms(results)
         const totalCount=data.metadata.pagination.totalCount;
 
+        //actions
+        metadata={
+           title:"Filter organisms",
+           formClassLabel:"organismFilter",
+           table:"Organism"
+        }  
+        addFilter(organisms,metadata)
         successfulQuery(results,totalCount,row)
 
+        //Final
         restoreButtonStyle(button,'btn-success')
       }
     }).fail(function(response){
@@ -59,12 +70,15 @@ $(document).ready(function(){
 
   //Function to add values to row???????
   function fillRow(row,data){
+    let organism=data.Organism.id
+
     changeClasses(row,['tableRow','DBvalues'],['sampleSource']);
     changeAttrs(row,[],['hidden']);
+    row.attr('organism_id',organism)
 
     row.children('td').each(function(){
-      var attribute=$(this).attr('dbAttr');
-      var value=data[attribute];
+      let attribute=$(this).attr('dbAttr');
+      let value=data[attribute];
       $(this).text(value);
     })
     return row;
@@ -152,4 +166,52 @@ $(document).ready(function(){
       $('table.DBvalues tbody').append(row);
     }
   }
+
+  function getOrganisms(data){
+    result={}
+    //Ensures unique organisms
+    //Key is organism ID
+    //Value is Genus species (common name) [NCBI ID:XXXX]
+    for (i in data){
+      entry=data[i].Organism
+      result[entry.id]=entry.genus+" "+entry.species+" ("+entry.common_name+") - [NCBI ID:"+entry.ncbi_taxon_id+"]"
+    }
+    return result
+  }
+
+  function addFilter(data,metadata){
+    getPart('checkbox',callback);
+  
+    function callback(ajaxForm){
+      let filters=$('.database .panel .filters');
+      filters.empty().append(ajaxForm);
+      let form = filters.children(':last')
+      changeClasses(form,[metadata.formClassLabel],[])
+      let organismFilter=filters.children('.form-check.'+metadata.formClassLabel);
+      organismFilter.children('.title').text(metadata.title)
+      
+      var keys=Object.keys(data)
+      for( k in keys ){
+        var checkbox=form.children('.sample').clone()
+        changeAttrs(checkbox,[],['hidden']);
+        changeClasses(checkbox,['checkbox-group-'+metadata.table,keys[k]],['sample']);
+        checkbox.attr('table',metadata.table)
+
+        checkbox.children('input').attr('id',keys[k])
+        checkbox.children('label').text(data[keys[k]])
+        checkbox.children('label').attr('for',keys[k])
+        form.append(checkbox)
+      }
+    }
+  }
+
+  function getPart(part,cb){
+   $.get({
+    url: "/getParts/"+part,
+    success: cb,
+    dataType:"html"
+   }) 
+  }
+
 });
+

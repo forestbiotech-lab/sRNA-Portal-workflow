@@ -1,0 +1,29 @@
+.footer{
+  background: #505659;
+  color: white;
+  padding: 20px;
+  height: 500px;
+  border-top: 5px solid grey;
+}
+
+.footer .incd{
+  background-image: url(/images/INCDlogo.png);
+  background-size:100%;
+  width: 160px;
+  height: 80px;
+  float:left;
+}
+.footer .eu{
+  float:left;
+  width:300px;
+}
+
+.footer .eu .logo{
+  background-image: url(/images/EU_flag_footer.png);
+  width: 160px;
+  height: 60px;
+  float:left;
+}
+.footer .eu p{
+  font-size: 10px;
+}
