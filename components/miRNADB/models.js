@@ -6,14 +6,24 @@
 //Calls Index to load sql tables
 var db = require('./sqldb/index');
 
+
 //getSequence search for the sequence in the database
 function sequenceSearch(attributes){
   console.log(attributes);
   return db.Mature_miRNA
   .findAndCountAll({
-/*    include: [{
+    include: [{
       model: db.Pre_miRNA,
-    }],*/
+      include: [{
+        model:db.Feature,
+        include: [{
+          model: db.Genome,
+          include: [{
+            model: db.Organism
+          }]
+        }]
+      }]
+    }],
     where: attributes.where,
   })
   .then(function(res){
@@ -28,6 +38,18 @@ function sequenceSearch(attributes){
 function nameSearch(attributes){
   return db.Mature_miRNA
   .findAndCountAll({
+    include: [{
+      model: db.Pre_miRNA,
+      include: [{
+        model:db.Feature,
+        include: [{
+          model: db.Genome,
+          include: [{
+            model: db.Organism
+          }]
+        }]
+      }]
+    }],
     where: attributes.where,
   })
   .then(function(res){
