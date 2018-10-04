@@ -4,7 +4,9 @@ $(document).ready(function(){
     let button=$(this);
     let call=$('.searchDBform select#searchOptions option:selected').attr('call');
     let searchText=$('.searchDBform input#searchText').val()
-    let row=cloneElement($('table.DBvalues tr.sampleSource'))
+    let row=cloneElement($('table.DBvalues tr.sampleSource'));
+    //Further specify if you need another table
+    let table=cloneElement($('table.DBvalues'))
     clearTable();
 
     $.get({
@@ -25,8 +27,8 @@ $(document).ready(function(){
            table:"Organism"
         }  
         addFilter(organisms,metadata)
-        successfulQuery(results,totalCount,row)
-
+        successfulQuery(results,totalCount,row,searchText)
+        addTableSorter(table);
         //Final
         restoreButtonStyle(button,'btn-success')
       }
@@ -173,7 +175,7 @@ $(document).ready(function(){
     })    
   }
 
-  function successfulQuery(results,totalCount,row){
+  function successfulQuery(results,totalCount,row,searchText){
     if (totalCount>0){
       for (var i = 0; i < totalCount; i++) {
         let fullRow=fillRow(row,results[i]);
@@ -181,6 +183,8 @@ $(document).ready(function(){
         $('table.DBvalues tbody').append(fullRow); 
       }
     }else{
+      console.log(searchText)
+      searchText=searchText || "no text given!"
       let data={}
       data.type='warning';          
       data.text='<p>No results found for query: '+searchText+'</p>';
@@ -247,6 +251,16 @@ $(document).ready(function(){
     dataType:"html"
    }) 
   }
-
+  function addTableSorter(element){
+    //Currently applies to tables with CLASS .resizableTable
+    //Table Sorter: https://mottie.github.io/tablesorter/docs/example-widget-resizable.html
+    element.tablesorter({
+      // initialize zebra striping and resizable widgets on the table
+      widgets: [ 'resizable' ],
+      widgetOptions: {
+        resizable_addLastColumn : true
+      }
+    });
+  }
 });
 
