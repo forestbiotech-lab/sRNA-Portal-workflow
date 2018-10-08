@@ -28,10 +28,10 @@ block content
                 th(title="Hint") Name
                 th(title="Hint") Arm
                 th(title="Hint") Sequence
-              tbody
-                tr.sampleSource(hidden)                 
+              tbody(id="accordionRows")
+                tr.sampleSource(hidden,loaded="false")                 
                   td(dbAttr="accession",title="mature miRNA accession",scope="row")
-                    button.btn.btn-outline-dark.btn-sm.expand-row(type="button",title="expand")
+                    button.btn.btn-outline-dark.btn-sm.expand-row(type="button",title="expand",data-toggle="collapse",data-target="#")
                         span.glyphicon.glyphicon-chevron-down
                   td(dbAttr="name",title="mature miRNA name")
                   td(dbAttr="arm",title="mature miRNA arm")
@@ -39,7 +39,7 @@ block content
                 each row in tableValues 
                   tr.tableRow.DBvalues
                     td(title="mature miRNA accession",scope="row")=row.Mature_miRNA_accession
-                      button.btn.btn-outline-dark.btn-sm.expand-row(type="button",title="expand")
+                      button.btn.btn-outline-dark.btn-sm.expand-row(type="button",title="expand",data-toggle="collapse",data-target="#")
                         span.glyphicon.glyphicon-chevron-down
                     td(title="mature miRNA name")=row.Mature_miRNA_name
                     td(title="mature miRNA arm")=row.Mature_miRNA_arm

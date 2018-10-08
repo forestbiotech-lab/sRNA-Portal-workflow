@@ -1,0 +1,17 @@
+module.exports={
+	"mature_miRNA_id":"",
+	"accession":"",
+	"description":"",
+	"sequence":"",
+	"Feature":{
+		"_table":"Feature",
+		"name":"",
+		"source":"",
+		"type":"",
+		"start":"",
+		"end":"",
+		"score":"",
+		"strand":"",
+		"phase":""
+	}
+}

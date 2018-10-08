@@ -6,6 +6,7 @@ var resolveCall = resolveHelper.resolveCall
 /// --------- Call Declaration ----------------------------------------
 var sequenceSearch = require('./../components/miRNADB/sequenceSearch2');
 var nameSearch = require('./../components/miRNADB/nameSearch2');
+var getFeatures = require('./../components/miRNADB/getFeatures');
 
 /// --------------End -------------------------------------------------
 
@@ -25,5 +26,11 @@ router.get('/name', function(req, res, next) {
   resolveCall(call,req,res,errMsg)
 });
 
+/* GET feature */
+router.get('/feature', function(req, res, next) {
+  var errMsg="API Router /feature get - "
+  var call=getFeatures
+  resolveCall(call,req,res,errMsg)
+});
 
 module.exports = router;

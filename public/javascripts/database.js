@@ -31,6 +31,8 @@ $(document).ready(function(){
         successfulQuery(results,totalCount,row,searchText)
         
         //Final
+        let expand=$('.DBvalues .expand-row')
+        expand.click(getFeatures);
         restoreButtonStyle(button,'btn-success')
       }
     }).fail(function(response){
@@ -91,6 +93,8 @@ $(document).ready(function(){
     changeClasses(row,['tableRow','DBvalues'],['sampleSource']);
     changeAttrs(row,[],['hidden']);
     row.attr('organism_id',organism)
+    row.attr('sequence_id',data.id)
+    row.find('td button.expand-row').attr('data-target','#sequence'+data.id)
 
     row.children('td').each(function(){
       let attribute=$(this).attr('dbAttr');
@@ -212,7 +216,7 @@ $(document).ready(function(){
   }
 
   function addFilter(data,metadata){
-    getPart('checkbox',callback);
+    getTemplate('checkbox',callback);
   
     function callback(ajaxForm){
       let filters=$('.database .panel .filters');
@@ -249,13 +253,14 @@ $(document).ready(function(){
     }
   }
 
-  function getPart(part,cb){
+  function getTemplate(template,cb){
    $.get({
-    url: "/getParts/"+part,
+    url: "/factory/"+template,
     success: cb,
     dataType:"html"
    }) 
   }
+
   function addTableSorter(element){
     //Currently applies to tables with CLASS .resizableTable
     //Table Sorter: https://mottie.github.io/tablesorter/docs/example-widget-resizable.html
@@ -267,5 +272,66 @@ $(document).ready(function(){
       }
     });
   }
+
+  function loadFeatures(data){
+    console.log(data);
+    let _data=data.result.data
+    //More than one feature? If it exists will only show last one.
+    for ( i in _data){
+      let dataPoint=_data[i]
+      let sequence_id=dataPoint.mature_miRNA_id
+      let target=$('table.DBvalues tr[sequence_id|="'+sequence_id+'"]')
+      
+      
+      getTemplate('accordionCard',callback)
+
+      function callback(ajaxTemplate){
+        
+        target.after(ajaxTemplate)
+        let insertedTemplate = target.next("tr").find('.collapse');
+        insertedTemplate.attr('id',"sequence"+sequence_id)
+
+
+        populateElement(insertedTemplate,dataPoint)
+      }
+      
+    }
+    
+
+  }
+
+  function getFeatures(){
+    let row=$(this).closest('tr')
+    let sequence_id=row.attr('sequence_id')
+    let loaded=row.prop('loaded')
+    if(!loaded){
+      row.prop('loaded','true')
+      $.get({
+        url:"/db/api/v1/feature?sequenceId="+sequence_id,
+        success: loadFeatures,
+        dataType:"json"
+      })
+    }
+  }
+
+  function populateElement(element,data){
+    //Grabs all descendant elements with ".db-data" sub arrays with table
+    element.find('.db-data').each(function(){
+      let table=$(this).attr('table');
+      let attribute=$(this).attr('dbAttr')
+      if( table ){
+        $(this).text(data[table][attribute])  
+      }else{
+        $(this).text(data[attribute])
+      }
+    })
+  }
+
+
+
+
+
+
+
 });
 
