@@ -24,19 +24,23 @@ block content
           table.table.table-bordered.tablesorter.resizableTable-on-search.DBvalues(hasResizable)
             thead
               tr.tableHeader
-                th(title="Hint") Accession
+                th(title="Mature miRNA accession") Accession
                 th(title="Hint") Name
                 th(title="Hint") Arm
                 th(title="Hint") Sequence
               tbody
-                tr.sampleSource(hidden)
-                  td(scope="row",dbAttr="accession",title="mature miRNA accession")
+                tr.sampleSource(hidden)                 
+                  td(dbAttr="accession",title="mature miRNA accession",scope="row")
+                    button.btn.btn-outline-dark.btn-sm.expand-row(type="button",title="expand")
+                        span.glyphicon.glyphicon-chevron-down
                   td(dbAttr="name",title="mature miRNA name")
                   td(dbAttr="arm",title="mature miRNA arm")
                   td(dbAttr="sequence",title="mature miRNA sequence")
                 each row in tableValues 
                   tr.tableRow.DBvalues
-                    td(scope="row",title="mature miRNA accession")=row.Mature_miRNA_accession
+                    td(title="mature miRNA accession",scope="row")=row.Mature_miRNA_accession
+                      button.btn.btn-outline-dark.btn-sm.expand-row(type="button",title="expand")
+                        span.glyphicon.glyphicon-chevron-down
                     td(title="mature miRNA name")=row.Mature_miRNA_name
                     td(title="mature miRNA arm")=row.Mature_miRNA_arm
                     td(title="mature miRNA sequence")=row.Mature_miRNA_sequence

@@ -102,5 +102,8 @@ table.annotationTable .btn.advancedButton3{
 table.annotationTable tr.miappe{
   background-color: darkgrey;
 }
+table .expand-row{
+  margin-right: 10px;
+}
 
 
