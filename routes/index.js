@@ -448,8 +448,8 @@ router.get('/areyouup', function(req, res, next) {
 });
 
 //Security issues? this might allow rendering pages that it shouldn't allow.
-router.get('/getParts/:part', function(req, res, next){
-  res.render('parts/'+req.params.part);
+router.get('/factory/:template', function(req, res, next){
+  res.render('factory/'+req.params.template);
 })
 
 module.exports = router;
