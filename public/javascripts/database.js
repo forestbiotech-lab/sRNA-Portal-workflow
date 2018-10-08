@@ -7,10 +7,11 @@ $(document).ready(function(){
     let row=cloneElement($('table.DBvalues tr.sampleSource'));
     //Further specify if you need another table
     let table=cloneElement($('table.DBvalues'))
+    addTableSorter(table);
     clearTable();
 
     $.get({
-      url: '/db/v1/api/'+call+'?searchText='+searchText, 
+      url: '/db/api/v1/'+call+'?searchText='+searchText, 
       success: function(data){
         //Head
         changeButtonStyle(button,'btn-primary','btn-success')
@@ -28,7 +29,7 @@ $(document).ready(function(){
         }  
         addFilter(organisms,metadata)
         successfulQuery(results,totalCount,row,searchText)
-        addTableSorter(table);
+        
         //Final
         restoreButtonStyle(button,'btn-success')
       }
@@ -52,33 +53,37 @@ $(document).ready(function(){
     })
   })
 
-  //Auto complete with typeahead https://github.com/bassjobsen/Bootstrap-3-Typeahead
-  var autocomplete_name=$.get({
-    url: '/javascripts/DB_mature_miRNA_name.json',  
-    dataType:'json'
-  });
-  var autocomplete_sequence=$.get({
-    url: '/javascripts/DB_mature_miRNA_sequence.json', 
-    dataType:'json'
-  });
+  
+  function loadTypeAhead(){
+    //Auto complete with typeahead https://github.com/bassjobsen/Bootstrap-3-Typeahead
+    var autocomplete_name=$.get({
+      url: '/javascripts/DB_mature_miRNA_name.json',  
+      dataType:'json'
+    });
+    var autocomplete_sequence=$.get({
+      url: '/javascripts/DB_mature_miRNA_sequence.json', 
+      dataType:'json'
+    });
 
-  Promise.all([autocomplete_name,autocomplete_sequence]).then(function(values){
-    //texts in order
-    let data={
-      "miRNA name": values[0],
-      "Sequence": values[1]
+      Promise.all([autocomplete_name,autocomplete_sequence]).then(function(values){
+        //texts in order
+        let data={
+          "miRNA name": values[0],
+          "Sequence": values[1]
+        }
+        let element=$('select.custom-select#searchOptions')
+        let target=$('.form-control#searchText')
+        addTypeaheadListenerTo(element,target,data)
+      })
     }
-    let element=$('select.custom-select#searchOptions')
-    let target=$('.form-control#searchText')
-    addTypeaheadListenerTo(element,target,data)
-  })
-  //Ends - Auto complete with typeahead https://github.com/bassjobsen/Bootstrap-3-Typeahead
+    //Clear table function
+    function clearTable(){
+      $('table.DBvalues tr.tableRow.DBvalues').remove();
+    }
+  
 
-  //Clear table function
-  function clearTable(){
-    $('table.DBvalues tr.tableRow.DBvalues').remove();
-  }
-
+  if($('select.custom-select#searchOptions').length > 0) loadTypeAhead();
+  
   //Function to add values to row???????
   function fillRow(row,data){
     let organism=data.Organism.id
@@ -90,7 +95,7 @@ $(document).ready(function(){
     row.children('td').each(function(){
       let attribute=$(this).attr('dbAttr');
       let value=data[attribute];
-      $(this).text(value);
+      $(this).append(value);
     })
     return row;
   }
