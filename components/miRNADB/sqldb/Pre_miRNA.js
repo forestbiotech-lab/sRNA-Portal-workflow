@@ -14,10 +14,10 @@
         unique: true,
       },
     accession: DataTypes.STRING(254),
-    mature_miRNA_id: DataTypes.INTEGER(11),
+    name: DataTypes.STRING(254),
     description: DataTypes.STRING(254),
     feature_id: DataTypes.INTEGER(11),
-    sequence: DataTypes.STRING(300),
+    sequence_id: DataTypes.INTEGER(20),
   }, {
       tableName: 'Pre_miRNA',
       timestamps: false,
@@ -26,11 +26,15 @@
      classMethods: {
         associate: function associate(models) {    
           Pre_miRNA.belongsTo(models.Mature_miRNA, {
-            foreignKey: 'mature_miRNA_id',              //on Pre_miRNA
-            targetKey: 'id',  //foreign key  
+            foreignKey: 'id',              //on Pre_miRNA
+            targetKey: 'pre_miRNA_id',  //foreign key  
           });
           Pre_miRNA.belongsTo(models.Feature, {
             foreignKey: 'feature_id',              //on Pre_miRNA
+            targetKey: 'id',  //foreign key  
+          });
+          Pre_miRNA.belongsTo(models.Pre_miRNA_sequence, {
+            foreignKey: 'sequence_id',              //on Pre_miRNA
             targetKey: 'id',  //foreign key  
           }); 
         }

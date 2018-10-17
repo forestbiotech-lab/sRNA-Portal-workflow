@@ -39,6 +39,10 @@
             foreignKey: 'id',              //on Feature
             targetKey: 'feature_id',  //foreign key  
           });
+          Feature.belongsTo(models.Mature_miRNA, {
+            foreignKey: 'id',              //on Feature
+            targetKey: 'feature_id',  //foreign key  
+          });
           Feature.belongsTo(models.Pre_miRNA, {
             foreignKey: 'id',              //on Feature
             targetKey: 'feature_id',  //foreign key  

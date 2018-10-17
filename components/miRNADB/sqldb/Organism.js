@@ -16,8 +16,8 @@
     abbreviation: DataTypes.STRING(3),
     common_name: DataTypes.STRING(254),
     genus: DataTypes.STRING(254),
-    species: DataTypes.STRING(254),
-    sub_species: DataTypes.STRING(254),
+    specific_name: DataTypes.STRING(254),
+    subspecific_name: DataTypes.STRING(254),
     ncbi_taxon_id: DataTypes.STRING(254),
   }, {
       tableName: 'Organism',

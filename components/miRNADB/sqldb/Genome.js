@@ -16,8 +16,8 @@
     organism_id: DataTypes.INTEGER(11),
     assembly: DataTypes.STRING(254),
     external_id: DataTypes.STRING(254),
+    project: DataTypes.STRING(254),
     genome_build: DataTypes.STRING(254),
-    genome_build_id: DataTypes.STRING(254),
   }, {
       tableName: 'Genome',
       timestamps: false,
