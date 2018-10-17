@@ -1,8 +1,8 @@
 module.exports={
-	"mature_miRNA_id":"",
+	"mature_miRNA_id":{_table:"Mature_miRNA",_attribute:"id"},
 	"accession":"",
 	"description":"",
-	"sequence":"",
+	"sequence":{"_table":"Pre_miRNA_sequence","_attribute":"sequence"},
 	"Feature":{
 		"_table":"Feature",
 		"name":"",

@@ -4,7 +4,8 @@
 
 
 var models= require('./models');
-
+var Sequelize=require('sequelize');
+const Op =Sequelize.Op;
 
 
 
@@ -14,7 +15,7 @@ module.exports = function(query,options){
   //problem if where doesn't exist req allways has query right?
   query.where={}
   if(typeof query.searchText == "string"){
-  	query.where.name={$like: '%'+query.searchText+'%'};
+  	query.where.name=query.searchText;
   }
   //runs a model function with options.
   //return models.[a function name](options); 

@@ -24,8 +24,10 @@ e.sequenceSearch=function(attributes){
           }]
         }]
       }]
+    },{
+      model: db.Mature_miRNA_sequence,
+      where: attributes.where
     }],
-    where: attributes.where,
   })
   .then(function(res){
     return res;
@@ -67,10 +69,12 @@ e.getFeatures=function(attributes){
   .findAndCountAll({
     include: [{
       model: db.Mature_miRNA,
+      where: attributes.where
     },{
       model: db.Feature
-    }],
-    where: attributes.where
+    },{
+      model: db.Pre_miRNA_sequence
+    }]
   }).then(function(res){
     return res;
   })

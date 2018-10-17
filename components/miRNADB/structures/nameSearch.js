@@ -4,12 +4,12 @@ module.exports={
 	"name":"",
 	"description":"",
 	"arm":"",
-	"sequence":"",
+	"sequence":{_table:"Mature_miRNA_sequence",_attribute:"sequence"},
 	"Organism":{
 		"_table":["Pre_miRNA","Feature","Genome","Organism"],
 		"id":"",
 		"genus":"",
-		"species":"",
+		"specific_name":"",
 		"common_name":"",
 		"ncbi_taxon_id":""
 	}

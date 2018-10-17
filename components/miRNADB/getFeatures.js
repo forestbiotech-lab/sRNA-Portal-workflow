@@ -21,7 +21,7 @@ module.exports = function(options){
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   attribute=options.query.sequenceId
   delete options.query.sequenceId;
-  options.where.mature_miRNA_id=fmtWhereAttr(attribute,'in')
+  options.where.id=fmtWhereAttr(attribute,'in')
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   return controller(options,call,callback)

@@ -210,7 +210,7 @@ $(document).ready(function(){
     //Value is Genus species (common name) [NCBI ID:XXXX]
     for (i in data){
       entry=data[i].Organism
-      result[entry.id]=entry.genus+" "+entry.species+" ("+entry.common_name+") - [NCBI ID:"+entry.ncbi_taxon_id+"]"
+      result[entry.id]=entry.genus+" "+entry.specific_name+" ("+entry.common_name+") - [NCBI ID:"+entry.ncbi_taxon_id+"]"
     }
     return result
   }
