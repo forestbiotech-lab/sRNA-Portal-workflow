@@ -2,7 +2,7 @@
     position:relative;
     color: #ffffff; 
     border-right: 20px solid rgba(128, 128, 128, 0.4);
-    box-shadow: 2px sspo0px 0px rgba(0, 0, 0, 0.68);
+    box-shadow: 2px 0px 0px rgba(0, 0, 0, 0.68);
     height:1000px;
     background-color: green;
 }
