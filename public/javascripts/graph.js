@@ -16,12 +16,12 @@ var graph={
 var height=600
 var width=300
 
-function chart(data){
+function chart(data,id){
   const links = data.links.map(d => Object.create(d));
   const nodes = data.nodes.map(d => Object.create(d));
   const simulation = forceSimulation(nodes, links).on("tick", ticked);
 
-  const svg = d3.select("svg")
+  const svg = d3.select("svg#"+id)
       .attr("viewBox", [-width / 2, -height / 2, width, height]);
 
   const link = svg.append("g")
@@ -98,6 +98,6 @@ function drag(simulation){
           .on("end", dragended);
 
 }
-function loadChart(){
-    chart(graph)
+function loadChart(data,id){
+    chart(data,id)
 }
