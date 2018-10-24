@@ -268,13 +268,13 @@ $(document).ready(function(){
       // initialize zebra striping and resizable widgets on the table
       widgets: [ 'resizable' ],
       widgetOptions: {
+        storage_useSessionStorage : true,
         resizable_addLastColumn : true
       }
     });
   }
 
   function loadFeatures(data){
-    console.log(data);
     let _data=data.result.data
     //More than one feature? If it exists will only show last one.
     for ( i in _data){
@@ -291,13 +291,65 @@ $(document).ready(function(){
         let insertedTemplate = target.next("tr").find('.collapse');
         insertedTemplate.attr('id',"sequence"+sequence_id)
 
-
         populateElement(insertedTemplate,dataPoint)
+        let svg=insertedTemplate.find("svg")
+        let precursorAcc=dataPoint.accession;
+        svg.attr("id",precursorAcc)
+        loadGraph(svg,precursorAcc);
       }
       
     }
     
 
+  }
+
+  class graphData {
+    constructor(){
+      this.nodes=[];
+      this.links=[];
+    }
+    node(id,group){
+      this.nodes.push({
+        id:id,
+        group:group
+      })
+    }
+    link(source,target,value){
+      this.links.push({
+        source:source,
+        target:target,
+        value:value
+      })      
+    }
+    get data(){
+      return {nodes:this.nodes,links:this.links}
+    }
+  }
+
+
+  function loadGraphStrucutre(data){
+    data=data.result.data[0]
+    graph=new graphData();
+    let precursor=data.accession;
+    graph.node(precursor,1)
+    for(m in data.mature){
+      graph.node(data.mature[m],6)
+      graph.link(precursor,data.mature[m],6)
+    }
+    return graph.data
+  }
+
+
+
+  function loadGraph(element,accession){
+    $.get({
+      url:"/db/api/v1/linkedMatureMiRNA?accession="+accession,
+      success:function(data){
+        let graphDataStrucutre=loadGraphStrucutre(data)
+        loadChart(graphDataStrucutre,accession)
+      },
+      dataType:"json"
+    })
   }
 
   function getFeatures(){
@@ -333,5 +385,8 @@ $(document).ready(function(){
 
 
 
+
 });
+
+
 
