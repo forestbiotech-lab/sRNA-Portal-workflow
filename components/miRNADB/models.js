@@ -83,6 +83,21 @@ e.getFeatures=function(attributes){
   })
 }
 
+e.linkedMatureMiRNA=function(attributes){
+  return db.Pre_miRNA
+  .findAndCountAll({
+    include: [{
+      model: db.Mature_miRNA,
+    }],
+    where: attributes.where
+  }).then(function(res){
+    return res;
+  })
+  .catch(function(err){
+    console.log('getFeatures - Err:'+ err);
+  })
+}
+
 
 module.exports = e
 
