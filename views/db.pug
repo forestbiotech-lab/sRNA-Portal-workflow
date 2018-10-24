@@ -1,8 +1,6 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
   .card-block
     .container-fluid
       .row  
@@ -16,10 +14,16 @@ block content
               option(call="name") miRNA name
               option(call="") Accession
               option(call="") Source
-            input.form-control(id="searchText",placeholder="Search",type="text",style="margin-left:10px") 
+            input.form-control(id="searchText",placeholder="Search",type="text",style="margin-left:10px")
             button.form-control.btn.btn-primary.DBsearch(role="button") Search DB
-        
-        .col-md-12
+            .form-check(style="margin-left:10px")  
+              label.form-check-label(title="Returns an exact match")
+                input.form-check-input(id="exact",type="radio",name="searchType",checked="true") 
+                | exact&nbsp;
+              label.form-check-label(title="Returns a approximate match, allowing any prefix or suffix to the given string")
+                input.form-check-input(id="approximate",type="radio",name="searchType") 
+                | approximate
+    
           //Annotation Table            
           table.table.table-bordered.tablesorter.resizableTable-on-search.DBvalues(hasResizable)
             thead
@@ -43,4 +47,5 @@ block content
                         span.glyphicon.glyphicon-chevron-down
                     td(title="mature miRNA name")=row.Mature_miRNA_name
                     td(title="mature miRNA arm")=row.Mature_miRNA_arm
-                    td(title="mature miRNA sequence")=row.Mature_miRNA_sequence
+                    td(title="mature miRNA sequence")=row.Mature_miRNA_sequence  
+  
