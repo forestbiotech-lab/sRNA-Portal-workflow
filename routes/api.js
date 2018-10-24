@@ -7,6 +7,7 @@ var resolveCall = resolveHelper.resolveCall
 var sequenceSearch = require('./../components/miRNADB/sequenceSearch2');
 var nameSearch = require('./../components/miRNADB/nameSearch2');
 var getFeatures = require('./../components/miRNADB/getFeatures');
+var linkedMatureMiRNA = require('./../components/miRNADB/linkedMatureMiRNA');
 
 /// --------------End -------------------------------------------------
 
@@ -30,6 +31,13 @@ router.get('/name', function(req, res, next) {
 router.get('/feature', function(req, res, next) {
   var errMsg="API Router /feature get - "
   var call=getFeatures
+  resolveCall(call,req,res,errMsg)
+});
+
+/* GET linked mature miRNA for graph */
+router.get('/linkedMatureMiRNA', function(req, res, next) {
+  var errMsg="API Router /feature get - "
+  var call=linkedMatureMiRNA
   resolveCall(call,req,res,errMsg)
 });
 
