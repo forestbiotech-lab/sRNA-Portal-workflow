@@ -1,41 +1,43 @@
-tr
-  td(colspan=4).collapse.show(id="sequence",data-parent="#accordionRows")
-    .card
-      .card-head 
-        h5.title.font-weight-bold Precursor miRNA information - 
-          span.db-data(dbAttr="accession")
-      .card-body
-        .container
-          .row
-            .col-md-12
-              p.font-weight-bold Sequence:
-                span.font-weight-normal.db-data(dbAttr="sequence")
-              p.font-weight-bold Description:
-                span.font-weight-normal.db-data(dbAttr="description")
-              .row      
-                .col-md-6  
-                  p.font-weight-bold Name:
-                    span.font-weight-normal.db-data(dbAttr="name",table="Feature")
-                  p.font-weight-bold Source:
-                    span.font-weight-normal.db-data(dbAttr="source",table="Feature")
-                  p.font-weight-bold Type:
-                    span.font-weight-normal.db-data(dbAttr="type",table="Feature")
-                .col-md-6   
-                  .row
-                    .col-md-6
-                      p.font-weight-bold Start:    
-                        span.font-weight-normal.db-data(dbAttr="start",table="Feature")
-                    .col-md-6
-                      p.font-weight-bold End:
-                        span.font-weight-normal.db-data(dbAttr="end",table="Feature")
-                  .row
-                    .col-md-4        
-                      p.font-weight-bold Score:
-                        span.font-weight-normal.db-data(dbAttr="score",table="Feature")
-                    .col-md-4
-                      p.font-weight-bold Strand:
-                        span.font-weight-normal.db-data(dbAttr="strand",table="Feature")
-                    .col-md-4
-                      p.font-weight-bold Phase:
-                        span.font-weight-normal.db-data(dbAttr="phase",table="Feature")
+tr.DBvalues.tableRow
+  td(colspan=4,scope="row").collapse.show(id="sequence",data-parent="#accordionRows")
+    .container(style="width:927px;")
+      .row
+        .col-md-12      
+          .card
+            .card-head 
+              h5.title.font-weight-bold Precursor miRNA information - 
+                span.db-data(dbAttr="accession")
+            .card-body
+                    p.font-weight-bold Sequence:
+                      span.font-weight-normal.db-data(dbAttr="sequence")
+                    .row      
+                      .col-md-4
+                        svg(width="100%",height="300px")        
+                      .col-md-4  
+                        p.font-weight-bold Description:
+                          span.font-weight-normal.db-data(dbAttr="description")
+                        p.font-weight-bold Name:
+                          span.font-weight-normal.db-data(dbAttr="name",table="Feature")
+                        p.font-weight-bold Source:
+                          span.font-weight-normal.db-data(dbAttr="source",table="Feature")
+                        p.font-weight-bold Type:
+                          span.font-weight-normal.db-data(dbAttr="type",table="Feature")
+                      .col-md-4
+                        .row
+                          .col-md-6
+                            p.font-weight-bold Start:
+                              span.font-weight-normal.db-data(dbAttr="start",table="Feature")
+                          .col-md-6
+                            p.font-weight-bold End:
+                              span.font-weight-normal.db-data(dbAttr="end",table="Feature")
+                        .row
+                          .col-md-4
+                            p.font-weight-bold Score:
+                              span.font-weight-normal.db-data(dbAttr="score",table="Feature")
+                          .col-md-4
+                            p.font-weight-bold Strand:
+                              span.font-weight-normal.db-data(dbAttr="strand",table="Feature")
+                          .col-md-4
+                            p.font-weight-bold Phase:
+                              span.font-weight-normal.db-data(dbAttr="phase",table="Feature")
 
