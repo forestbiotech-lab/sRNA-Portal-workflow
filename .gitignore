@@ -3,6 +3,7 @@
 .config_res.js
 .config_db.js
 
+Utilities/__pycache__
 # Logs
 logs
 *.log
