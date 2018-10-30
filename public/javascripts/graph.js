@@ -1,18 +1,3 @@
-
-var graph={
-  "nodes": [
-    {"id": "osa-miR11337-5p", "group": 1},
-    {"id": "osa-miR11337-3p", "group": 1},
-    {"id": "osa-MIR11337", "group": 6}
-  ],
-  "links": [
-    {"source": "osa-miR11337-5p", "target": "osa-MIR11337", "value": 4},
-    {"source": "osa-miR11337-3p", "target": "osa-MIR11337", "value": 4}
-  ]
-}
-
-
-
 var height=600
 var width=300
 
