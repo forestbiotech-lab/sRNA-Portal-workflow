@@ -27,7 +27,7 @@ app.set('view engine', 'pug');
 //Loggin for production 
 if (process.env.mode=="PRODUCTION") process.env.log="combined"
 
-app.use(logger(process.env.LOG || 'dev'));
+app.use(logger(process.env.log || 'dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
