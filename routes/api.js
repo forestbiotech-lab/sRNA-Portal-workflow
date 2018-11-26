@@ -41,4 +41,10 @@ router.get('/linkedMatureMiRNA', function(req, res, next) {
   resolveCall(call,req,res,errMsg)
 });
 
+router.get('/*',function(req,res){
+  let errMsg="API Router - Call is not defined"
+  let status=400
+  res.status(status).json(errMsg)
+})
+
 module.exports = router;
