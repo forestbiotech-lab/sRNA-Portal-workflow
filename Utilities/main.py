@@ -1,8 +1,8 @@
 import sys
-from species import Species
-from features import Features
-from miRNA import MiRNA 
-from colors import Bcolors as bc
+from scripts.species import Species
+from scripts.features import Features
+from scripts.miRNA import MiRNA 
+from scripts.colors import Bcolors as bc
 import os
 
 ####INPUT#####
@@ -20,6 +20,10 @@ miRNA_file="/home/brunocosta/Documentos/Projectos/portal-sRNA/miRBase/miRNA.tsv"
 species=Species(organisms_file)
 species.select(abbr)
 species.getCommonName()
+proceed=input("[SPECIES] - %sChange default common name?%s: " %(bc.HEADER,bc.ENDC))
+if proceed in ["y","yes","Y","YES","Yes"]:
+	index=input("[SPECIES] - %sInsert index%s: " %(bc.HEADER,bc.ENDC))
+	species.changeCommonName(int(index))
 gff3=species.loadGFF()
 species.connectDB()
 
@@ -47,7 +51,7 @@ proceed=input("%sAdd features?%s: " %(bc.HEADER,bc.ENDC))
 if proceed in ["y","yes","Y","YES","Yes"]:
 	if genome_id is not "":
 		feat=Features(gff3)
-		feat.process(genome_id)
+		feat.process(genome_id,verbose)
 		os.rename(gff3,gff3.replace("TODO","Processed"))
 
 ##### miRNA
