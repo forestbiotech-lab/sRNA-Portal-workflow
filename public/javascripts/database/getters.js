@@ -24,15 +24,19 @@ function getOrganisms(data){
 function getFeatures(){
   console.log("Getting here To load expand!")
   let row=$(this).closest('tr')
+  console.log(row)
   let mature_id=row.attr('mature_id')
   let loaded=row.prop('loaded')
+  console.log(loaded)
   if(!loaded){
-    row.prop('loaded','true')
+    row.prop('loaded',true)
     $.get({
       url:"/db/api/v1/feature?matureId="+mature_id,
       success: loadFeatures,
       dataType:"json"
     })
+  }else{
+   row.next('tr').collapse('toggle')
   } 
 }
 
