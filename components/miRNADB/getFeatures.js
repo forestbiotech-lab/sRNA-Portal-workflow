@@ -19,9 +19,9 @@ module.exports = function(options){
   //Where logic
   //Do this for each where attribute needed.
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  attribute=options.query.sequenceId
-  delete options.query.sequenceId;
-  options.where.id=fmtWhereAttr(attribute,'in')
+  attribute=options.query.matureId
+  delete options.query.matureId;
+  options.where.id=fmtWhereAttr(attribute,'eq')
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   return controller(options,call,callback)

@@ -1,10 +1,17 @@
 module.exports={
-	"mature_miRNA_id":{_table:"Mature_miRNA",_attribute:"id"},
-	"accession":"",
-	"description":"",
-	"sequence":{"_table":"Pre_miRNA_sequence","_attribute":"sequence"},
-	"Feature":{
-		"_table":"Feature",
+	"mature_miRNA_id":"id",
+	"mature_accession":"accession",
+	"mature_description":"description",
+	"pre_sequence":{"_table":["Mature_has_Pre","Pre_miRNA","Pre_miRNA_sequence"],"_attribute":"sequence"},
+	"precursor":{
+		"_table":["Mature_has_Pre","Pre_miRNA"],
+		"id":"",
+		"name":"",
+		"accession":"",
+		"description":"",
+	},
+	"Mature_Feature":{
+		"_table":["Mature_has_Pre","Feature"],
 		"name":"",
 		"source":"",
 		"type":"",
@@ -15,4 +22,3 @@ module.exports={
 		"phase":""
 	}
 }
-

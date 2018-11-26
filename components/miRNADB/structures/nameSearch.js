@@ -6,7 +6,7 @@ module.exports={
 	"arm":"",
 	"sequence":{_table:"Mature_miRNA_sequence",_attribute:"sequence"},
 	"Organism":{
-		"_table":["Pre_miRNA","Feature","Genome","Organism"],
+		"_table":["Mature_has_Pre","Feature","Genome","Organism"],
 		"id":"",
 		"genus":"",
 		"specific_name":"",

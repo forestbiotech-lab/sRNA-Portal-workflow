@@ -19,7 +19,7 @@ module.exports = function(options){
   //Where logic
   //Do this for each where attribute needed.
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  attribute=options.query.searchText
+  attribute=options.query.searchText.toUpperCase().replace("T","U");
   delete options.query.searchText;
   options.where.sequence=fmtWhereAttr(attribute,'in')
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

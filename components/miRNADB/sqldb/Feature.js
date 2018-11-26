@@ -22,7 +22,6 @@
     score: DataTypes.FLOAT,
     strand: DataTypes.STRING(1),
     phase: DataTypes.INTEGER(1),
-    attribute_list: DataTypes.STRING(254),
     attr_id: DataTypes.STRING(254),
   }, {
       tableName: 'Feature',
@@ -35,11 +34,23 @@
             foreignKey: 'genome_id',              //on Feature
             targetKey: 'id',  //foreign key  
           });
+          Feature.belongsTo(models.Feature_attribute_list, {
+            foreignKey: 'id',              //on Feature
+            targetKey: 'feature_id',  //foreign key  
+          });
           Feature.belongsTo(models.Gene, {
             foreignKey: 'id',              //on Feature
             targetKey: 'feature_id',  //foreign key  
           });
+          Feature.belongsTo(models.Mature_has_Pre, {
+            foreignKey: 'id',              //on Feature
+            targetKey: 'feature_id',  //foreign key  
+          });
           Feature.belongsTo(models.Mature_miRNA, {
+            foreignKey: 'id',              //on Feature
+            targetKey: 'feature_id',  //foreign key  
+          });
+          Feature.belongsTo(models.Pre_has_Feature, {
             foreignKey: 'id',              //on Feature
             targetKey: 'feature_id',  //foreign key  
           });

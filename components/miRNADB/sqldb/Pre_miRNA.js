@@ -15,6 +15,9 @@
       },
     accession: DataTypes.STRING(254),
     name: DataTypes.STRING(254),
+    family: DataTypes.INTEGER(6),
+    lettered_suffix: DataTypes.STRING(3),
+    numbered_suffix: DataTypes.INTEGER(3),
     description: DataTypes.STRING(254),
     feature_id: DataTypes.INTEGER(11),
     sequence_id: DataTypes.INTEGER(20),
@@ -25,7 +28,15 @@
 
      classMethods: {
         associate: function associate(models) {    
+          Pre_miRNA.belongsTo(models.Mature_has_Pre, {
+            foreignKey: 'id',              //on Pre_miRNA
+            targetKey: 'pre_miRNA_id',  //foreign key  
+          });
           Pre_miRNA.belongsTo(models.Mature_miRNA, {
+            foreignKey: 'id',              //on Pre_miRNA
+            targetKey: 'pre_miRNA_id',  //foreign key  
+          });
+          Pre_miRNA.belongsTo(models.Pre_has_Feature, {
             foreignKey: 'id',              //on Pre_miRNA
             targetKey: 'pre_miRNA_id',  //foreign key  
           });

@@ -17,7 +17,8 @@
     common_name: DataTypes.STRING(254),
     genus: DataTypes.STRING(254),
     specific_name: DataTypes.STRING(254),
-    subspecific_name: DataTypes.STRING(254),
+    subspecific_name_key: DataTypes.STRING(254),
+    subspecific_name_value: DataTypes.STRING(254),
     ncbi_taxon_id: DataTypes.STRING(254),
   }, {
       tableName: 'Organism',

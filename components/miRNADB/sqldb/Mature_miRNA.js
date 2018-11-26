@@ -15,6 +15,9 @@
       },
     accession: DataTypes.STRING(254),
     name: DataTypes.STRING(254),
+    family: DataTypes.INTEGER(6),
+    lettered_suffix: DataTypes.STRING(3),
+    numbered_suffix: DataTypes.INTEGER(3),
     description: DataTypes.STRING(254),
     arm: DataTypes.STRING(254),
     sequence_id: DataTypes.INTEGER(100),
@@ -34,6 +37,10 @@
           Mature_miRNA.belongsTo(models.HasStar, {
             foreignKey: 'id',              //on Mature_miRNA
             targetKey: 'star_miRNA_id',  //foreign key  
+          });
+          Mature_miRNA.belongsTo(models.Mature_has_Pre, {
+            foreignKey: 'id',              //on Mature_miRNA
+            targetKey: 'mature_miRNA_id',  //foreign key  
           });
           Mature_miRNA.belongsTo(models.Mature_miRNA_sequence, {
             foreignKey: 'sequence_id',              //on Mature_miRNA

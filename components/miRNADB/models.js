@@ -10,11 +10,10 @@ var e={}
 
 //getSequence search for the sequence in the database
 e.sequenceSearch=function(attributes){
-  console.log(attributes);
   return db.Mature_miRNA
   .findAndCountAll({
     include: [{
-      model: db.Pre_miRNA,
+      model: db.Mature_has_Pre,
       include: [{
         model:db.Feature,
         include: [{
@@ -42,7 +41,7 @@ e.nameSearch=function(attributes){
   return db.Mature_miRNA
   .findAndCountAll({
     include: [{
-      model: db.Pre_miRNA,
+      model: db.Mature_has_Pre,
       include: [{
         model:db.Feature,
         include: [{
@@ -65,16 +64,20 @@ e.nameSearch=function(attributes){
 }
 
 e.getFeatures=function(attributes){
-  return db.Pre_miRNA
+  return db.Mature_miRNA
   .findAndCountAll({
-    include: [{
-      model: db.Mature_miRNA,
-      where: attributes.where
-    },{
-      model: db.Feature
-    },{
-      model: db.Pre_miRNA_sequence
-    }]
+    include:[{
+      model: db.Mature_has_Pre,
+      include:[{
+        model:db.Pre_miRNA,
+        include:[{
+          model:db.Pre_miRNA_sequence
+        }]
+      },{
+        model:db.Feature,
+      }]
+    }],
+    where: attributes.where
   }).then(function(res){
     return res;
   })
@@ -87,7 +90,10 @@ e.linkedMatureMiRNA=function(attributes){
   return db.Pre_miRNA
   .findAndCountAll({
     include: [{
-      model: db.Mature_miRNA,
+      model: db.Mature_has_Pre,
+      include:[{
+         model: db.Mature_miRNA
+      }] 
     }],
     where: attributes.where
   }).then(function(res){
