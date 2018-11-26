@@ -4,6 +4,7 @@
 .config_db.js
 
 Utilities/__pycache__
+Utilities/scripts/__pycache__
 # Logs
 logs
 *.log
