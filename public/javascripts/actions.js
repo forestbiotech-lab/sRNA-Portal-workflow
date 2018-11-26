@@ -70,7 +70,7 @@ $(document).ready(function(){
 
 
   //Auto complete with typeahead https://github.com/bassjobsen/Bootstrap-3-Typeahead
-  $.get({
+/*  $.get({
     url: '/javascripts/ontologies.json', 
     success: function(data){
       processedData=[];
@@ -88,7 +88,7 @@ $(document).ready(function(){
     }, 
     dataType:'json'
   });
-
+**/
 
   //Currently applies to tables with CLASS .resizableTable
   //Table Sorter: https://mottie.github.io/tablesorter/docs/example-widget-resizable.html
