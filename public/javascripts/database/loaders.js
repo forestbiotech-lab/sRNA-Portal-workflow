@@ -67,6 +67,7 @@ function loadFilter(data,metadata){
       form.append(checkbox)
       checkbox.children('input').change(filter);
     }
+    setSelectFilters(filters)
   }
 }  
 

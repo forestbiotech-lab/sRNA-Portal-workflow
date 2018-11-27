@@ -76,6 +76,21 @@ function setGraphStrucutre(data){
   }
   return graph.data
 }
+
+function setSelectFilters(filters){
+  console.log(filters)
+  filters.find("button.select").click(function(){
+    console.log($(this))
+    let selectAll=$(this).attr("select")
+    if( selectAll === "true" ){
+      selectAll = true;
+    }else{
+      selectAll = false;
+    }
+    $(this).closest('.form-check').find("input[type|=checkbox]").prop('checked',selectAll)
+  })
+}
+
 //PASSED INSPECTION
 
 
