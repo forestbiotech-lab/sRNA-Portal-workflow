@@ -15,15 +15,17 @@ block content
               option(call="accession") Accession
             input.form-control(id="searchText",placeholder="[ATGCU]",type="text",style="margin-left:10px")
             button.form-control.btn.btn-primary.DBsearch(role="button") Search DB
-            button.form-control.btn.btn-secondary.DBadvSearch(role="button") Add advanced options &nbsp;
+            button.form-control.btn.btn-secondary.DBadvSearch(type="button",data-toggle="collapse",data-target="#advancedOptions-seach",aria-expanded="false",aria-controls="collapseExample") Add advanced options &nbsp;
               span.glyphicon.glyphicon-chevron-down
-            .d-none.form-check(style="margin-left:10px")  
-              label.form-check-label(title="Returns an exact match")
-                input.form-check-input(id="exact",type="radio",name="searchType",checked="true") 
-                | exact&nbsp;
-              label.form-check-label(title="Returns a approximate match, allowing any prefix or suffix to the given string")
-                input.form-check-input(id="approximate",type="radio",name="searchType") 
-                | approximate
+            .collapse(id="advancedOptions-seach")
+              .card.card-body
+                .form-check(style="margin-left:10px")  
+                  label.form-check-label(title="Returns an exact match")
+                    input.form-check-input(id="exact",type="radio",name="searchType",checked="true") 
+                    | exact&nbsp;
+                  label.d-none.form-check-label(title="Returns a approximate match, allowing any prefix or suffix to the given string")
+                    input.form-check-input(id="approximate",type="radio",name="searchType") 
+                    | approximate
     
           //Annotation Table            
           table.table.table-bordered.tablesorter.resizableTable-on-search.DBvalues(hasResizable)
