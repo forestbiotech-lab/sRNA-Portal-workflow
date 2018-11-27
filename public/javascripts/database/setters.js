@@ -78,9 +78,7 @@ function setGraphStrucutre(data){
 }
 
 function setSelectFilters(filters){
-  console.log(filters)
   filters.find("button.select").click(function(){
-    console.log($(this))
     let selectAll=$(this).attr("select")
     if( selectAll === "true" ){
       selectAll = true;

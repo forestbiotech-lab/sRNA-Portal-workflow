@@ -23,12 +23,38 @@ function loadFeatures(data){
       
       target.after(ajaxTemplate)
       let insertedTemplate = target.next("tr").find('.collapse');
-      let precursorAcc=dataPoint.precursor.accession;
+      let precursorAcc=dataPoint.Precursor.accession;
       insertedTemplate.attr('id',"mature_id"+mature_id)
 
       let svg=insertedTemplate.find("svg")
       svg.attr("id",precursorAcc)
       let seqView=insertedTemplate.find("#sequence-viewer")
+      let options={
+        'title':"Precursor sequence",
+        'search': false,
+        'toolbar': false,
+        'header' : {
+                    display:true,
+                    searchInTitle :true,
+                    unit: "Char",
+                    showCpl: true,
+                    badgeWithUnit : false
+        }
+      }
+      let selection=[{
+        start: 1,
+        end: 22,
+        color: "black", 
+        underscore: false,
+        bgcolor: "white",
+        tooltip: "mature sequence"  
+      }];
+      let legend = [{
+        name: "Mature Protein", 
+        color: "#ff0000", 
+        underscore: false
+      }];
+
       seqView.attr("id","sequence-viewer-"+precursorAcc)
 
       populateElement(insertedTemplate,dataPoint)
@@ -36,7 +62,7 @@ function loadFeatures(data){
       // Render the sequence with or without rendering options
       // (Check the interactive documentation)
       var sequence=insertedTemplate.find(".pre-sequence").text()
-      sequenceViewer(sequence,"#sequence-viewer-"+precursorAcc)
+      sequenceViewer(sequence,"#sequence-viewer-"+precursorAcc,options,selection,legend)
       loadGraph(svg,precursorAcc);
     } 
   }
@@ -76,7 +102,7 @@ function loadSearch(context){
   let form=context.closest('.searchDBform')
   let call=form.find('select#searchOptions option:selected').attr('call');
   let searchText=form.find('input#searchText').val()
-  let table=form.next('table.DBvalues')
+  let table=$('table.miRNAs.DBvalues')
   let row=cloneElement(table.find('tr.sampleSource'));  
   let url='/db/api/v1/'+call  
   let parameters={

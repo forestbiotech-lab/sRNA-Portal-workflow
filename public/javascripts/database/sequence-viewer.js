@@ -1,4 +1,4 @@
-function loadSequenceViewer(sequence,element,seqOptions){
+function loadSequenceViewer(sequence,element,seqOptions,selection,legend){
 	/*!
 	 * jQuery JavaScript Library v2.1.4
 	 * http://jquery.com/
@@ -9372,7 +9372,6 @@ function loadSequenceViewer(sequence,element,seqOptions){
 
 	            seqInit = $(divId + " .fastaSeq").html();
 	            mouseSelectionListener();
-	            console.log("Render done!")
 	        };
 
 	        this.selection = function (start, end, color, options) {
@@ -9763,21 +9762,28 @@ function loadSequenceViewer(sequence,element,seqOptions){
 	}else{
 		return seq
 	}
+	selection = selection || {}
+	legend = legend || {}
+	console.log(selection)
+	seq.selection(0,11,"red")
+	seq.coverage(selection)
+	console.log(legend)
+	seq.addLegend(legend)
 
 }
 
 function getSequence(sequence){
-	return sequenceViewer(sequence,{})
+	return loadSequenceViewer(sequence,{})
 }
 
 //Provides the encapsulation of the whole sequenceViewer saving previous jquery
-function sequenceViewer(sequence,element,seqOptions){
+function sequenceViewer(sequence,element,seqOptions,selection,legend){
 	var	// Map over jQuery in case of overwrite
 		_jQuery = window.jQuery,
 
 		// Map over the $ in case of overwrite
 		_$ = window.$;
-		loadSequenceViewer(sequence,element,seqOptions)
+		loadSequenceViewer(sequence,element,seqOptions,selection,legend)
 
 		//restore previous version of jquery
 		window.jquery=_jQuery;

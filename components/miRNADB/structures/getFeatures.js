@@ -3,12 +3,24 @@ module.exports={
 	"mature_accession":"accession",
 	"mature_description":"description",
 	"pre_sequence":{"_table":["Mature_has_Pre","Pre_miRNA","Pre_miRNA_sequence"],"_attribute":"sequence"},
-	"precursor":{
+	"Precursor":{
 		"_table":["Mature_has_Pre","Pre_miRNA"],
 		"id":"",
 		"name":"",
 		"accession":"",
 		"description":"",
+	},
+	"Precursor_Feature":{
+		"_table":["Mature_has_Pre","Pre_miRNA","Pre_has_Feature","Feature"],
+		"name":"",
+		"source":"",
+		"type":"",
+		"start":"",
+		"end":"",
+		"score":"",
+		"strand":"",
+		"phase":""
+
 	},
 	"Mature_Feature":{
 		"_table":["Mature_has_Pre","Feature"],

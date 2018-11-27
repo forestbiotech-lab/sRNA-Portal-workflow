@@ -72,6 +72,11 @@ e.getFeatures=function(attributes){
         model:db.Pre_miRNA,
         include:[{
           model:db.Pre_miRNA_sequence
+        },{
+          model:db.Pre_has_Feature,
+          include:[{
+            model:db.Feature
+          }]
         }]
       },{
         model:db.Feature,

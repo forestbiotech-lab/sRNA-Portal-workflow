@@ -5,39 +5,68 @@ tr.DBvalues.tableRow.collapse.show
           .card
             .card-head 
               h5.title.font-weight-bold Precursor miRNA information - 
-                span.db-data(dbAttr="mature_accession")
+                span.db-data(dbAttr="accession",table="Precursor")
             .card-body
               
               .row      
                 .d-none.pre-sequence.db-data(dbAttr="pre_sequence")
                 .col-md-4
-                  svg(width="100%",height="300px")        
-                .col-md-4  
-                  p.font-weight-bold Description:
-                    span.font-weight-normal.db-data(dbAttr="mature_description")
-                  p.font-weight-bold Name:
-                    span.font-weight-normal.db-data(dbAttr="name",table="Mature_Feature")
-                  p.font-weight-bold Source:
-                    span.font-weight-normal.db-data(dbAttr="source",table="Mature_Feature")
-                  p.font-weight-bold Type:
-                    span.font-weight-normal.db-data(dbAttr="type",table="Feature")
-                .col-md-4
                   .row
-                    .sequence-viewer(id="sequence-viewer")
-                    .col-md-6
-                      p.font-weight-bold Start:
-                        span.font-weight-normal.db-data(dbAttr="start",table="Mature_Feature")
-                    .col-md-6
-                      p.font-weight-bold End:
-                        span.font-weight-normal.db-data(dbAttr="end",table="Feature")
+                    .col-md-12
+                      .sequence-viewer(id="sequence-viewer")
                   .row
-                    .col-md-4
-                      p.font-weight-bold Score:
-                        span.font-weight-normal.db-data(dbAttr="score",table="Feature")
-                    .col-md-4
-                      p.font-weight-bold Strand:
-                        span.font-weight-normal.db-data(dbAttr="strand",table="Feature")
-                    .col-md-4
-                      p.font-weight-bold Phase:
-                        span.font-weight-normal.db-data(dbAttr="phase",table="Feature")
-
+                    .col-md-12              
+                      .card
+                        .hairpin(style="height:200px;background-image:url('/images/hairpin.jpg');background-size:cover",onclick="$('#zoom-hairpin').modal('show')")
+                      .card-body
+                        h5.card-title Precursor Hairpin &nbsp;
+                          button.btn.btn-primary(type="button",data-toggle="modal",data-target="#zoom-hairpin")
+                            span.glyphicon.glyphicon-zoom-in  
+                        p.card-text hairpin structure with the mature miRNA identified in red
+                .col-md-8
+                  .row
+                    .col-md-6  
+                      p.font-weight-bold Name:
+                        span.font-weight-normal.db-data(dbAttr="name",table="Precursor")
+                      p.font-weight-bold Accession:
+                        span.font-weight-normal.db-data(dbAttr="accession",table="Precursor")
+                      p.font-weight-bold Description:
+                        span.font-weight-normal.db-data(dbAttr="description",table="Precursor")
+                      p.font-weight-bold Source:
+                        span.font-weight-normal.db-data(dbAttr="source",table="Precursor")
+                      p.font-weight-bold Type:
+                        span.font-weight-normal.db-data(dbAttr="type",table="Feature")
+                    .col-md-6
+                      svg(width="100%",height="300px")        
+                  .row
+                    .col-md-12
+                      table.table.table-bordered
+                        thead
+                          tr.table-active
+                            th(colspan=6) Feature list
+                          tr  
+                            th Name
+                            th Start
+                            th End
+                            th Score
+                            th Strand
+                            th Phase
+                        tbody
+                          tr
+                            td.db-data(dbAttr="name",table="Precursor_Feature")
+                            td.db-data(dbAttr="start",table="Precursor_Feature")
+                            td.db-data(dbAttr="end",table="Precursor_Feature")
+                            td.db-data(dbAttr="score",table="Precursor_Feature")
+                            td.db-data(dbAttr="strand",table="Precursor_Feature")
+                            td.db-data(dbAttr="phase",table="Precursor_Feature")
+      .modal.fade(id="zoom-hairpin",tabindex="-1",role="dialog",aria-labelledby="zoom-hairpin-title",aria-hidden="true")
+        .modal-dialog.modal-dialog-centered(role="document")
+          .modal-content
+            .modal-header
+              h5.modal-title(id="zoom-hairpin-title") Precursor Structure
+              button.close(type="button",data-dismiss="modal",aria-label="Close")
+                span(aria-hidden="true") &times;
+            .modal-body
+              .hairpin(style="height:400px;width:400px;background-image:url('/images/hairpin.jpg');background-size:cover")
+            .modal-footer 
+              p hairpin structure with the miRNA identified in red
