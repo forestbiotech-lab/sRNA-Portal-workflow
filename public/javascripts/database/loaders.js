@@ -1,3 +1,65 @@
+function loadTypeAhead(){
+  //Auto complete with typeahead https://github.com/bassjobsen/Bootstrap-3-Typeahead
+  var autocomplete_name=$.get({
+    url: '/javascripts/DB_mature_miRNA_name.json',  
+    dataType:'json'
+  });
+  var autocomplete_sequence=$.get({
+    url: '/javascripts/DB_mature_miRNA_sequence.json', 
+    dataType:'json'
+  });
+
+    Promise.all([autocomplete_name,autocomplete_sequence]).then(function(values){
+      //texts in order
+      let data={
+        "miRNA name": values[0],
+        "Sequence": values[1]
+      }
+      let element=$('select.custom-select#searchOptions')
+      let target=$('input.form-control#searchText')
+      addTypeaheadListenerTo(element,target,data)
+    })
+  }
+  //Clear table function
+  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!?????????STAY?
+  function clearTable(){
+    $('table.DBvalues tr.tableRow.DBvalues').remove();
+  }
+
+ function addTypeaheadListenerTo(element,target,data){
+  let select=element[0]
+  let selectedIndex=select.selectedIndex;
+  let selectedText=select[selectedIndex].text
+  let values=data[selectedText];
+  let selectedTitle=select[selectedIndex].title
+  target.closest('.input-group.searchText').tooltip({
+    boundary:'window',
+    title:selectedTitle,
+    placement:'top'
+  })
+  target.typeahead({ 
+    source:values,
+    autoSelect:true
+  });
+
+  element.change(function(){
+    target.typeahead('destroy')
+    
+    let select=element[0]
+    let selectedIndex=select.selectedIndex;
+    let selectedText=select[selectedIndex].text;      
+    let selectedTitle=select[selectedIndex].title
+    let selectedPlaceholder=select[selectedIndex].attributes.placeholder.value
+    let values=data[selectedText];
+    target.closest('.input-group.searchText').attr('data-original-title',selectedTitle)
+    target.attr('placeholder',selectedPlaceholder)
+    target.typeahead({ 
+      source:values,
+      autoSelect:true
+    });
+  })    
+}
+
 function loadGraph(element,accession){
   $.get({
     url:"/db/api/v1/linkedMatureMiRNA?accession="+accession,
@@ -185,60 +247,7 @@ function loadResults(results,totalCount,row,searchText,table,button){
   }
 }
 
-function loadTypeAhead(){
-  //Auto complete with typeahead https://github.com/bassjobsen/Bootstrap-3-Typeahead
-  var autocomplete_name=$.get({
-    url: '/javascripts/DB_mature_miRNA_name.json',  
-    dataType:'json'
-  });
-  var autocomplete_sequence=$.get({
-    url: '/javascripts/DB_mature_miRNA_sequence.json', 
-    dataType:'json'
-  });
 
-    Promise.all([autocomplete_name,autocomplete_sequence]).then(function(values){
-      //texts in order
-      let data={
-        "miRNA name": values[0],
-        "Sequence": values[1]
-      }
-      let element=$('select.custom-select#searchOptions')
-      let target=$('.form-control#searchText')
-      addTypeaheadListenerTo(element,target,data)
-    })
-  }
-  //Clear table function
-  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!?????????STAY?
-  function clearTable(){
-    $('table.DBvalues tr.tableRow.DBvalues').remove();
-  }
-
-
-
- function addTypeaheadListenerTo(element,target,data){
-  let select=element[0]
-  let selectedIndex=select.selectedIndex;
-  let selectedText=select[selectedIndex].text
-  let values=data[selectedText]
-  target.typeahead({ 
-    source:values,
-    autoSelect:true
-  });
-
-  element.change(function(){
-    target.typeahead('destroy')
- 
-    let select=element[0]
-    let selectedIndex=select.selectedIndex;
-    let selectedText=select[selectedIndex].text;      
-    let values=data[selectedText];
-
-    target.typeahead({ 
-      source:values,
-      autoSelect:true
-    });
-  })    
-}
 
 function addTableSorter(element){
   //Currently applies to tables with CLASS .resizableTable

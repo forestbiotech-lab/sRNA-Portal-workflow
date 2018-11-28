@@ -10,10 +10,14 @@ block content
             label(for="searchBox") 
               h4 Query mature miRNAs:
             select.custom-select(id="searchOptions",style="margin-left:10px")
-              option(call="sequence") Sequence
-              option(call="name") miRNA name
-              option(call="accession") Accession
-            input.form-control(id="searchText",placeholder="[ATGCU]",type="text",style="margin-left:10px")
+              option(call="sequence",title="Type in a mature miRNA sequence - [ATGCU]^24",placeHolder="AAAAAGAUGCAGGACUAGACC") Sequence
+              option(call="name",title="Type in a miRNA name - ([a-z]^3-miR[0-9]^4[a-z]-[35]p)",placeHolder="ath-miR160") miRNA name
+              option(call="accession",title="Type in a miRNA accession - [A-Z]^5[0-9]^10",placeHolder="MIMAT0023299" ) Accession
+            .input-group.searchText
+              .input-group-prepend
+                .input-group-text
+                  span.glyphicon.glyphicon-info-sign
+              input.form-control(id="searchText",placeholder="AAAAAGAUGCAGGACUAGACC [ATGCU]^24 [ATGCU]",title="The mature miRNA sequence",type="text")
             button.form-control.btn.btn-primary.DBsearch(role="button") search
             button.form-control.btn.btn-secondary.DBadvSearch(type="button",data-toggle="collapse",data-target="#advancedOptions-search",aria-expanded="false",aria-controls="advancedOptions-search") advanced &nbsp;
               span.glyphicon.glyphicon-chevron-down
