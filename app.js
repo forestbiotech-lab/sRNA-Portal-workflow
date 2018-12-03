@@ -10,7 +10,7 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var api = require('./routes/api');
 var other = require('./routes/other');
-
+var viewers = require('./routes/viewers');
 
 // redirect stdout / stderr
 if (process.env.mode=="PRODUCTION") process.__defineGetter__('stdout', function() { return fs.createWriteStream('/var/log/sRNAServer.log', {flags:'a'}) })
@@ -37,6 +37,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/users', users);
 app.use('/db/api/v1',api);
+app.use('/viewers',viewers);
 app.use('/', other);
 
 
