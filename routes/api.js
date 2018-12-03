@@ -12,7 +12,6 @@ var linkedMatureMiRNA = require('./../components/miRNADB/linkedMatureMiRNA');
 /// --------------End -------------------------------------------------
 
 
-
 /* GET sequences search */
 router.get('/sequence', function(req, res, next) {
   var errMsg="API Router /sequence get - "
