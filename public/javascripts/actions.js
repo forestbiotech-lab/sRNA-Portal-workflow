@@ -202,7 +202,7 @@ $(document).ready(function(){
       contentType: false,//'application/x-www-form-urlencoded;charset=UTF-8',
       processData: false,
       success: function(data,textStatus,jqXHR){  
-        console.log(data);
+        //console.log(data);
         $('#termSearchModal #accordion').removeAttr('hidden');
         table=$('table.termTable');
         $('table.termTable [class*=row]').remove();
@@ -280,7 +280,7 @@ $(document).ready(function(){
       //20 for sidepanel and another 20 for spacing (optional)
       $('.mainPanel').width(mainPanel100-20-20+"px");
       sidePanelOriginalWidth=mainPanel100*0.2+50+"px";
-      console.log(mainPanel100*0.2+50);
+      //console.log(mainPanel100*0.2+50);
     }
     else {
       $('.sidePanel').width('20%');

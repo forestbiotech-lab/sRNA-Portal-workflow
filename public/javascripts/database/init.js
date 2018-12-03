@@ -10,7 +10,7 @@ $(document).ready(function(){
   ]
 
 
-  scriptTarget = $('script#jquery')[0];
+  scriptTarget = $('script#actions')[0];
   for (s in scriptName){
     let url="/javascripts/database/"+scriptName[s]+".js";
     let script = document.createElement('script');
