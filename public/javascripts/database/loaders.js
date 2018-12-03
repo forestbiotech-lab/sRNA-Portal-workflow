@@ -196,7 +196,6 @@ function loadSearch(context){
   }
 
   function fail(response){
-    console.log("FAIL")
     //Depends on: button,row
     changeButtonStyle(button,'btn-primary','btn-danger')
     
