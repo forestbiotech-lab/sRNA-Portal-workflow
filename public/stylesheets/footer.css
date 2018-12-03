@@ -7,23 +7,46 @@
 }
 
 .footer .incd{
-  background-image: url(/images/INCDlogo.png);
-  background-size:100%;
-  width: 160px;
-  height: 80px;
-  float:left;
+  background-image: url(/images/footer/INCD.png);
+  background-size: contain;
+  width: 200px;
+  height: 100px;
+  float: left;
+  background-repeat: no-repeat;
 }
 .footer .eu{
   float:left;
-  width:300px;
+  background-image: url(/images/footer/EU.png);
+  width: 350px;
+  height: 100px;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.footer .lisboa2020{
+  float: left;
+  background-image: url(/images/footer/portugal_2020.png);
+  height: 100px;
+  width: 268px;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
-.footer .eu .logo{
-  background-image: url(/images/EU_flag_footer.png);
-  width: 160px;
-  height: 60px;
-  float:left;
+.footer .elixir{
+  float: left;
+  background-image: url(/images/footer/elixir_pt.png);
+  height: 100px;
+  width: 175px;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
-.footer .eu p{
-  font-size: 10px;
+
+.footer .biodata{
+  float: left;
+  background-image: url(/images/footer/biodata_pt.png);
+  height: 100px;
+  width: 415px;
+  background-position-x: 10px;
+  background-size: 90%;
+  background-repeat: no-repeat;
+  background-position-y: 10px;
 }
