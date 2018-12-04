@@ -9764,10 +9764,10 @@ function loadSequenceViewer(sequence,element,seqOptions,selection,legend){
 	}
 	selection = selection || {}
 	legend = legend || {}
-	console.log(selection)
+	//console.log(selection)
 	seq.selection(0,11,"red")
 	seq.coverage(selection)
-	console.log(legend)
+	//console.log(legend)
 	seq.addLegend(legend)
 
 }

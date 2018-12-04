@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  table.table.table-bordered
+    thead
+      each values,header in result.data[0]
+        td=header
+    tbody
+      each row in result.data
+        tr
+          each value in row
+            td=value
+

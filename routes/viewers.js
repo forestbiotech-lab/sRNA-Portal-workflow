@@ -3,7 +3,7 @@ var router = express.Router();
 
 router.get( "/" ,function(req,res,next){
 
-	res.render('secondaryStructureViewer');
+	res.render('ViewerSecondaryStructure');
 })
 
 module.exports = router;

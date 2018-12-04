@@ -109,6 +109,15 @@ e.linkedMatureMiRNA=function(attributes){
   })
 }
 
+e.statsOrganism=function(attributes){
+  return db.Organism
+  .findAndCountAll({
+  }).then(function(res){
+    return res;
+  }).catch(function(err){
+    console.log('getGlobal Stats - Err:'+err)
+  })
+}
 
 module.exports = e
 
