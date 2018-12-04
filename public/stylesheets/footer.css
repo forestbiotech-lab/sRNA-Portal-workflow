@@ -22,7 +22,7 @@
   background-size: contain;
   background-repeat: no-repeat;
 }
-.footer .lisboa2020{
+.footer .portugal2020{
   float: left;
   background-image: url(/images/footer/portugal_2020.png);
   height: 100px;
@@ -49,4 +49,15 @@
   background-size: 90%;
   background-repeat: no-repeat;
   background-position-y: 10px;
+}
+
+.footer .lisboa2020{
+  float: left;
+  background-image: url(/images/footer/lisboa_2020.png);
+  height: 100px;
+  width: 307px;
+  background-size: 125%;
+  background-repeat: no-repeat;
+  background-position-x: -45px;
+  background-position-y: -40px;
 }
