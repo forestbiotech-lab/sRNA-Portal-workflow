@@ -2,7 +2,7 @@ The plant sRNA portal is a a database of annotated sRNAs integrating the [miRPur
 
 
 - **Stage 1**:
-	- Exposure of miRNA data in our databases. [See list of species](/stats/organism).
+	- Exposure of [miRNA data in our databases](/db). [See list of species](/stats/organism).
 - **Stage 2** (Coming soon):
 	- Running the pipeline and exporting to the database.
 
