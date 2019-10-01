@@ -2,5 +2,5 @@
 
 #Executable script for systemd
 cd /home/brunocosta/.git/sRNA-Portal-workflow
-sudo user=brunocosta DEBUG=brapi:server mode=PRODUCTION nodemon start
+sudo user=brunocosta DEBUG=srna-portal-workflow:server mode=PRODUCTION nodemon start
 
