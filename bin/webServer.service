@@ -1,0 +1,13 @@
+[Unit]
+Description=sRNAPortal web server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+#User=brunocosta
+Type=simple
+ExecStart=/home/brunocosta/.git/sRNA-Portal-workflow/bin/sRNAPortal
+
+[Install]
+WantedBy=multi-user.target
+~
