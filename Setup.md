@@ -70,9 +70,11 @@ sudo chsh ${USERNAME} -s /usr/bin/zsh
 	sudo mysql -u root -p
 	SET GLOBAL validate_password_policy=low
 	CREATE DATABASE ${db};
-	create USER 'webapp'@'localhost' IDENTIFIED BY 'randompassword'; GRANT ALL PRIVILEGES ON `sRNAPlantPortal`.* TO 'webapp'@'localhost'; FLUSH PRIVILEGES;
-
+	create USER 'webapp'@'localhost' IDENTIFIED WITH mysql_native_password BY 'randompassword'; GRANT ALL PRIVILEGES ON `sRNAPlantPortal`.* TO 'webapp'@'localhost'; FLUSH PRIVILEGES;
 	sudo mysql -u root -D ${db} -p <SQL/LATEST_dump.sql
+
+	##Fix auth method
+	ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password'
 ```
 
 ## Start service
