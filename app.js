@@ -12,6 +12,7 @@ var api = require('./routes/api');
 var other = require('./routes/other');
 var viewers = require('./routes/viewers');
 var stats = require('./routes/stats');
+var de = require('./routes/differential_expression')
 
 // redirect stdout / stderr
 if (process.env.mode=="PRODUCTION") process.__defineGetter__('stdout', function() { return fs.createWriteStream('/var/log/sRNAServer.log', {flags:'a'}) })
@@ -40,6 +41,7 @@ app.use('/users', users);
 app.use('/db/api/v1',api);
 app.use('/viewers',viewers);
 app.use('/stats',stats);
+app.use('/de',de);
 app.use('/', other);
 
 
