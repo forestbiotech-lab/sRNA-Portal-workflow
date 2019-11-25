@@ -2,7 +2,7 @@ $(document).ready(function(){
 
   scriptName=[
     'ajax',
-//    'loaders',
+//    'parsers',
 //  'setters',
  //   'getters',
  //   'DOMbasics',

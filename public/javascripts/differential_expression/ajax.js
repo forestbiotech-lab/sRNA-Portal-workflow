@@ -1,11 +1,11 @@
 $(document).ready(function(){
  
   $('.upload-matrix').on('click', function (){
-    $('#upload-files-test').click();
+    $('#upload-files-upload').click();
     $('.progress-bar').text('0%');
     $('.progress-bar').width('0%');
   });
-  $('#upload-files-test').on('change', function(){
+  $('#upload-files-upload').on('change', function(){
 
     var files = $(this).get(0).files;
     if (files.length > 0){
@@ -30,8 +30,12 @@ $(document).ready(function(){
         processData: false,
         contentType: false,
         success: function(data,textStatus,jqXHR){
+          let filename=files[0].name
+          $('.card.upload .card-footer input#file').val(filename)  
+            console.log(files[0].name);
             console.log('upload successful!\n');
             uploads=formData.getAll("uploads[]");
+
         },
         xhr: function() {
           // create an XMLHttpRequest

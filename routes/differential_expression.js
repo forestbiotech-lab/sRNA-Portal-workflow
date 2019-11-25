@@ -9,6 +9,9 @@ router.get('/',function(req,res){
 	res.render('differential_expression');
 })
 
+router.get('/raw-read-matrix',function(req,res){
+	res.render('de/rawreadmatrix')
+})
 //POST UPLOAD                                     POST UPLOAD    //RESTRICT access required
 router.post('/upload', function(req, res){
   // create an incoming form object

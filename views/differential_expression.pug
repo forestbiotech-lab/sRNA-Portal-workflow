@@ -5,10 +5,30 @@ block content
   .card-block
     .container-fluid
       .row  
-        .col-md-12
-          label.sr-only(for="upload-files-upload") Upload file
-          input(hidden,type="file",id="upload-files-upload",placeholder="tsv file",required="",autofocus="",autocomplete="off",name="uploads[]", multiple="multiple")
-          .progress(style="position:relative;bottom:-12px;")
-            .progress-bar(role="progressbar",aria-valuenow="0",aria-valuemin="0",aria-valuemax="100")
-        .col-md-2
-          .button.btn.btn-primary.upload-matrix(type="button") Upload files  
+        .col-lg-12
+          .card
+            .card-body
+              h4.card-title Study
+              p kjlkjkljlkj
+      .row
+        .col-lg-12
+          .card.upload 
+            .card-body
+              h5.card-title Matrix with raw reads counts
+              .row
+                .form-group
+                  label.sr-only(for="upload-files-upload") Upload file
+                  input(hidden,type="file",id="upload-files-upload",placeholder="tsv file",required="",autofocus="",autocomplete="off",name="uploads[]", multiple="multiple")
+                .col-lg-10
+                  .progress(style="position:relative;bottom:-12px;")
+                    .progress-bar(role="progressbar",aria-valuenow="0",aria-valuemin="0",aria-valuemax="100")
+                .col-lg-2
+                  button.btn.btn-primary.upload-matrix(type="button") Upload files  
+            .card-footer
+              .row
+                .form-group.col-lg-12
+                  label(for="file") Uploaded file: 
+                  input.col-lg-10.col-md-8.col-sm-4(type="text",id="file",placeholder="no file",required="",name="file",readonly)
+      .row
+        .col-lg-12
+          a.btn.btn-primary(role="button",href="de/raw-read-matrix") View matrix
