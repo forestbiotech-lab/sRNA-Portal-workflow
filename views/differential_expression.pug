@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  script(id="database",src="/javascripts/de.js",defer)
+  .card-block
+    .container-fluid
+      .row  
+        .col-md-12
+          label.sr-only(for="upload-files-upload") Upload file
+          input(hidden,type="file",id="upload-files-upload",placeholder="tsv file",required="",autofocus="",autocomplete="off",name="uploads[]", multiple="multiple")
+          .progress(style="position:relative;bottom:-12px;")
+            .progress-bar(role="progressbar",aria-valuenow="0",aria-valuemin="0",aria-valuemax="100")
+        .col-md-2
+          .button.btn.btn-primary.upload-matrix(type="button") Upload files  
