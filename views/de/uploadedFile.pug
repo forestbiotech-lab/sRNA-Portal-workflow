@@ -1,0 +1,17 @@
+extends ../layout
+
+block content
+  script(id="database",src="/javascripts/de.js",defer)
+  .card-block
+    .container-fluid
+      .row  
+        .col-lg-12
+          table.table
+            thead
+              each colHeader in header
+                th=colHeader
+            tbody
+              each row in body
+                tr
+                  each cell in row
+                    td=cell  

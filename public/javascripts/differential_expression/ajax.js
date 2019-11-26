@@ -8,7 +8,7 @@ $(document).ready(function(){
   $('#upload-files-upload').on('change', function(){
 
     var files = $(this).get(0).files;
-    if (files.length > 0){
+    if (files.length == 1){
       // One or more files selected, process the file upload
 
       // create a FormData object which will be sent as the data payload in the
@@ -16,13 +16,8 @@ $(document).ready(function(){
       var formData = new FormData();
 
       // loop through all the selected files
-      for (var i = 0; i < files.length; i++) {
-        var file = files[i];
+      formData.append('uploads[]', files[0], files[0].name);
 
-        // add the files to formData object for the data payload
-        formData.append('uploads[]', file, file.name);
-      }
-      console.log(files[0].name);
       $.ajax({
         url: '/de/upload',
         type: 'POST',
@@ -30,12 +25,18 @@ $(document).ready(function(){
         processData: false,
         contentType: false,
         success: function(data,textStatus,jqXHR){
-          let filename=files[0].name
-          $('.card.upload .card-footer input#file').val(filename)  
-            console.log(files[0].name);
-            console.log('upload successful!\n');
-            uploads=formData.getAll("uploads[]");
-
+          console.log(data)
+          let filename=data.name
+          let hash=data.hash
+          if(filename=="UnsupportedFile"){
+            alert("Unsupported file type! Try again")
+            $('.progress-bar').text('0%');
+            $('.progress-bar').width('0%');
+          }else{
+            $('.card.upload .card-footer input#file').val(filename)  
+            $('form.view-matrix input#filename').val(filename)
+            $('form.view-matrix input#hash').val(hash)
+          }
         },
         xhr: function() {
           // create an XMLHttpRequest
@@ -68,6 +69,7 @@ $(document).ready(function(){
     }
   }); 
  
+
 
 
 });

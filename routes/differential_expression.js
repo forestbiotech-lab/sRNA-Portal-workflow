@@ -3,7 +3,9 @@ var router = express.Router();
 var formidable = require('formidable')
 var fs = require('fs')
 var path=require('path')
-var Promise = require("bluebird");
+var detect =require('detect-file-type');
+
+const uploadDir=path.join(__dirname, '../uploads/de_matrices');
 
 router.get('/',function(req,res){
 	res.render('differential_expression');
@@ -18,19 +20,38 @@ router.post('/upload', function(req, res){
   var form = new formidable.IncomingForm();
 
   // specify that we want to allow the user to upload multiple files in a single request
-  form.multiples = true;
+  form.multiples = false;
 
   //Calculate file hash
   form.hash = 'md5';
   console.log(__dirname);
 
   // store all uploads in the /uploads directory
-  form.uploadDir = path.join(__dirname, '../uploads');
+  form.uploadDir = uploadDir;
 
   // every time a file has been uploaded successfully,
   // rename it to it's original name
   form.on('file', function(field, file) {
-    fs.rename(file.path, path.join(form.uploadDir, file.name), function(){console.log("Rename done")});
+  	detect.fromFile(file.path,function(err,result){
+  		if (err){
+  			return console.log(err)
+  		}
+  		if (result===null){
+  			fs.rename(file.path, path.join(form.uploadDir, file.name), (err)=>{
+  				if(err) throw err;
+  				console.log("Rename done!")
+  				file={hash:form.openedFiles[0].hash, name:form.openedFiles[0].name}
+    			res.json(file);
+  			});
+  		}else{
+  			console.log('this is not the right file type')
+  			fs.unlink(file.path, (err)=>{
+  				if(err) throw err;
+  				console.log("File deleted!")
+  				res.json({hash:'',name:"UnsupportedFile"})
+  			})
+  		}	
+  	})
   });
 
   // log any errors that occur
@@ -40,8 +61,7 @@ router.post('/upload', function(req, res){
 
   // once all the files have been uploaded, send a response to the client
   form.on('end', function() {
-  	file={hash:form.openedFiles[0].hash, name:form.openedFiles[0].name}
-    res.json(file);
+  	//Not necessary for single file
   });
 
   // parse the incoming request containing the form data
@@ -49,4 +69,19 @@ router.post('/upload', function(req, res){
 
 });
 
+router.post('/uploaded-file',function(req,res){ 	 
+  var filePath=path.join(uploadDir, req.body.filename)
+  fs.readFile(filePath,'utf8', function(err,data){
+    //Calculate hash for each line
+    var dataString=data.toString().split(/\r*\n/) 
+    var result=[]
+    for (line in dataString){
+      result.push(dataString[line].split("\t"))
+    }
+    let header=result[0]
+    let body=result.splice(1)
+    console.log({body,header})
+  	err ? res.render(error,err) : res.render('de/uploadedFile',{header,body});
+  })
+})
 module.exports = router;
