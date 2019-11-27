@@ -33,30 +33,25 @@ router.post('/upload', function(req, res){
   // rename it to it's original name
   form.on('file', function(field, file) {
   	detect.fromFile(file.path,function(err,result){
-  		if (err){
-  			return console.log(err)
-  		}
+  		if (err) res.render('error',err);
   		if (result===null){
   			fs.rename(file.path, path.join(form.uploadDir, file.name), (err)=>{
-  				if(err) throw err;
-  				console.log("Rename done!")
+  				if(err) res.render('error',err);
   				file={hash:form.openedFiles[0].hash, name:form.openedFiles[0].name}
     			res.json(file);
   			});
   		}else{
   			console.log('this is not the right file type')
   			fs.unlink(file.path, (err)=>{
-  				if(err) throw err;
-  				console.log("File deleted!")
-  				res.json({hash:'',name:"UnsupportedFile"})
+  				err ? res.render('error',err) : res.json({hash:'',name:"UnsupportedFile"})
   			})
   		}	
   	})
   });
-
   // log any errors that occur
   form.on('error', function(err) {
     console.log('An error has occured: \n' + err);
+    res.render('error',err);
   });
 
   // once all the files have been uploaded, send a response to the client

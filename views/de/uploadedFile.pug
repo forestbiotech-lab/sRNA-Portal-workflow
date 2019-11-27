@@ -11,7 +11,7 @@ block content
               each colHeader in header
                 th=colHeader
             tbody
-              each row in body
-                tr
-                  each cell in row
-                    td=cell  
+              each row in body.slice(0,20000)
+                tr(id=row[0])
+                  each cell, index in row
+                    td(col=header[index])=cell  

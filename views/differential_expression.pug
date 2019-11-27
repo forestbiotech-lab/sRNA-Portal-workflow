@@ -31,7 +31,7 @@ block content
                   input.col-lg-10.col-md-8.col-sm-4(type="text",id="file",placeholder="no file",required="",name="file",readonly)
       .row
         .col-lg-12
-          form.view-matrix(action="de/uploaded-file",method="POST")
+          form.view-matrix(action="/de/uploaded-file",method="POST")
             input(type="hidden",name="hash",id="hash")
             input(type="hidden",name="filename",id="filename")
             input.btn.btn-primary(type="submit",role="button",value="View matrix")
