@@ -38,7 +38,8 @@ npm-debug.log
 
 #files in upload folter
 uploads/*
-
+!uploads/README.md
+!uploads/de_matrices/README.md
 
 #Database backups
 SQL/DB_backup/*
