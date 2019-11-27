@@ -6,12 +6,41 @@ block content
     .container-fluid
       .row  
         .col-lg-12
-          table.table
-            thead
-              each colHeader in header
-                th=colHeader
-            tbody
-              each row in body.slice(0,20000)
-                tr(id=row[0])
-                  each cell, index in row
-                    td(col=header[index])=cell  
+          .card.conflicts
+            .card-header.conflicts
+              h4.card-title Conflicts&nbsp
+                span.badge.badge-secondary#ofConflicts 0
+            .card-body      
+              p Please resolve the following conflicts before saving data
+            .card-header.duplicate-rows
+              h3.card-title Duplicated Rows
+            .card-body.duplicate-rows
+              table.table.table-hover.duplicate-rows.invisible
+                thead
+                  each colHeader in header
+                    th=colHeader
+                tbody
+            .card-header.duplicate-sequecnes
+              h3.card-title Duplicated Sequences
+            .card-body.duplicate-sequences                  
+              table.table.table-hover.duplicate-sequences.invisible
+                thead
+                  each colHeader in header
+                    th=colHeader
+                tbody      
+          .card.upload-table
+            .card-header
+              h4.card-title Expression Matrix&nbsp
+                span.badge.badge-secondary#ofUploadSequences 0
+                | &nbsp;sequences  
+            .card-body  
+              table.table.table-striped.upload-table
+                thead
+                  each colHeader in header
+                    th=colHeader
+                tbody
+                  each row in body.slice(0,40000)
+                    tr(id=row[0])
+                      each cell, index in row
+                        td(col=header[index])=cell
+

@@ -1,8 +1,8 @@
 $(document).ready(function(){
 
   scriptName=[
-    'ajax'
-   // 'parser',
+    'ajax',
+    'parser',
 //  'setters',
  //   'getters',
  //   'DOMbasics',
