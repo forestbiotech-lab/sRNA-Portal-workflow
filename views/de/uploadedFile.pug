@@ -30,10 +30,14 @@ block content
                 tbody      
           .card.upload-table
             .card-header
-              h4.card-title Expression Matrix&nbsp
-                span.badge.badge-secondary#ofUploadSequences 0
-                | &nbsp;sequences  
-            .card-body  
+              .row
+                .col-lg-6
+                  h4.card-title Expression Matrix&nbsp
+                    span.badge.badge-secondary#ofUploadSequences 0
+                    | &nbsp;sequences
+                .col-lg-6
+                  button.btn.btn-primary.upload-matrix(style="float:right") Save matrix  
+            .card-body.upload-table  
               table.table.table-striped.upload-table
                 thead
                   each colHeader in header

@@ -88,6 +88,7 @@ e.getFeatures=function(attributes){
   })
   .catch(function(err){
     console.log('getFeatures - Err:'+ err);
+    return err
   })
 }
 
@@ -106,6 +107,7 @@ e.linkedMatureMiRNA=function(attributes){
   })
   .catch(function(err){
     console.log('getFeatures - Err:'+ err);
+    return err
   })
 }
 
@@ -116,8 +118,31 @@ e.statsOrganism=function(attributes){
     return res;
   }).catch(function(err){
     console.log('getGlobal Stats - Err:'+err)
+    return err
   })
 }
 
+e.saveSequence=function(attributes){
+  return db.Mature_miRNA_sequence
+  .create(
+      attributes.insert
+    ).then(function(res){
+    return res
+  }).catch(function(err){
+    console.log('saveSequence - Err:'+err)
+    return err
+  })
+}
+e.getSequenceIdBySequence=function(attributes){
+  return db.Mature_miRNA_sequence
+  .findOne(
+    attributes.where
+  ).then(function(res){
+    return res
+  }).catch(function(err){
+    console.log('getSequenceIdBySequence - Err: '+err)
+    return err
+  })
+}
 module.exports = e
 

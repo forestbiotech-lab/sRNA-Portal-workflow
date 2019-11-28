@@ -4,6 +4,7 @@ var formidable = require('formidable')
 var fs = require('fs')
 var path=require('path')
 var detect =require('detect-file-type');
+var saveSequence = require('./../components/miRNADB/saveSequence')
 
 const uploadDir=path.join(__dirname, '../uploads/de_matrices');
 
@@ -78,5 +79,14 @@ router.post('/uploaded-file',function(req,res){
     console.log({body,header})
   	err ? res.render(error,err) : res.render('de/uploadedFile',{header,body});
   })
+})
+
+router.put('/savetodatabase',function(req,res){
+	console.log(req.body)
+	saveSequence(req.body).then(function(data){
+		res.json(data)
+	}).catch(function(err){
+		res.status(404).json(err)
+	})
 })
 module.exports = router;
