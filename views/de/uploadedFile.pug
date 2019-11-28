@@ -39,7 +39,7 @@ block content
                   each colHeader in header
                     th=colHeader
                 tbody
-                  each row in body.slice(0,40000)
+                  each row in body.slice(0,35000)
                     tr(id=row[0])
                       each cell, index in row
                         td(col=header[index])=cell
