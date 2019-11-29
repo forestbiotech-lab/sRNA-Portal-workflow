@@ -3,6 +3,8 @@ $(document).ready(function(){
   scriptName=[
     'ajax',
     'parser',
+    'savetodb',
+    'infinityLoader',
 //  'setters',
  //   'getters',
  //   'DOMbasics',

@@ -66,7 +66,10 @@ router.post('/upload', function(req, res){
 });
 
 router.post('/uploaded-file',function(req,res){ 	 
-  var filePath=path.join(uploadDir, req.body.filename)
+  let uploadedFilename=req.body.filename
+  console.log(req.body)
+  var filePath=path.join(uploadDir, uploadedFilename)
+  console.log(uploadedFilename)
   fs.readFile(filePath,'utf8', function(err,data){
     //Calculate hash for each line
     var dataString=data.toString().split(/\r*\n/) 
@@ -76,13 +79,18 @@ router.post('/uploaded-file',function(req,res){
     }
     let header=result[0]
     let body=result.splice(1)
-    console.log({body,header})
-  	err ? res.render(error,err) : res.render('de/uploadedFile',{header,body});
+    //console.log({body,header})
+    if(req.body.resultType=="json"){
+      res.json({header,body}) 
+     //err ? res.status(404).json(err) : res.json({header,body})
+    }else{
+  	 err ? res.render(error,err) : res.render('de/uploadedFile',{header,body,uploadedFilename});
+    }
   })
 })
 
 router.put('/savetodatabase',function(req,res){
-	console.log(req.body)
+  console.log(req.body)
 	saveSequence(req.body).then(function(data){
 		res.json(data)
 	}).catch(function(err){
