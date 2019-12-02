@@ -1,16 +1,19 @@
+if (document.location.pathname=="/de/uploaded-file"){
+	var uploadMatrix=uploadMatrix || []
+	var loadedRows=loadedRows || 0
+
+}
 $(document).ready(function(){
 	
 	let loadedRows=$('table.upload-table tbody tr').length-1
 	let filename=$('table.upload-table tr#lastRow').attr('filename')
 	let fulltable=false
-	console.log(filename)
 	
 	if(filename.length>0){	
 		getMatrixObj({filename,resultType:'json'}).then(function(data){
-			console.log(data)
 			const matrixSize=data.body.length
 			let percentageLoaded=Math.round((loadedRows/matrixSize)*100)
-			alert(percentageLoaded)
+			//alert(percentageLoaded)
 		}).catch(function(err){
 			alert(err)
 		})
@@ -24,8 +27,9 @@ $(document).ready(function(){
 				type: 'POST',
 				data: data,
 				dataType: 'json',
-				sucess: function(data,textStatus,jqXHR){
-					console.log(data)
+				success: function(data,textStatus,jqXHR){
+					uploadMatrix=data
+					varListener.a = data
 					res(data)
 				},error:function(qXHR,textStatus,err){
 					console.log(err)

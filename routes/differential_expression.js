@@ -69,7 +69,6 @@ router.post('/uploaded-file',function(req,res){
   let uploadedFilename=req.body.filename
   console.log(req.body)
   var filePath=path.join(uploadDir, uploadedFilename)
-  console.log(uploadedFilename)
   fs.readFile(filePath,'utf8', function(err,data){
     //Calculate hash for each line
     var dataString=data.toString().split(/\r*\n/) 
@@ -81,8 +80,7 @@ router.post('/uploaded-file',function(req,res){
     let body=result.splice(1)
     //console.log({body,header})
     if(req.body.resultType=="json"){
-      res.json({header,body}) 
-     //err ? res.status(404).json(err) : res.json({header,body})
+      err ? res.status(404).json(err) : res.json({header,body})
     }else{
   	 err ? res.render(error,err) : res.render('de/uploadedFile',{header,body,uploadedFilename});
     }

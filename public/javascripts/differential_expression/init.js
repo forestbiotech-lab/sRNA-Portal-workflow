@@ -1,6 +1,7 @@
 $(document).ready(function(){
 
   scriptName=[
+    'helpers',
     'ajax',
     'parser',
     'savetodb',
