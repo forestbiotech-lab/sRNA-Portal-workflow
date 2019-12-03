@@ -1,45 +1,54 @@
 $(document).ready(function(){
+  var uploadMatrix=varListener.a
   var now=''
   var then=''
   var successes=0
   var errors=0
+  let iteration=0
+  const rowsPerIter=50
+  let uploadedRows=0
+  let fullTable=false
+
+
+  if(uploadMatrix.length==0){
+    varListener.registerListener(function(matrix){
+      uploadMatrix=matrix
+    })
+  }
+  
   $('.card.upload-table .card-header button.upload-matrix').click(function(){
     now=new Date()
-    let dataset={}
-    let sequenceSet=[]
-    $(this).closest('.card').find('.card-body tbody tr').each(function(){
-      let that=$(this)
-      let row=[]
-      that.children('td').each(function(){
-        row.push($(this).text())
+    let dataset=''
+    if(uploadMatrix instanceof Array){
+      varListener.registerListener(function(matrix){
+        uploadMatrix=matrix
+        dataset=extractUploadRows()
+        uploadRows({dataset})
       })
-      let sequence=row[0]
-      row.slice(1)
-      dataset[sequence]=row
-      sequenceSet.push({sequence})
-    })
-    console.log(sequenceSet)
-    uploadRows({sequenceSet})
-    //that.empty()
-    then=new Date()
-    elapsedTime=(then-now)/1000
-    console.log({successes,errors,elapsedTime})
+    }else{
+        dataset=extractUploadRows()
+        uploadRows({dataset})
+    }
   })
 
 
 
-
-  function uploadRows(row){
+  function uploadRows(rows){
     $.ajax({
       url: '/de/savetodatabase',
       type: 'PUT',
-      data: row,
+      data: rows,
       dataType: 'json',
       success: function(data,textStatus,jqXHR){
         successes++
         then=new Date()
         elapsedTime=(then-now)/1000
         console.log({successes,errors,elapsedTime})
+      //After success
+      //iteration++
+      //addLoadedRows(rows.length)      
+
+//      if(loadedRows>=uploadNumber) fulltable=true      
       },error:function(jqXHR,textStatus,err){
         errors++
       },xhr: function() {
@@ -71,5 +80,17 @@ $(document).ready(function(){
     })
   }
 
+  function extractUploadRows(){
+    let start=iteration*rowsPerIter
+    let hashes=Object.keys(uploadMatrix.hashLookup).slice(start,start+rowsPerIter)
+    let rows=[]
+    hashes.forEach(function(hash){
+      let row=uploadMatrix.hashLookup[hash]
+      if (row.length == 1)
+        if( uploadMatrix.duplicateSeq.indexOf( row[0][0] ) ==-1 )
+          rows.push(row[0])
+    })
+    return rows
+  }
 
 })

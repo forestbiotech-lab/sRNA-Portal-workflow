@@ -81,11 +81,14 @@ router.post('/uploaded-file',function(req,res){
 })
 
 router.put('/savetodatabase',function(req,res){
-  console.log(req.body)
-	saveSequence(req.body).then(function(data){
+  console.log(req.body.dataset)
+  let rows=req.body.dataset
+	saveSequence(rows).then(function(data){
+    console.log(data)    
 		res.json(data)
 	}).catch(function(err){
 		res.status(404).json(err)
 	})
 })
+
 module.exports = router;

@@ -5,7 +5,7 @@ $(document).ready(function(){
 	const rowsPerIter=100
 	let iteration=0
 	let fulltable=false
-	let viewPortHeight=window.visualViewport.height
+	let viewPortHeight=window.innerHeight
 	let lastRow = null
 	let uploadNumber=0
 	
@@ -46,7 +46,6 @@ $(document).ready(function(){
 		let hashes=Object.keys(uploadMatrix.hashLookup).slice(start,start+rowsPerIter)
 		let rows=[]
 		hashes.forEach(function(hash){
-			//test for arrays
 			let row=uploadMatrix.hashLookup[hash]
 			if (row.length == 1)
 				if( uploadMatrix.duplicateSeq.indexOf( row[0][0] ) ==-1 )
@@ -57,7 +56,7 @@ $(document).ready(function(){
 			addHeader(table,uploadMatrix.header)
 			let colspan=uploadMatrix.header.length
 			$('table.upload-table tr#lastRow td').attr('colspan',colspan)
-		} //first
+		}
 		insertInEl(rows,table,'tbody')
 		$('table.upload-table tr#lastRow').appendTo('table.upload-table tbody')
 		addLoadedRows(rows.length)
@@ -75,12 +74,14 @@ $(document).ready(function(){
 
 
 	window.onscroll = function(){ 
-		var distanceFromTop=lastRow.getBoundingClientRect().top
-		var relElDistance= ( distanceFromTop - viewPortHeight ) / viewPortHeight 
-		if ( relElDistance <= 0.05 && ! fulltable && iteration>=1 ) loadRows()
+		if(iteration>=1){
+			var distanceFromTop=lastRow.getBoundingClientRect().top
+			var relElDistance= ( distanceFromTop - viewPortHeight ) / viewPortHeight 
+			if ( relElDistance <= 0.05 && ! fulltable ) loadRows()	
+		}
 	}
 	$(window).on('resize',function(){
-		viewPortHeight=window.visualViewport.height
+		viewPortHeight=window.innerHeight
 
 	})
 

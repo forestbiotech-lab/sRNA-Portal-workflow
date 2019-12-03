@@ -1,5 +1,5 @@
 varListener = {
-  aInternal: 10,
+  aInternal: [],
   aListener: function(val) {},
   set a(val) {
     this.aInternal = val;

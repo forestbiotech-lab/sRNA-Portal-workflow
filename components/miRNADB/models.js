@@ -124,8 +124,8 @@ e.statsOrganism=function(attributes){
 
 e.saveSequence=function(attributes){
   return db.Mature_miRNA_sequence
-  .bulkCreate(
-      attributes.inserts
+  .create(
+      attributes.insert
     ).then(function(res){
     console.log(res)
     return res
