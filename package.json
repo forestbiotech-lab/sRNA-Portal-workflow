@@ -23,6 +23,7 @@
     "hoek": "^5.0.4",
     "jstransformer-markdown-it": "^2.1.0",
     "keygrip": "^1.0.3",
+    "md5": "^2.2.1",
     "moment": "^2.22.2",
     "morgan": "^1.9.1",
     "mysql": "^2.16.0",

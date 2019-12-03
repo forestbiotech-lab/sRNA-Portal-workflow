@@ -9,7 +9,7 @@ block content
           .card.conflicts
             .card-header.conflicts
               h4.card-title Conflicts&nbsp
-              span.badge.badge-secondary#ofConflicts 0
+                span.badge.badge-secondary#ofConflicts 0
             .card-body      
               p Please resolve the following conflicts before saving data
             .card-header.duplicate-rows
@@ -19,18 +19,14 @@ block content
             .card-body.duplicate-rows
               table.table.table-hover.duplicate-rows.invisible
                 thead
-                  each colHeader in header
-                    th=colHeader
                 tbody
             .card-header.duplicate-sequences
               h3.card-title Duplicated Sequences
                 span.badge.badge-secondary#ofDuplicatedSequences 0
-                  | &nbsp;sequences
+                | &nbsp;sequences
             .card-body.duplicate-sequences                  
               table.table.table-hover.duplicate-sequences.invisible
                 thead
-                  each colHeader in header
-                    th=colHeader
                 tbody
           .card.upload-table
             .card-header
@@ -52,14 +48,7 @@ block content
             .card-body.upload-table  
               table.table.table-striped.upload-table
                 thead
-                  each colHeader in header
-                    th=colHeader
-                tbody
-                  each row in body.slice(0,99)
-                    tr(id=row[0])
-                      each cell, index in row
-                        td(col=header[index])=cell
-                  - tableWidth=header.length
+                tbody                
                   tr#lastRow(filename=uploadedFilename) 
-                    td.blockquote.text-center(colspan=tableWidth) Loading missing sequences, please wait ...
+                    td.blockquote.text-center(colspan=1) Loading missing sequences, please wait ...
 

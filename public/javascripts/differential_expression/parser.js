@@ -8,15 +8,13 @@ $(document).ready(function(){
 	let conflict=0
 	let duplicatedRows=0
 	let duplicatedSeq=0
-	let sequences=[]
-	let rowsHashes=[]
 	let duplicateHashes=[]
 	let duplicateSequences=[]
 
 	if(uploadMatrix.length==0){
 		console.log("not loaded - waiting to parse")
 		varListener.registerListener(function(matrix){
-			alert("loaded")
+			//alert("loaded")
 			uploadMatrix=parseMatrix(matrix)
 		})
 	}else{
@@ -24,71 +22,8 @@ $(document).ready(function(){
 		parseMatrix(uploadMatrix)
 	}
 
-
-
-//	//Do this to first 100 sequences already loaded
-//			 
-	$('table tbody tr').each(function(){
-		addLoadedRow()
-		let that=$(this)
-//		let seq=that.children('td:nth(0)').text()
-//		sequences.push(seq)
-		let row=[]
-		that.children('td').each(function(){
-			row.push($(this).text())
-		})
-		hash=hashRow(row)
-//		rowsHashes.push(hash)
-		that.attr("hash",hash)	
-	})
-	console.log('loadedHashes')
-
-
-	duplicateHashes.forEach(function(hash){
-		//addConflict()
-		//let targetTable=$('table.duplicate-rows')
-		//let table=targetTable.clone()
-		//table.removeClass('duplicate-rows').removeClass('invisible').addClass(`duplicate-rows-${hash}`)
-		//let newTableTarget=table.find('tbody')
-		//$(`table.table.upload-table tr[hash|="${hash}"]`).appendTo(newTableTarget)
-		$(`table.table.upload-table tr[hash|="${hash}"]`).empty()
-		//targetTable.before(table)
-
-	})
-	console.log('Removed duplicate Rows')
-	duplicateSequences.forEach(function(seq){
-		let rows=$(`table.table.upload-table tr#${seq}`)
-		if(rows.length>0){
-//			addConflict()
-//			let targetTable=$('table.duplicate-sequences') //table selector
-//			let table=targetTable.clone()
-//			table.removeClass('duplicate-sequences').removeClass('invisible').addClass(`duplicate-sequences-${seq}`) //table selector //arg1 dup
-//			let newTableTarget=table.find('tbody')
-//
-//			rows.appendTo(newTableTarget) //selector on main table //This one uses id while the other used a new attribute
-//			targetTable.before(table)
-			$(`table.table.upload-table tr#${seq}`).empty()
-		}
-	})
-	console.log('Removed duplicate seq')
-
-
-
 	function parseMatrix(matrix){
-		//indexing clientSide should it be server side?
-		matrix.seqLookup={} 
-		matrix.hashLookup={} 
-		matrix.loaded=[]
-		matrix.body.forEach(function(row,index){
-			if(row.length>0){
-				let seq=row[0]
-				let hash=hashRow(row)
-				sequences.push(seq)
-				rowsHashes.push(hash)
-				matrix.seqLookup[seq] ? matrix.seqLookup[seq].push(row) : matrix.seqLookup[seq]=[row] 
-				matrix.hashLookup[hash] ? matrix.hashLookup[hash].push(row) : matrix.hashLookup[hash]=[row] 
-			}
-		})
+
 		identifyConflicts(matrix)
 		addUploadNumber(Object.keys(matrix.hashLookup).length)
 		//filterLoadedRows()
@@ -97,8 +32,10 @@ $(document).ready(function(){
 	}
 	
 	function identifyConflicts(matrix){
-		duplicateHashes=getDuplicates(rowsHashes)
-		duplicateSequences=getDuplicates(sequences)
+		console.log(matrix)
+		duplicateHashes=matrix.duplicateHashes
+		duplicateSequences=matrix.duplicateSeq
+		header=matrix.header
 
 		var targetTable='duplicate-rows'
 		var typeOfTable='hash'	
@@ -107,7 +44,7 @@ $(document).ready(function(){
 			if(conflictRows.length>0){
 				addConflict()
 				addDuplicatedSeq()
-				loadRowsInTable(hash,conflictRows,targetTable,typeOfTable)
+				loadRowsInTable(hash,header,conflictRows,targetTable,typeOfTable)
 			}
 
 		})
@@ -118,43 +55,21 @@ $(document).ready(function(){
 			if(conflictRows.length>0){
 				addConflict()
 				addDuplicatedRow()
-				loadRowsInTable(seq,conflictRows,targetTable,typeOfTable)
+				loadRowsInTable(seq,header,conflictRows,targetTable,typeOfTable)
 			}			
 		})
 	}
-	function loadRowsInTable(id,rows,targetTable,typeOfTable){
+	function loadRowsInTable(id,header,rows,targetTable,typeOfTable){
 		if(typeof targetTable === "string"){
 			let tableClass=`${targetTable}-${id}`
 			let targetTableClass= typeOfTable=="hash"? `duplicate-rows` : 'duplicate-sequences'
-			table=makeTable(tableClass,targetTableClass)
+			table=cloneTable(tableClass,targetTableClass)
 		}else{
 			/** TODO **/
 			table=targetTable
 		}
+		addHeader(table,header)
 		populateTable(rows,table)
-	}
-	function convertRow2HTML(rows){
-		result=""
-		rows.forEach(function(row){
-			result+="<tr>"
-			row.forEach(function(col){
-				result+=`<td>${col}</td>`
-			})
-			result+="</tr>"
-		})
-		return result
-	}
-	function populateTable(rows,table){
-		let newTableTarget=table.find('tbody')
-		newTableTarget.html(convertRow2HTML(rows))
-		//rows.appendTo(newTableTarget) //selector on main table //This one uses id while the other used a new attribute
-	}
-	function makeTable(tableClass,targetTableClass){
-		let targetTable=$(`table.${targetTableClass}`) //table selector
-		let table=targetTable.clone()
-		table.removeClass(targetTableClass).removeClass('invisible').addClass(tableClass) //table selector //arg1 dup
-		targetTable.before(table)
-		return table
 	}
 	function addUploadNumber(value){
 		$('.card.upload-table .badge#ofUploadSequences').text(value)
