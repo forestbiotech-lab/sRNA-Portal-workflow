@@ -31,7 +31,10 @@ function convertRow2HTML(rows,header){
 function populateTable(rows,table){
 	let newTableTarget=table.find('tbody')
 	newTableTarget.html(convertRow2HTML(rows))
-	//rows.appendTo(newTableTarget) //selector on main table //This one uses id while the other used a new attribute
+}
+function insertInEl(rows,table,element){
+	let tableTarget=table.find(element)
+	tableTarget.append(convertRow2HTML(rows))
 }
 function cloneTable(tableClass,targetTableClass){
 	let targetTable=$(`table.${targetTableClass}`) //table selector

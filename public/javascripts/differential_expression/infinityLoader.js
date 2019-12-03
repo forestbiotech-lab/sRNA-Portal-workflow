@@ -1,6 +1,5 @@
 if (document.location.pathname=="/de/uploaded-file"){
 	var uploadMatrix=uploadMatrix || []
-	var loadedRows=loadedRows || 0
 
 }
 $(document).ready(function(){
@@ -13,9 +12,7 @@ $(document).ready(function(){
 	
 	if(filename.length>0){	
 		getMatrixObj({filename,responseType:'json'}).then(function(data){
-			//let percentageLoaded=Math.round((loadedRows/matrixSize)*100)
 			loadRows()
-			//alert(percentageLoaded)
 		}).catch(function(err){
 			alert(err)
 		})
@@ -47,15 +44,27 @@ $(document).ready(function(){
 		let rows=[]
 		hashes.forEach(function(hash){
 			//test for arrays
-			rows.push(uploadMatrix.hashLookup[hash])
+			let row=uploadMatrix.hashLookup[hash]
+			if (row.length == 1)
+				rows.push(row[0])
 		})						
 		table=$('table.upload-table')
-		if(iteration==0) //first
+		if(iteration==0){
 			addHeader(table,uploadMatrix.header)
-		populateTable(rows,table)
+			let colspan=uploadMatrix.header.length
+			$('table.upload-table tr#lastRow td').attr('colspan',colspan)
+		} //first
+			
+
+		insertInEl(rows,table,'tbody')
+		$('table.upload-table tr#lastRow').appendTo('table.upload-table tbody')
+		addLoadedRows(rows.length)
 		iteration++
 	}
-
+	function addLoadedRows(value){
+		loadedRows+=value
+		$('.card.upload-table .badge#ofLoadedRows').text(loadedRows)
+	}
 //	var element = document.getElementById("box");
 
 //	element.scrollIntoView();

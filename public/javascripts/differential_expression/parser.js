@@ -1,6 +1,5 @@
 if (document.location.pathname=="/de/uploaded-file"){
 	var uploadMatrix=uploadMatrix || []
-	var loadedRows=loadedRows || 0
 }
 
 $(document).ready(function(){
@@ -73,10 +72,6 @@ $(document).ready(function(){
 	}
 	function addUploadNumber(value){
 		$('.card.upload-table .badge#ofUploadSequences').text(value)
-	}
-	function addLoadedRow(){
-		loadedRows++
-		$('.card.upload-table .badge#ofLoadedRows').text(loadedRows)
 	}	
 	function addDuplicatedRow(){
 		duplicatedRows++
