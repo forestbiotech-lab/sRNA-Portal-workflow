@@ -1,17 +1,20 @@
-if (document.location.pathname=="/de/uploaded-file"){
-	var uploadMatrix=uploadMatrix || []
-
-}
 $(document).ready(function(){
-	
-	let loadedRows=$('table.upload-table tbody tr').length-2
+	let uploadMatrix=[]
+	let loadedRows=0
 	let filename=$('table.upload-table tr#lastRow').attr('filename')
 	const rowsPerIter=100
 	let iteration=0
 	let fulltable=false
+	let viewPortHeight=window.visualViewport.height
+	let lastRow = null
+	let uploadNumber=0
 	
-	if(filename.length>0){	
+	if(filename)if(filename.length>0){	
 		getMatrixObj({filename,responseType:'json'}).then(function(data){
+			uploadMatrix=data
+			lastRow=document.getElementById("lastRow");
+			loadedRows=$('table.upload-table tbody tr').length-2
+			addUploadNumber(Object.keys(data.hashLookup).length)
 			loadRows()
 		}).catch(function(err){
 			alert(err)
@@ -46,7 +49,8 @@ $(document).ready(function(){
 			//test for arrays
 			let row=uploadMatrix.hashLookup[hash]
 			if (row.length == 1)
-				rows.push(row[0])
+				if( uploadMatrix.duplicateSeq.indexOf( row[0][0] ) ==-1 )
+					rows.push(row[0])
 		})						
 		table=$('table.upload-table')
 		if(iteration==0){
@@ -54,20 +58,30 @@ $(document).ready(function(){
 			let colspan=uploadMatrix.header.length
 			$('table.upload-table tr#lastRow td').attr('colspan',colspan)
 		} //first
-			
-
 		insertInEl(rows,table,'tbody')
 		$('table.upload-table tr#lastRow').appendTo('table.upload-table tbody')
 		addLoadedRows(rows.length)
 		iteration++
+		if(loadedRows>=uploadNumber) fulltable=true
 	}
 	function addLoadedRows(value){
 		loadedRows+=value
 		$('.card.upload-table .badge#ofLoadedRows').text(loadedRows)
 	}
-//	var element = document.getElementById("box");
+	function addUploadNumber(value){
+		uploadNumber=value
+		$('.card.upload-table .badge#ofUploadSequences').text(value)
+	}	
 
-//	element.scrollIntoView();
 
+	window.onscroll = function(){ 
+		var distanceFromTop=lastRow.getBoundingClientRect().top
+		var relElDistance= ( distanceFromTop - viewPortHeight ) / viewPortHeight 
+		if ( relElDistance <= 0.05 && ! fulltable && iteration>=1 ) loadRows()
+	}
+	$(window).on('resize',function(){
+		viewPortHeight=window.visualViewport.height
+
+	})
 
 })

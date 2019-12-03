@@ -1,35 +1,21 @@
-if (document.location.pathname=="/de/uploaded-file"){
-	var uploadMatrix=uploadMatrix || []
-}
-
 $(document).ready(function(){
 	//Get first column of each row
+	var uploadMatrix=[]
 	let conflict=0
 	let duplicatedRows=0
 	let duplicatedSeq=0
 	let duplicateHashes=[]
 	let duplicateSequences=[]
 
-	if(uploadMatrix.length==0){
-		console.log("not loaded - waiting to parse")
-		varListener.registerListener(function(matrix){
-			//alert("loaded")
-			uploadMatrix=parseMatrix(matrix)
-		})
-	}else{
-		console.log("Starting to parse....")
-		parseMatrix(uploadMatrix)
-	}
 
+	
+	varListener.registerListener(function(matrix){
+		uploadMatrix=parseMatrix(matrix)
+	})
 	function parseMatrix(matrix){
-
 		identifyConflicts(matrix)
-		addUploadNumber(Object.keys(matrix.hashLookup).length)
-		//filterLoadedRows()
-		console.log('parsed matrix')
 		return matrix
 	}
-	
 	function identifyConflicts(matrix){
 		console.log(matrix)
 		duplicateHashes=matrix.duplicateHashes
@@ -70,9 +56,6 @@ $(document).ready(function(){
 		addHeader(table,header)
 		populateTable(rows,table)
 	}
-	function addUploadNumber(value){
-		$('.card.upload-table .badge#ofUploadSequences').text(value)
-	}	
 	function addDuplicatedRow(){
 		duplicatedRows++
 		$('.card-header.duplicate-rows .badge#ofDuplicatedRows').text(duplicatedRows)
@@ -81,14 +64,9 @@ $(document).ready(function(){
 		duplicatedSeq++
 		$('.card-header.duplicate-sequences .badge#ofDuplicatedSequences').text(duplicatedSeq)
 	}
-	function calculateUploadSequences(uploadSequences){
-		//NOT UP TO DATE
-		return uploadSequences.length
-	}
 	function addConflict(){
 		conflict++
 		$('.card.conflicts .badge#ofConflicts').text(conflict)
-		addUploadNumber()
 	}
 
 })
