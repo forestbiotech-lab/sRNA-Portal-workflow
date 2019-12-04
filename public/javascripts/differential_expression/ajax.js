@@ -4,10 +4,10 @@ $(document).ready(function(){
     let that=$(this)
     var table=that.attr('table')
     $.ajax({
-      url:`/factory/fromtable/basic/${table}`,
+      url:`/forms/factory/fromtable/basic/${table}`,
       type:'GET',
       success: function(data,textStatus,jqXHR){
-        that.next().find('.form-study').html(data)          
+        that.next().find(`.form-${table}`).html(data)          
       }
     })
   })

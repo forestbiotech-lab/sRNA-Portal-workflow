@@ -17,7 +17,6 @@ var Keygrip = require("keygrip");
 var keylist=["SEKRIT2", "SEKRIT1"];
 var keys = new Keygrip(keylist,'sha256','hex')
 var token="qawsaffsfkjahf3728fh93qo38gfwqig3qq82gdq93yd9wqd39qdxeaiwhah";
-var getTableAttr=require('./../components/forms/formFromTable')
 
 var nameSearch = require('./../components/miRNADB/nameSearch');
 
@@ -448,24 +447,6 @@ router.get('/areyouup', function(req, res, next) {
   res.json('yes');
 });
 
-//Security issues? this might allow rendering pages that it shouldn't allow.
-router.get('/factory/:template', function(req, res, next){
-  res.render('factory/'+req.params.template);
-})
-router.get('/factory/fromTable/basic/:table', function(req, res, next){
-  let table=req.params.table
-  table=getTableAttr(table)
-  res.render('factory/basic-form',{table,name:req.params.table});
-})
-var saveSingleTableDynamic=require('./../components/forms/saveSingleTableDynamic') 
-router.post('/form/save/singletable/:tablename',function(req,res){
-  let options={inserts:req.body,tablename:req.params.tablename}
 
-  saveSingleTableDynamic(options).then(function(data){
-    res.reload() //go to origin redirect to previsous location from request
-  }).catch(function(err){
-    res.render('error',err)
-  })
 
-})
 module.exports = router;

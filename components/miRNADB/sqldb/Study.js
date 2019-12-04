@@ -14,7 +14,11 @@
         unique: true,
       },
     title: DataTypes.STRING(254),
-    responsible: DataTypes.INTEGER(11),
+    responsible: {
+      type:DataTypes.INTEGER(11),
+      allowNull: true,
+      defaultValue: null,
+    },
     description: DataTypes.STRING,
     releaseDate: DataTypes.DATE,
     objective: DataTypes.STRING,

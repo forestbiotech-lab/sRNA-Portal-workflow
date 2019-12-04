@@ -1,5 +1,4 @@
-form.basic-form.table-form(id=name,method="POST",action="/form/save/singletable/"+name)
-  input.form-control(type="hidden",id="tablename",name="tablename",value=name)
+form.basic-form.table-form(id=name,method="POST",action="/forms/save/singletable/"+name)
   each attribute in table
     .form-group
       label(for=attribute.name)=attribute.name  

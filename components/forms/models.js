@@ -15,7 +15,7 @@ e.saveSingleTableDynamic=function(attributes){
   ).then(function(res){
     return res
   }).catch(function(err){
-    console.log('save single table dynamic table - Err:'+err)
+    console.log(`save single table dynamic table [${attributes.tablename}] - Err:`+err)
     return err
   })
 }
