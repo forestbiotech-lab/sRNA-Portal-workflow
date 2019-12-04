@@ -31,8 +31,8 @@ CREATE TABLE `Annotation` (
   PRIMARY KEY (`id`),
   KEY `Annotation_fk0` (`mature`),
   KEY `Annotation_fk1` (`assay_data_id`),
-  CONSTRAINT `Annotation_fk0` FOREIGN KEY (`mature`) REFERENCES `mature_mirna` (`id`),
-  CONSTRAINT `Annotation_fk1` FOREIGN KEY (`assay_data_id`) REFERENCES `assay_data` (`id`)
+  CONSTRAINT `Annotation_fk0` FOREIGN KEY (`mature`) REFERENCES `Mature_mirna` (`id`),
+  CONSTRAINT `Annotation_fk1` FOREIGN KEY (`assay_data_id`) REFERENCES `Assay_data` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -63,8 +63,8 @@ CREATE TABLE `Assay` (
   PRIMARY KEY (`id`),
   KEY `Assay_fk0` (`study`),
   KEY `Assay_fk1` (`sample`),
-  CONSTRAINT `Assay_fk0` FOREIGN KEY (`study`) REFERENCES `study` (`id`),
-  CONSTRAINT `Assay_fk1` FOREIGN KEY (`sample`) REFERENCES `sample` (`id`)
+  CONSTRAINT `Assay_fk0` FOREIGN KEY (`study`) REFERENCES `Study` (`id`),
+  CONSTRAINT `Assay_fk1` FOREIGN KEY (`sample`) REFERENCES `Sample` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -91,7 +91,7 @@ CREATE TABLE `Assay_data` (
   `cpm` float DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `Assay_data_fk0` (`assay`),
-  CONSTRAINT `Assay_data_fk0` FOREIGN KEY (`assay`) REFERENCES `assay` (`id`)
+  CONSTRAINT `Assay_data_fk0` FOREIGN KEY (`assay`) REFERENCES `Assay` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -127,10 +127,10 @@ CREATE TABLE `Differential_expression` (
   KEY `Differential_expression_fk1` (`modality1`),
   KEY `Differential_expression_fk2` (`modality2`),
   KEY `Differential_expression_fk3` (`sequence`),
-  CONSTRAINT `Differential_expression_fk0` FOREIGN KEY (`study`) REFERENCES `study` (`id`),
-  CONSTRAINT `Differential_expression_fk1` FOREIGN KEY (`modality1`) REFERENCES `modality` (`id`),
-  CONSTRAINT `Differential_expression_fk2` FOREIGN KEY (`modality2`) REFERENCES `modality` (`id`),
-  CONSTRAINT `Differential_expression_fk3` FOREIGN KEY (`sequence`) REFERENCES `mature_mirna_sequence` (`id`)
+  CONSTRAINT `Differential_expression_fk0` FOREIGN KEY (`study`) REFERENCES `Study` (`id`),
+  CONSTRAINT `Differential_expression_fk1` FOREIGN KEY (`modality1`) REFERENCES `Modality` (`id`),
+  CONSTRAINT `Differential_expression_fk2` FOREIGN KEY (`modality2`) REFERENCES `Modality` (`id`),
+  CONSTRAINT `Differential_expression_fk3` FOREIGN KEY (`sequence`) REFERENCES `Mature_mirna_sequence` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -156,7 +156,7 @@ CREATE TABLE `Factor` (
   `assay_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `Factor_fk0` (`assay_id`),
-  CONSTRAINT `Factor_fk0` FOREIGN KEY (`assay_id`) REFERENCES `assay` (`id`)
+  CONSTRAINT `Factor_fk0` FOREIGN KEY (`assay_id`) REFERENCES `Assay` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -190,7 +190,7 @@ CREATE TABLE `Feature` (
   `attr_id` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `Feature_fk0` (`genome_id`),
-  CONSTRAINT `Feature_fk0` FOREIGN KEY (`genome_id`) REFERENCES `genome` (`id`)
+  CONSTRAINT `Feature_fk0` FOREIGN KEY (`genome_id`) REFERENCES `Genome` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8683 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -218,7 +218,7 @@ CREATE TABLE `Feature_attribute_list` (
   `value` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `Feature_attribute_list_fk0` (`feature_id`),
-  CONSTRAINT `Feature_attribute_list_fk0` FOREIGN KEY (`feature_id`) REFERENCES `feature` (`id`) ON DELETE CASCADE
+  CONSTRAINT `Feature_attribute_list_fk0` FOREIGN KEY (`feature_id`) REFERENCES `Feature` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=30911 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -245,7 +245,7 @@ CREATE TABLE `Gene` (
   `protein_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `Gene_fk0` (`feature_id`),
-  CONSTRAINT `Gene_fk0` FOREIGN KEY (`feature_id`) REFERENCES `feature` (`id`)
+  CONSTRAINT `Gene_fk0` FOREIGN KEY (`feature_id`) REFERENCES `Feature` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -277,7 +277,7 @@ CREATE TABLE `Genome` (
   `genome_build` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `Genome_fk0` (`organism_id`),
-  CONSTRAINT `Genome_fk0` FOREIGN KEY (`organism_id`) REFERENCES `organism` (`id`)
+  CONSTRAINT `Genome_fk0` FOREIGN KEY (`organism_id`) REFERENCES `Organism` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -305,8 +305,8 @@ CREATE TABLE `HasStar` (
   PRIMARY KEY (`id`),
   KEY `HasStar_fk0` (`miRNA_id`),
   KEY `HasStar_fk1` (`star_miRNA_id`),
-  CONSTRAINT `HasStar_fk0` FOREIGN KEY (`miRNA_id`) REFERENCES `mature_mirna` (`id`),
-  CONSTRAINT `HasStar_fk1` FOREIGN KEY (`star_miRNA_id`) REFERENCES `mature_mirna` (`id`)
+  CONSTRAINT `HasStar_fk0` FOREIGN KEY (`miRNA_id`) REFERENCES `Mature_mirna` (`id`),
+  CONSTRAINT `HasStar_fk1` FOREIGN KEY (`star_miRNA_id`) REFERENCES `Mature_mirna` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -335,9 +335,9 @@ CREATE TABLE `Mature_has_Pre` (
   KEY `Mature_has_Pre_fk1` (`mature_miRNA_id`),
   KEY `Mature_has_Pre_fk2` (`pre_miRNA_id`),
   KEY `Mature_has_Pre_fk3` (`feature_id`),
-  CONSTRAINT `Mature_has_Pre_fk1` FOREIGN KEY (`mature_miRNA_id`) REFERENCES `mature_mirna` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `Mature_has_Pre_fk2` FOREIGN KEY (`pre_miRNA_id`) REFERENCES `pre_mirna` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `Mature_has_Pre_fk3` FOREIGN KEY (`feature_id`) REFERENCES `feature` (`id`) ON DELETE CASCADE
+  CONSTRAINT `Mature_has_Pre_fk1` FOREIGN KEY (`mature_miRNA_id`) REFERENCES `Mature_mirna` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `Mature_has_Pre_fk2` FOREIGN KEY (`pre_miRNA_id`) REFERENCES `Pre_mirna` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `Mature_has_Pre_fk3` FOREIGN KEY (`feature_id`) REFERENCES `Feature` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1868 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -374,9 +374,9 @@ CREATE TABLE `Mature_miRNA` (
   KEY `Mature_miRNA_fk0` (`sequence_id`),
   KEY `Mature_miRNA_fk1` (`feature_id`),
   KEY `Mature_miRNA_fk2` (`pre_miRNA_id`),
-  CONSTRAINT `Mature_miRNA_fk0` FOREIGN KEY (`sequence_id`) REFERENCES `mature_mirna_sequence` (`id`),
-  CONSTRAINT `Mature_miRNA_fk1` FOREIGN KEY (`feature_id`) REFERENCES `feature` (`id`),
-  CONSTRAINT `Mature_miRNA_fk2` FOREIGN KEY (`pre_miRNA_id`) REFERENCES `pre_mirna` (`id`)
+  CONSTRAINT `Mature_miRNA_fk0` FOREIGN KEY (`sequence_id`) REFERENCES `Mature_mirna_sequence` (`id`),
+  CONSTRAINT `Mature_miRNA_fk1` FOREIGN KEY (`feature_id`) REFERENCES `Feature` (`id`),
+  CONSTRAINT `Mature_miRNA_fk2` FOREIGN KEY (`pre_miRNA_id`) REFERENCES `Pre_mirna` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4547 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -428,7 +428,7 @@ CREATE TABLE `Modality` (
   `factor_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `Modality_fk0` (`factor_id`),
-  CONSTRAINT `Modality_fk0` FOREIGN KEY (`factor_id`) REFERENCES `factor` (`id`)
+  CONSTRAINT `Modality_fk0` FOREIGN KEY (`factor_id`) REFERENCES `Factor` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -509,8 +509,8 @@ CREATE TABLE `Pre_has_Feature` (
   PRIMARY KEY (`id`),
   KEY `Pre_has_Feature_fk1` (`pre_miRNA_id`),
   KEY `Pre_has_Feature_fk2` (`feature_id`),
-  CONSTRAINT `Pre_has_Feature_fk1` FOREIGN KEY (`pre_miRNA_id`) REFERENCES `pre_mirna` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `Pre_has_Feature_fk2` FOREIGN KEY (`feature_id`) REFERENCES `feature` (`id`) ON DELETE CASCADE
+  CONSTRAINT `Pre_has_Feature_fk1` FOREIGN KEY (`pre_miRNA_id`) REFERENCES `Pre_mirna` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `Pre_has_Feature_fk2` FOREIGN KEY (`feature_id`) REFERENCES `Feature` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3289 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -544,8 +544,8 @@ CREATE TABLE `Pre_miRNA` (
   PRIMARY KEY (`id`),
   KEY `Pre_miRNA_fk1` (`feature_id`),
   KEY `Pre_miRNA_fk2` (`sequence_id`),
-  CONSTRAINT `Pre_miRNA_fk1` FOREIGN KEY (`feature_id`) REFERENCES `feature` (`id`),
-  CONSTRAINT `Pre_miRNA_fk2` FOREIGN KEY (`sequence_id`) REFERENCES `pre_mirna_sequence` (`id`)
+  CONSTRAINT `Pre_miRNA_fk1` FOREIGN KEY (`feature_id`) REFERENCES `Feature` (`id`),
+  CONSTRAINT `Pre_miRNA_fk2` FOREIGN KEY (`sequence_id`) REFERENCES `Pre_mirna_sequence` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4593 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -598,7 +598,7 @@ CREATE TABLE `Protein` (
   `name` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `Protein_fk0` (`gene_id`),
-  CONSTRAINT `Protein_fk0` FOREIGN KEY (`gene_id`) REFERENCES `gene` (`id`)
+  CONSTRAINT `Protein_fk0` FOREIGN KEY (`gene_id`) REFERENCES `Gene` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -653,7 +653,7 @@ CREATE TABLE `Study` (
   `public` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `Study_fk0` (`responsible`),
-  CONSTRAINT `Study_fk0` FOREIGN KEY (`responsible`) REFERENCES `person` (`id`)
+  CONSTRAINT `Study_fk0` FOREIGN KEY (`responsible`) REFERENCES `Person` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -680,8 +680,8 @@ CREATE TABLE `Target` (
   PRIMARY KEY (`id`),
   KEY `Target_fk0` (`mature_miRNA_id`),
   KEY `Target_fk1` (`transcript_id`),
-  CONSTRAINT `Target_fk0` FOREIGN KEY (`mature_miRNA_id`) REFERENCES `mature_mirna` (`id`),
-  CONSTRAINT `Target_fk1` FOREIGN KEY (`transcript_id`) REFERENCES `transcript` (`id`)
+  CONSTRAINT `Target_fk0` FOREIGN KEY (`mature_miRNA_id`) REFERENCES `Mature_mirna` (`id`),
+  CONSTRAINT `Target_fk1` FOREIGN KEY (`transcript_id`) REFERENCES `Transcript` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -709,8 +709,8 @@ CREATE TABLE `Transcript` (
   PRIMARY KEY (`id`),
   KEY `Transcript_fk0` (`organism_id`),
   KEY `Transcript_fk1` (`gene_id`),
-  CONSTRAINT `Transcript_fk0` FOREIGN KEY (`organism_id`) REFERENCES `organism` (`id`),
-  CONSTRAINT `Transcript_fk1` FOREIGN KEY (`gene_id`) REFERENCES `gene` (`id`)
+  CONSTRAINT `Transcript_fk0` FOREIGN KEY (`organism_id`) REFERENCES `Organism` (`id`),
+  CONSTRAINT `Transcript_fk1` FOREIGN KEY (`gene_id`) REFERENCES `Gene` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
