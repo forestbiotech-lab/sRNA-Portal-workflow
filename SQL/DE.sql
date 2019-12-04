@@ -1,25 +1,23 @@
-CREATE TABLE `Sample` (
-	`id` INT NOT NULL AUTO_INCREMENT,
-	`Sample` BINARY NOT NULL,
-	`processed_by` varchar(254) NOT NULL,
-	PRIMARY KEY (`id`)
-);
-
+DROP TABLE IF EXISTS `Study`;
 CREATE TABLE `Study` (
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`title` varchar(254),
-	`responsible` varchar(254),
-	`description` TEXT(254),
+	`responsible` INT(11),
+	`description` TEXT(1000),
+	`releaseDate` DATE,
+	`objective` TEXT(2000),
+	`active` BOOLEAN NOT NULL DEFAULT true,
+	`public` BOOLEAN NOT NULL DEFAULT false,
 	PRIMARY KEY (`id`)
 );
-
+DROP TABLE IF EXISTS `Person`;
 CREATE TABLE `Person` (
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`firstName` varchar(254) NOT NULL,
 	`lastName` varchar(254) NOT NULL,
 	PRIMARY KEY (`id`)
 );
-
+DROP TABLE IF EXISTS `Assay`;
 CREATE TABLE `Assay` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`name` varchar(255) NOT NULL,
@@ -30,38 +28,38 @@ CREATE TABLE `Assay` (
 	`output` INT,
 	PRIMARY KEY (`id`)
 );
-
+DROP TABLE IF EXISTS `Assay_data`;
 CREATE TABLE `Assay_data` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
-	`study` INT(11) NOT NULL,
+	`assay` INT(11) NOT NULL,
 	`raw` INT(11),
 	`cpm` FLOAT(11),
 	PRIMARY KEY (`id`)
 );
-
+DROP TABLE IF EXISTS `Annotation`;
 CREATE TABLE `Annotation` (
 	`id` INT NOT NULL AUTO_INCREMENT,
-	`mature` INT NOT NULL AUTO_INCREMENT,
+	`mature` INT NOT NULL,
 	`data` DATETIME NOT NULL,
 	`version` INT NOT NULL,
 	`assay_data_id` INT NOT NULL,
 	PRIMARY KEY (`id`)
 );
-
+DROP TABLE IF EXISTS `Factor`;
 CREATE TABLE `Factor` (
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`name` varchar(254) NOT NULL,
 	`assay_id` INT(11) NOT NULL,
 	PRIMARY KEY (`id`)
 );
-
+DROP TABLE IF EXISTS `Modality`;
 CREATE TABLE `Modality` (
 	`id` INT NOT NULL AUTO_INCREMENT,
-	`name` varchar(254) NOT NULL AUTO_INCREMENT,
+	`name` varchar(254) NOT NULL ,
 	`factor_id` INT(11) NOT NULL,
 	PRIMARY KEY (`id`)
 );
-
+DROP TABLE IF EXISTS `Differential_expression`;
 CREATE TABLE `Differential_expression` (
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`logCPM` FLOAT,
@@ -76,13 +74,14 @@ CREATE TABLE `Differential_expression` (
 	PRIMARY KEY (`id`)
 );
 
+
 ALTER TABLE `Study` ADD CONSTRAINT `Study_fk0` FOREIGN KEY (`responsible`) REFERENCES `Person`(`id`);
 
 ALTER TABLE `Assay` ADD CONSTRAINT `Assay_fk0` FOREIGN KEY (`study`) REFERENCES `Study`(`id`);
 
 ALTER TABLE `Assay` ADD CONSTRAINT `Assay_fk1` FOREIGN KEY (`sample`) REFERENCES `Sample`(`id`);
 
-ALTER TABLE `Assay_data` ADD CONSTRAINT `Assay_data_fk0` FOREIGN KEY (`study`) REFERENCES `Assay`(`id`);
+ALTER TABLE `Assay_data` ADD CONSTRAINT `Assay_data_fk0` FOREIGN KEY (`assay`) REFERENCES `Assay`(`id`);
 
 ALTER TABLE `Annotation` ADD CONSTRAINT `Annotation_fk0` FOREIGN KEY (`mature`) REFERENCES `Mature_miRNA`(`id`);
 
