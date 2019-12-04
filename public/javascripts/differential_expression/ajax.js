@@ -1,5 +1,17 @@
 $(document).ready(function(){
  
+  $('button.generate-table-form').on('click',function(){
+    let that=$(this)
+    var table=that.attr('table')
+    $.ajax({
+      url:`/factory/fromtable/basic/${table}`,
+      type:'GET',
+      success: function(data,textStatus,jqXHR){
+        that.next().find('.form-study').html(data)          
+      }
+    })
+  })
+
   $('.upload-matrix').on('click', function (){
     $('#upload-files-upload').click();
     $('.progress-bar').text('0%');
