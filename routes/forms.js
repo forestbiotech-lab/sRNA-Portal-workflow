@@ -39,12 +39,12 @@ router.post('/save/singletable/:tablename',function(req,res){
     res.render('error',error)
   })
 })
-router.put('/save/singletable/:tablename',function(req,res){
+router.post('/update/singletable/:tablename',function(req,res){
   let options={inserts:req.body,tablename:req.params.tablename}
     saveSingleTableDynamic.update(options).then(function(data){
-    data instanceof Error ? res.json(data) : res.json(data)
+    data instanceof Error ? res.render('error',{error:data}) : res.redirect('back')
   }).catch(function(error){
-    res.status(500).json(error)
+    res.render('error',error)
   })
 })
 

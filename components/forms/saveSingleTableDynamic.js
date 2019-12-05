@@ -11,9 +11,9 @@ function create(options){
 function update(options){
 	let call="updateSingleTableDynamic"
 	let attributes=options
-	let id=options.inserts.id || throw "No_ID"
+	let id=options.inserts.id
 	options.where={id}
-	return	res(models[call](attributes))
+	return	models[call](attributes)
 }
 
 

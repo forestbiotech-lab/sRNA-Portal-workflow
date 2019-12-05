@@ -23,7 +23,7 @@ e.updateSingleTableDynamic=function(attributes){
   return db[attributes.tablename]
   .update(
     attributes.inserts,
-    attributes.where
+    attributes
   ).then(function(res){
     return res
   }).catch(function(err){

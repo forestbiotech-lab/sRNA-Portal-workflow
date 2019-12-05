@@ -62,8 +62,11 @@ $(document).ready(function(){
       }else{       
         input.val(data[attribute])
       }
-      form.find('input.btn').val('Update')
     })
+    form.find('input.btn').val('Update')
+    let action=form.find('form.basic-form.table-form').attr('action')
+    action=action.replace("save","update")
+    form.find('form.basic-form.table-form').attr('action',action)
   }
 
   $('.upload-matrix').on('click', function (){

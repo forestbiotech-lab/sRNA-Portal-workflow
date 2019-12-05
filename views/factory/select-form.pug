@@ -1,8 +1,8 @@
 form.basic-form.select-form(id=name,method="POST",action="/forms/save/singletable/"+name)
   .form-group
     label(for="id") Enties from !{name}
-    select.form-control(table=name,id="id",name="id")
-        option
+    select.form-control(table=name,id="id",name="id",)
+        option Select a study
         each entry in entries
             option=entry
   
