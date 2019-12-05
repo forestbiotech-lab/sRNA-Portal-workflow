@@ -31,10 +31,18 @@ router.post('/factory/select/basic/:table', function(req, res, next){
 
 router.post('/save/singletable/:tablename',function(req,res){
   let options={inserts:req.body,tablename:req.params.tablename}
-  saveSingleTableDynamic(options).then(function(data){
+  saveSingleTableDynamic.create(options).then(function(data){
     data instanceof Error ? res.render('error',{error:data}) : res.redirect('back')
   }).catch(function(error){
     res.render('error',error)
+  })
+})
+router.put('/save/singletable/:tablename',function(req,res){
+  let options={inserts:req.body,tablename:req.params.tablename}
+    saveSingleTableDynamic.update(options).then(function(data){
+    data instanceof Error ? res.json(data) : res.json(data)
+  }).catch(function(error){
+    res.status(500).json(error)
   })
 })
 

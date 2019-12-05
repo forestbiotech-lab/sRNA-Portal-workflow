@@ -19,6 +19,20 @@ e.saveSingleTableDynamic=function(attributes){
     return err
   })
 }
+e.updateSingleTableDynamic=function(attributes){
+  return db[attributes.tablename]
+  .update(
+    attributes.inserts,
+    attributes.where
+  ).then(function(res){
+    return res
+  }).catch(function(err){
+    console.log(`save single table dynamic table [${attributes.tablename}] - Err:${err}`)
+    return err
+  })
+}
+
+
 
 e.formSelect=function(attributes){
 	return db[attributes.tablename]
