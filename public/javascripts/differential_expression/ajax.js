@@ -20,23 +20,51 @@ $(document).ready(function(){
       type:'POST',
       data:{attributes},
       dataType:'html',
-      success:function(data,textStatus,jsXHR){
-        that.next().find(`.select-${table}`).html(data)
-        that.next().find('select.basic-form.select-form').on('change',loadEntry)         
+      success:function(data,textStatus,jqXHR){
+        let selectTarget=that.next().find(`.select-${table}`)
+        selectTarget.html(data)
+        selectTarget.change(loadEntry(selectTarget))         
       },
       error:function(err){
         console.log(err)
       }
     })
   })
+  function loadEntry(context){
+      //for some reason when I do this directly the on change listener doesn't persist
+      context.find('select').on('change',function(){
+        var that=$(this)
+        var selectedOptions=that.get(0).selectedOptions[0].text
+        var id=parseInt(selectedOptions)
 
-  function loadEntry(){
-    let that=$(this)
-    var selectedOptions=that.get(0).selectedOptions[0].text
-    var id=parseInt(selectedOptions)
+        var table=that.attr('table')
+        let tableForm=that.closest('.card.card-body').find(`.form-${table}`)
+        $.ajax({
+          url: `/forms/factory/fromTable/byId/${table}/${id}`,
+          type: 'get',
+          success:function(data,textStatus,jqXHR){
+            loadForm(data,tableForm)
+          },
+          error:function(qXHR,textStatus,err){
+            console.log(err)
+          }
+        })
+      })
 
   }
 
+  function loadForm(data,form){
+    Object.keys(data).forEach(function(attribute){
+      let input=form.find(`#${attribute}`)
+      let inputType=input.attr('type')
+      if(inputType=="checkbox"){
+        input.prop('checked',data[attribute])
+      }else{       
+        input.val(data[attribute])
+      }
+      form.find('input.btn').val('Update')
+    })
+  }
 
   $('.upload-matrix').on('click', function (){
     $('#upload-files-upload').click();

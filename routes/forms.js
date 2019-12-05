@@ -9,16 +9,18 @@ router.get('/factory/:template', function(req, res, next){
 })
 router.get('/factory/fromTable/basic/:table', function(req, res, next){
   let table=req.params.table
-  table=getTableAttr.tableStruture(table)
+  table=getTableAttr.tableStructure(table)
   res.render('factory/basic-form',{table,name:req.params.table});
 })
-router.get('/factory/fromTable/byId/:table/id',function(req,res){
+router.get('/factory/fromTable/byId/:table/:id',function(req,res){
   let tablename=req.params.table
   let id=req.params.id
   let options={tablename,where:{id}}
-  table=getTableAttr.tableEntry(options).then(function(data){
-    res.render('factory/basic-form',{table,name:req.params.table});
-  }).
+  getTableAttr.tableEntry(options).then(function(data){
+    data instanceof Error? res.render('error',{error:data}) : res.json(data);
+  }).catch(function(error){
+    res.render('error',error)
+  })
 })
 router.post('/factory/select/basic/:table', function(req, res, next){
   let options={tablename:req.params.table,attributes:req.body.attributes}

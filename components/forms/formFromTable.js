@@ -24,13 +24,8 @@ function ts(table){
 }
 
 function te(options){
-	let tableStruture=[]
-	var tableAttributes=db[table].tableAttributes
-	Object.keys( tableAttributes ).forEach(function(attribute){
-		let type=tableAttributes[attribute].type.key
-		tableStruture.push({name:attribute,type:inputType[type]})
-	})
-	return tableStruture
+	call="getTableValueById"
+	return models[call](options)
 }
 
 
