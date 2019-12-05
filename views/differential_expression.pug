@@ -13,9 +13,18 @@ block content
                 | Create Study
               #table-study.collapse
                 .card.card-body
-                  .form-study
+                  .form-Study
+              button.btn.btn-primary.generate-table-form(table="Person",type='button', data-toggle='collapse', data-target='#table-Person', aria-expanded='false', aria-controls='table-Person')
+                | Create Person              
+              #table-Person.collapse
                 .card.card-body
-                  .form-person
+                  .form-Person
+              button.btn.btn-primary.generate-table-form.generate-select-form(table="Study",type='button', data-toggle='collapse', data-target='#select-Study', aria-expanded='false', aria-controls='select-Study')
+                | Get studies              
+              #select-Study.collapse
+                .card.card-body
+                  .select-Study
+                  .form-Study
 
       .row
         .col-lg-12

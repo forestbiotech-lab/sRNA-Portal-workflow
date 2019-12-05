@@ -15,9 +15,29 @@ e.saveSingleTableDynamic=function(attributes){
   ).then(function(res){
     return res
   }).catch(function(err){
-    console.log(`save single table dynamic table [${attributes.tablename}] - Err:`+err)
+    console.log(`save single table dynamic table [${attributes.tablename}] - Err:${err}`)
     return err
   })
+}
+
+e.formSelect=function(attributes){
+	return db[attributes.tablename]
+	.findAll({
+	}).then(function(res){
+		return res
+	}).catch(function(err){
+		console.log(`formSelect for table [${attributes.tablename}] - Err:${err}`)
+		return err
+	})
+}
+e.getTableValueById=function(attributes){
+	return db[attributes.tablename]
+	.findById(attributes.id).then(function(res){
+		return res
+	}).catch(function(err){
+		console.log(`getTableValueById for table [${attributes.tablename}] - Err:${err}`)
+		return err	
+	})
 }
 module.exports = e
 

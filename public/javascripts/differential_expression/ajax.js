@@ -1,5 +1,5 @@
 $(document).ready(function(){
- 
+
   $('button.generate-table-form').on('click',function(){
     let that=$(this)
     var table=that.attr('table')
@@ -11,6 +11,32 @@ $(document).ready(function(){
       }
     })
   })
+  $('button.generate-select-form').on('click',function(){
+    let that=$(this)
+    var table=that.attr('table')
+    attributes=['id','title']
+    $.ajax({
+      url:`/forms/factory/select/basic/${table}`,
+      type:'POST',
+      data:{attributes},
+      dataType:'html',
+      success:function(data,textStatus,jsXHR){
+        that.next().find(`.select-${table}`).html(data)
+        that.next().find('select.basic-form.select-form').on('change',loadEntry)         
+      },
+      error:function(err){
+        console.log(err)
+      }
+    })
+  })
+
+  function loadEntry(){
+    let that=$(this)
+    var selectedOptions=that.get(0).selectedOptions[0].text
+    var id=parseInt(selectedOptions)
+
+  }
+
 
   $('.upload-matrix').on('click', function (){
     $('#upload-files-upload').click();
