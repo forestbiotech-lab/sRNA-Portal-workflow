@@ -14,13 +14,13 @@ let inputType={
 
 
 function ts(table){
-	let tableStruture=[]
+	let tableStructure=[]
 	var tableAttributes=db[table].tableAttributes
 	Object.keys( tableAttributes ).forEach(function(attribute){
 		let type=tableAttributes[attribute].type.key
-		tableStruture.push({name:attribute,type:inputType[type]})
+		tableStructure.push({name:attribute,type:inputType[type]})
 	})
-	return tableStruture
+	return tableStructure
 }
 
 function te(options){
