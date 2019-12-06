@@ -21,6 +21,8 @@ module.exports=function(dataset){
 
 			//mature_miRNA
 			//seqId(ok), accession,names,arm "5p" (should not be placed yet)  
+			createMature
+
 
 			//annoation after mature and assay_data
 			//mature (change to mature_miRNA_id), data (change to date) default to now, 
