@@ -13,7 +13,7 @@
         allowNull: false,
         unique: true,
       },
-    mature: DataTypes.INTEGER(11),
+    mature_miRNA_id: DataTypes.INTEGER(11),
     data: DataTypes.DATE,
     version: DataTypes.INTEGER(11),
     assay_data_id: DataTypes.INTEGER(11),
@@ -25,7 +25,7 @@
      classMethods: {
         associate: function associate(models) {    
           Annotation.belongsTo(models.Mature_miRNA, {
-            foreignKey: 'mature',              //on Annotation
+            foreignKey: 'mature_miRNA_id',              //on Annotation
             targetKey: 'id',  //foreign key  
           });
           Annotation.belongsTo(models.Assay_data, {
@@ -35,6 +35,5 @@
         }
       },
     });
-
     return Annotation;
   };

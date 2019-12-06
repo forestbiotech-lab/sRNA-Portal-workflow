@@ -366,7 +366,7 @@ CREATE TABLE `Mature_miRNA` (
   `lettered_suffix` varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `numbered_suffix` int(3) DEFAULT NULL,
   `description` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `arm` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `arm` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `sequence_id` int(100) NOT NULL,
   `feature_id` int(100) DEFAULT NULL,
   `pre_miRNA_id` int(100) DEFAULT NULL,
