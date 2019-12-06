@@ -8,7 +8,8 @@ block content
         .col-lg-12
           .card
             .card-body
-              h4.card-title Study
+              h4.study.card-title Study&nbsp
+                span.badge.badge-secondary#studyTitle
               button.btn.btn-primary.generate-table-form(table="Study",type='button', data-toggle='collapse', data-target='#table-study', aria-expanded='false', aria-controls='table-study')
                 | Create Study
               #table-study.collapse
@@ -50,4 +51,5 @@ block content
           form.view-matrix(action="/de/uploaded-file",method="POST")
             input(type="hidden",name="hash",id="hash")
             input(type="hidden",name="filename",id="filename")
-            input.btn.btn-primary(type="submit",role="button",value="View matrix")
+            input(type="hidden",name="studyId",id="studyId")
+            input.btn.btn-primary.disabled(type="",role="button",value="View matrix",title="Set the study first to view matrix")

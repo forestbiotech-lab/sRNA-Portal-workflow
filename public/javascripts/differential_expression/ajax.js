@@ -63,10 +63,15 @@ $(document).ready(function(){
         input.val(data[attribute])
       }
     })
-    form.find('input.btn').val('Update')
+    form.find('input.btn.disabled').val('Update')
     let action=form.find('form.basic-form.table-form').attr('action')
     action=action.replace("save","update")
     form.find('form.basic-form.table-form').attr('action',action)
+    $('form.view-matrix input#studyId').val(data.id)
+    $('.card-body h4.study.card-title span#studyTitle').text(data.title)
+    $('form.view-matrix input.btn.disabled').removeClass('disabled')
+    $('form.view-matrix input.btn').attr('type','submit')
+
   }
 
   $('.upload-matrix').on('click', function (){
