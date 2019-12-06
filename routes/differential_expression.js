@@ -68,9 +68,10 @@ router.post('/upload', function(req, res){
 
 router.post('/uploaded-file',function(req,res){ 	 
   let uploadedFilename=req.body.filename
+  let studyId=req.body.studyId
   if( req.body.responseType=="json"){
     var filePath=path.join(uploadDir, uploadedFilename)
-    convertFileToMatrix(filePath).then(function(data){
+    convertFileToMatrix(studyId,filePath).then(function(data){
       data instanceof Error ? res.status(404).json(err) : res.json(data)
     }).catch(function(err){
       res.status(404).json(err)
@@ -80,14 +81,13 @@ router.post('/uploaded-file',function(req,res){
   }
 })
 
-router.put('/savetodatabase',function(req,res){
+router.put('/uploadMatrix',function(req,res){
   console.log(req.body.dataset)
-  let rows=req.body.dataset
-	saveSequence(rows).then(function(data){
-    console.log(data)    
+  let dataset=req.body.dataset
+  matrixUploadController(dataset).then(function(data){
 		res.json(data)
 	}).catch(function(err){
-		res.status(404).json(err)
+		res.status(500).json(err)
 	})
 })
 

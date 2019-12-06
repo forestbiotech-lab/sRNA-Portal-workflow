@@ -24,14 +24,14 @@ DROP TABLE IF EXISTS `Annotation`;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `Annotation` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `mature` int(11) NOT NULL,
-  `data` datetime NOT NULL,
+  `mature_miRNA_id` int(11) NOT NULL,
+  `date` datetime NOT NULL,
   `version` int(11) NOT NULL,
   `assay_data_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `Annotation_fk0` (`mature`),
+  KEY `Annotation_fk0` (`mature_miRNA_id`),
   KEY `Annotation_fk1` (`assay_data_id`),
-  CONSTRAINT `Annotation_fk0` FOREIGN KEY (`mature`) REFERENCES `Mature_mirna` (`id`),
+  CONSTRAINT `Annotation_fk0` FOREIGN KEY (`mature_miRNA_id`) REFERENCES `Mature_mirna` (`id`),
   CONSTRAINT `Annotation_fk1` FOREIGN KEY (`assay_data_id`) REFERENCES `Assay_data` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

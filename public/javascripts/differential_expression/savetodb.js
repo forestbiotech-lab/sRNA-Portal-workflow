@@ -23,21 +23,22 @@ $(document).ready(function(){
       varListener.registerListener(function(matrix){
         uploadMatrix=matrix
         dataset=extractUploadRows()
-        uploadRows({dataset})
+        uploadRows(dataset)
       })
     }else{
         dataset=extractUploadRows()
-        uploadRows({dataset})
+        uploadRows(dataset)
     }
   })
 
 
 
   function uploadRows(rows){
+    data={headers:uploadMatrix.header,rows,studyId:uploadMatrix.studyId}
     $.ajax({
-      url: '/de/savetodatabase',
+      url: '/de/uploadMatrix',
       type: 'PUT',
-      data: rows,
+      data: data,
       dataType: 'json',
       success: function(data,textStatus,jqXHR){
         successes++

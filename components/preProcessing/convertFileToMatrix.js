@@ -2,7 +2,7 @@ const fs = require('fs')
 var md5 = require('md5');
 
 
-module.exports=function(filePath){
+module.exports=function(studyId,filePath){
   return new Promise(function(res,rej){
     let matrix={header:[],seqLookup:{},hashLookup:{},duplicateHashes:[],duplicateSeq:[]}
     let sequences=[]
@@ -30,6 +30,7 @@ module.exports=function(filePath){
       })
       matrix.duplicateHashes=getDuplicates(rowsHashes)
       matrix.duplicateSeq=getDuplicates(sequences)
+      matrix.studyId=studyId
       res(matrix)
     })
   })
