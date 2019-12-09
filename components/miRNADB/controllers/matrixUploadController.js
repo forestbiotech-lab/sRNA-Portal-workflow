@@ -12,51 +12,71 @@ module.exports=function(dataset){
 		studyId=dataset.studyId
 		header=dataset.header
 		rows=dataset.rows
-		
+
+		createMatures=[]	//Async	
 		//Sequeces
-		extractInsertId(saveSequence(rows)).then(function(sequencesIds){
-			sequencesIds.forEach(function(seqId){
+		extractInsertIds(saveSequence(rows)).then(function(sequencesIds){
+			sequencesIds.forEach(function(seqId,index){
 
+				//mature_miRNA
+				let name=rows[index][1]
+				let accession=genAccession(name)
+				createMature.push(createMature(seqId,name,accession))
+				//annoation after mature and assay_data
+				//mature (change to mature_miRNA_id), data (change to date) default to now, 
+				//version determineAnnotVersion(), assay_data_id
+				//combine AssayData with Mature
+						//Assays
+				createAssays=[]
+				header.forEach(function(colname,index){
+					if(index>1){ //This is excluding the first to cols 0-sequence, 1-type
+						createAssays.push(createAssay(study,name))
+					}
+				})
+				Promise.all(createAssays).then(function(assay_ids){
+					Promise.all(createMatures).then(function(mature_miRNA_models){	
+						extractInsertIds(assay_ids)
+						.forEach(function(assay_id,x){
+							rows.forEach(function(row,y){
+								let raw=row[x+2]
+				
+								createAssayData(assay_id,raw).then(function(assay_data_model){
+									mature_miRNA_id=extractInsertIds(mature_miRNA_models)[y]
+									assay_data_id=extractInsertIds([assay_data_model])
+									version=determineAnnotVersion()
+									//date=default should set it
+									createAnnotation(mature_id,version,assay_data_id).then(function(final){
+										//This is the ultimate resolve this is runs a couple of time
+										// I think this should do something.... once last resolves
+										//Ideally send a stream....
+									})
 
+								}).catch(function(err){
+									rej(err)
+								})
+							})
 
-			//mature_miRNA
-			//seqId(ok), accession,names,arm "5p" (should not be placed yet)  
-			createMature
+						})
 
-
-			//annoation after mature and assay_data
-			//mature (change to mature_miRNA_id), data (change to date) default to now, 
-			//version determineAnnotVersion(), assay_data_id
-
-
+					}).catch(function(err){
+						rej(err)
+					})
+				}).catch(function(err){
+						rej(err)
+				})
+			
 			})
+		
 		}).catch(function(err){
 			rej(err)
 		})
 
-
-
-
-		createAssays=[]
-		header.forEach(function(colname,index){
-			if(index>1){ //This is excluding the first to cols 0-sequence, 1-type
-				createAssays.push(createAssay(study,name))
-			}
-		})
-		//Assays
-		Promise.all().then(function(assayIds){
-			assayId=extractInsertIds(assayIds)
-
-		}).catch(function(err){
-			rej(err)
-		})
 	})
-
 }
 
 
 
-function extractInsertIds(model){
+function extractInsertIdss(model){
 	new Promise(function(res,rej){
 		model.then(function(data){
 			if (data instanceof Error) rej(data) //place contraint on id,name as unique if contraint error detected lookup the id to resume
@@ -71,6 +91,10 @@ function extractInsertIds(model){
 	})
 }
 
+//do something hash? use algorithum
+genAccession(name){
+	return name
+}
 
 function determineAnnotVersion(newAssay,sequenceId,assayId){
 	//needs to know if this is a newly created assay if s

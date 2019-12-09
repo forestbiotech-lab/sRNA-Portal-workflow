@@ -1,17 +1,13 @@
 var models=require('./../forms/models')
-// For this we need the 
-// seqId, 
+
 // name (header)
 study and name
 // name (from the header ex libXX)
-// other fields will be filled afterwards
-
-module.exports=function(seqId,name,accession){
-	let arm="5p" //this should not mandatory
+module.exports=function(sequence_id,name,accession){
 	let call="saveSingleTableDynamic"	
 	let attributes={
 		tablename:"Mature_miRNA"
-		inserts:{study,name}
+		inserts:{sequence_id,name,accession,}
 	}
 	return models[call](attributes)
 }

@@ -14,7 +14,7 @@
         unique: true,
       },
     mature_miRNA_id: DataTypes.INTEGER(11),
-    data: DataTypes.DATE,
+    date: DataTypes.DATE,
     version: DataTypes.INTEGER(11),
     assay_data_id: DataTypes.INTEGER(11),
   }, {
