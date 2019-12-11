@@ -12,60 +12,71 @@ module.exports=function(dataset){
 		let studyId=dataset.studyId
 		let header=dataset.headers
 		let rows=dataset.rows
-		let maturePromises=[]
 		let annotation=0
+		let assays=dataset.assayIds || null
 
 		//Sequeces
 		extractInsertIds(saveSequence(rows)).then(function(sequencesIds){
-			assayPromises=[]
-			header.forEach(function(colname,index){
-				if(index>1){ //This is excluding the first to cols 0-sequence, 1-type
-					let name=colname
-					assayPromises.push(createAssay(studyId,name))
-				}
-			})
+			let assayPromises=[]
+			if(!assays){
+				header.forEach(function(colname,index){
+					if(index>1){ //This is excluding the first to cols 0-sequence, 1-type
+						let name=colname
+						assayPromises.push(createAssay(studyId,name))
+					}
+				})
+				let assayModels=Promise.all(assayPromises)
+			}
 			sequencesIds.forEach(function(seqId,y){
+				let maturePromises=[]
 				let name=rows[y][1]
 				let accession=genAccession(name)
 				maturePromises.push(createMature(seqId,name,accession))
 
-				let assayModels=Promise.all(assayPromises)
 				let mature_miRNA_models=Promise.all(maturePromises)
-				extractInsertIds(assayModels).then(function(assayIDs){
-					assayIDs.forEach(function(assay_id,x){
-						let raw=rows[y][x+2]
-						let assay_data_model=Promise.all([createAssayData(assay_id,raw)])
-						let mature_and_assayData_promises=[]
-						mature_and_assayData_promises.push(extractInsertIds(mature_miRNA_models))
-						mature_and_assayData_promises.push(extractInsertIds(assay_data_model))
-						
-						Promise.all(mature_and_assayData_promises).then(function(ids){
-							mature_miRNA_id=ids[0][y]
-							assay_data_id=ids[1]
-							version=determineAnnotVersion()
-							createAnnotation(mature_miRNA_id,version,assay_data_id).then(function(final){
-								annotation++
-							}).catch(function(err){
-								rej(err)
-							})
-						}).catch(function(err){
-							rej(err)
-						})
-					})
 
-				}).catch(function(err){
-					rej(err)
-				})
+				//Don't create assays if IDs are supplied	
+				if(assays){
+					proccessAssays(assays,y,rows,mature_miRNA_models,res,rej)
+				}else{
+					extractInsertIds(assayModels).then(function(assayIDs){
+						proccessAssays(assayIDs,y,rows,mature_miRNA_models,res,rej)
+					}).catch(function(err){
+						rej(err)
+					})
+				}				
 			
 			})
 		
 		}).catch(function(err){
 			rej(err)
 		})
-		res(annotation)
 	})
 }
 
+function proccessAssays(assay_IDs,y,rows,mature_miRNA_models,rej,res){
+	assayIDs.forEach(function(assay_id,x){
+		let raw=rows[y][x+2]
+		let assay_data_model=Promise.all([createAssayData(assay_id,raw)])
+		let mature_and_assayData_promises=[]
+		mature_and_assayData_promises.push(extractInsertIds(mature_miRNA_models)) //*//
+		mature_and_assayData_promises.push(extractInsertIds(assay_data_model))
+		
+		Promise.all(mature_and_assayData_promises).then(function(ids){
+			mature_miRNA_id=ids[0][y]
+			assay_data_id=ids[1]
+			version=determineAnnotVersion()
+			createAnnotation(mature_miRNA_id,version,assay_data_id).then(function(final){
+				annotation++
+			}).catch(function(err){
+				rej(err)
+			})
+		}).catch(function(err){
+			rej(err)
+		})
+	})
+	res(assayIDs)
+}
 
 
 function extractInsertIds(model){

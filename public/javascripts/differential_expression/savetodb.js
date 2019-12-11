@@ -37,10 +37,10 @@ $(document).ready(function(){
 
 
 
-  function uploadRows(rows){
+  function uploadRows(rows,assayIds){
     let uploadPercentage=rows.length/uploadableRows
     studyId=uploadMatrix.studyId
-    dataset={headers:uploadMatrix.header,rows,studyId}
+    dataset={headers:uploadMatrix.header,rows,studyId,assayIds}
     $.ajax({
       url: '/de/uploadMatrix',
       type: 'PUT',
@@ -51,9 +51,10 @@ $(document).ready(function(){
         iteration++
         showProccessTime()
         if(iteration*rowsPerIter>=uploadableRows) fullTable=true      
-        if(!fullTable) uploadRows(extractUploadRows())
+        if(!fullTable) uploadRows(extractUploadRows(),data) //*//
       },error:function(jqXHR,textStatus,err){
         errors++
+        console.log(jqXHR)
         alert("Upload failed!")
       },xhr: function() {
           // create an XMLHttpRequest
