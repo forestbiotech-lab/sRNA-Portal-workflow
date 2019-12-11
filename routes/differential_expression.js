@@ -6,8 +6,11 @@ var path=require('path')
 var detect =require('detect-file-type');
 var saveSequence = require('./../components/miRNADB/saveSequence')
 var convertFileToMatrix=require('./../components/preProcessing/convertFileToMatrix')
+matrixUploadController=require('./../components/miRNADB/controllers/matrixUploadController')
 
 const uploadDir=path.join(__dirname, '../uploads/de_matrices');
+
+
 
 router.get('/',function(req,res){
 	res.render('differential_expression');
@@ -23,11 +26,8 @@ router.post('/upload', function(req, res){
 
   // specify that we want to allow the user to upload multiple files in a single request
   form.multiples = false;
-
   //Calculate file hash
   form.hash = 'md5';
-  console.log(__dirname);
-
   // store all uploads in the /uploads directory
   form.uploadDir = uploadDir;
 
@@ -71,19 +71,18 @@ router.post('/uploaded-file',function(req,res){
   let studyId=req.body.studyId
   if( req.body.responseType=="json"){
     var filePath=path.join(uploadDir, uploadedFilename)
-    convertFileToMatrix(studyId,filePath).then(function(data){
+    convertFileToMatrix(filePath).then(function(data){
       data instanceof Error ? res.status(404).json(err) : res.json(data)
     }).catch(function(err){
       res.status(404).json(err)
     }) 
   }else{
-    res.render('de/uploadedFile',{uploadedFilename});
+    res.render('de/uploadedFile',{uploadedFilename,studyId});
   }
 })
 
 router.put('/uploadMatrix',function(req,res){
-  console.log(req.body.dataset)
-  let dataset=req.body.dataset
+  let dataset=Object.assign({},req.body)
   matrixUploadController(dataset).then(function(data){
 		res.json(data)
 	}).catch(function(err){

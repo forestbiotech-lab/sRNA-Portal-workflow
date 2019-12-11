@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `Annotation`;
 CREATE TABLE `Annotation` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `mature_miRNA_id` int(11) NOT NULL,
-  `date` datetime NOT NULL,
+  `date` datetime DEFAULT CURRENT_TIMESTAMP,
   `version` int(11) NOT NULL,
   `assay_data_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),

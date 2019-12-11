@@ -6,7 +6,7 @@ var models=require('./../forms/models')
 module.exports=function(study,name){
 	let call="saveSingleTableDynamic"	
 	let attributes={
-		tablename:"Assay"
+		tablename:"Assay",
 		inserts:{study,name}
 	}
 	return models[call](attributes)

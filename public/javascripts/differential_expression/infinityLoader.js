@@ -29,10 +29,10 @@ $(document).ready(function(){
 				type: 'POST',
 				data: data,
 				dataType: 'json',
-				success: function(data,textStatus,jqXHR){
-					uploadMatrix=data
-					varListener.a = data
-					res(data)
+				success: function(dataRes,textStatus,jqXHR){	
+					dataRes.studyId=$('.card.gen-info span.badge#studyId').text()
+					varListener.a = dataRes
+					res(dataRes)
 				},error:function(qXHR,textStatus,err){
 					console.log(err)
 					rej(err)

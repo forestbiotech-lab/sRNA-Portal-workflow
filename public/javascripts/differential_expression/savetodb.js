@@ -7,18 +7,22 @@ $(document).ready(function(){
   let iteration=0
   const rowsPerIter=50
   let uploadedRows=0
+  let uploadableRows=0
   let fullTable=false
 
 
   if(uploadMatrix.length==0){
     varListener.registerListener(function(matrix){
       uploadMatrix=matrix
+      uploadableRows=Object.keys(uploadMatrix.hashLookup).length
     })
   }
   
   $('.card.upload-table .card-header button.upload-matrix').click(function(){
-    now=new Date()
+    then=new Date()
     let dataset=''
+    $('.progress-bar').width('0');
+    $('.progress-bar').text('0%');
     if(uploadMatrix instanceof Array){
       varListener.registerListener(function(matrix){
         uploadMatrix=matrix
@@ -34,47 +38,29 @@ $(document).ready(function(){
 
 
   function uploadRows(rows){
-    data={headers:uploadMatrix.header,rows,studyId:uploadMatrix.studyId}
+    let uploadPercentage=rows.length/uploadableRows
+    studyId=uploadMatrix.studyId
+    dataset={headers:uploadMatrix.header,rows,studyId}
     $.ajax({
       url: '/de/uploadMatrix',
       type: 'PUT',
-      data: data,
+      data: dataset,
       dataType: 'json',
       success: function(data,textStatus,jqXHR){
         successes++
-        then=new Date()
-        elapsedTime=(then-now)/1000
-        console.log({successes,errors,elapsedTime})
-      //After success
-      //iteration++
-      //addLoadedRows(rows.length)      
-
-//      if(loadedRows>=uploadNumber) fulltable=true      
+        iteration++
+        showProccessTime()
+        if(iteration*rowsPerIter>=uploadableRows) fullTable=true      
+        if(!fullTable) uploadRows(extractUploadRows())
       },error:function(jqXHR,textStatus,err){
         errors++
+        alert("Upload failed!")
       },xhr: function() {
           // create an XMLHttpRequest
           var xhr = new XMLHttpRequest();
-
           // listen to the 'progress' event
           xhr.upload.addEventListener('progress', function(evt) {
-
-            if (evt.lengthComputable) {
-              // calculate the percentage of upload completed
-              var percentComplete = evt.loaded / evt.total;
-              percentComplete = parseInt(percentComplete * 100);
-
-              // update the Bootstrap progress bar with the new percentage
-              $('.progress-bar').text(percentComplete + '%');
-              $('.progress-bar').width(percentComplete + '%');
-
-              // once the upload reaches 100%, set the progress bar text to done
-              if (percentComplete === 100) {
-                $('.progress-bar').html('Done');
-              }
-
-            }
-
+            processEvt(evt,uploadPercentage)
           }, false);
           return xhr;
         }
@@ -94,4 +80,28 @@ $(document).ready(function(){
     return rows
   }
 
+  function processEvt(evt,uploadPercentage){    
+    currentProgress=$('.progress-bar').text();
+    currentProgress=parseInt(currentProgress)
+    if (evt.lengthComputable) {
+      // calculate the percentage of upload completed
+      var percentComplete = ( currentProgress + ( evt.loaded / evt.total ) * uploadPercentage * 100);
+      percentComplete = parseInt(percentComplete);
+      
+      // update the Bootstrap progress bar with the new percentage
+      $('.progress-bar').text(percentComplete + '%');
+      $('.progress-bar').width(percentComplete + '%');
+
+      // once the upload reaches 100%, set the progress bar text to done
+      if (percentComplete === 100) {
+        $('.progress-bar').html('Done');
+      }
+    }
+  }
+
+function showProccessTime(){
+  now=new Date()
+  elapsedTime=(now-then)/1000
+  console.log({successes,errors,elapsedTime})
+}
 })

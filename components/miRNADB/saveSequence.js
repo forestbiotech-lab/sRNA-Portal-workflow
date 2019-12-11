@@ -7,7 +7,7 @@ module.exports=function(rows){
 		let creation=[]
 		rows.forEach(function(row){
 			let sequence=row[0]
-			let attributes={insert:{sequence}}
+			attributes={insert:{sequence}}
 			creation.push(models[call](attributes))
 		})
 		Promise.all(creation).then(function(data){
@@ -15,8 +15,10 @@ module.exports=function(rows){
 			queries=[]
 			data.forEach(function(sequence){
 				if (sequence instanceof Error){  
-					if (sequence.name=="SequelizeUniqueConstraintError")
-						queries.push(querySequence(sequence.fields))
+					if (sequence.name=="SequelizeUniqueConstraintError"){
+						let miRNASeq=sequence.fields
+						queries.push(querySequence(miRNASeq))
+					}
 				}else{
 					result.push(sequence)
 				}
@@ -44,6 +46,6 @@ function queryAndMerge(queries,result,res,rej){
 
 function querySequence(attributes){
 	let call="getSequenceIdBySequence"
-	attributes.where=attributes.insert
+	attributes.where={sequence:attributes.sequence}
 	return models[call](attributes)
 }

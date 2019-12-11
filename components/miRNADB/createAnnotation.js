@@ -3,11 +3,11 @@ var models=require('./../forms/models')
 // name (from the header ex libXX)
 // other fields will be filled afterwards
 
-module.exports=function(assay,raw){
+module.exports=function(mature_miRNA_id,version,assay_data_id){
 	let call="saveSingleTableDynamic"	
 	let attributes={
-		tablename:"Assay_data",
-		inserts:{assay,raw}
+		tablename:"Annotation",
+		inserts:{mature_miRNA_id,version,assay_data_id}
 	}
 	return models[call](attributes)
 }

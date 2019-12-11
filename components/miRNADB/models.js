@@ -136,9 +136,9 @@ e.saveSequence=function(attributes){
 }
 e.getSequenceIdBySequence=function(attributes){
   return db.Mature_miRNA_sequence
-  .findOne(
-    attributes.where
-  ).then(function(res){
+  .findOne({
+      where:attributes.where
+    }).then(function(res){
     return res
   }).catch(function(err){
     console.log('getSequenceIdBySequence - Err: '+err)

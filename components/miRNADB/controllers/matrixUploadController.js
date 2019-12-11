@@ -1,68 +1,60 @@
 var saveSequence=require('./../saveSequence')
-var saveAnnotation=require('./../')
-var saveAssayData=require('./../')
+var createAnnotation=require('./../createAnnotation')
+var createAssayData=require('./../createAssayData')
 var createAssay=require('./../createAssay')
-
+var createMature=require('./../createMature')
 
 //need the assay ids
 
 
 module.exports=function(dataset){
-	new Promise(function(res,rej){
-		studyId=dataset.studyId
-		header=dataset.header
-		rows=dataset.rows
+	return new Promise(function(res,rej){
+		let studyId=dataset.studyId
+		let header=dataset.headers
+		let rows=dataset.rows
+		let maturePromises=[]
+		let annotation=0
 
-		createMatures=[]	//Async	
 		//Sequeces
 		extractInsertIds(saveSequence(rows)).then(function(sequencesIds){
-			sequencesIds.forEach(function(seqId,index){
-
-				//mature_miRNA
-				let name=rows[index][1]
+			assayPromises=[]
+			header.forEach(function(colname,index){
+				if(index>1){ //This is excluding the first to cols 0-sequence, 1-type
+					let name=colname
+					assayPromises.push(createAssay(studyId,name))
+				}
+			})
+			sequencesIds.forEach(function(seqId,y){
+				let name=rows[y][1]
 				let accession=genAccession(name)
-				createMature.push(createMature(seqId,name,accession))
-				//annoation after mature and assay_data
-				//mature (change to mature_miRNA_id), data (change to date) default to now, 
-				//version determineAnnotVersion(), assay_data_id
-				//combine AssayData with Mature
-						//Assays
-				createAssays=[]
-				header.forEach(function(colname,index){
-					if(index>1){ //This is excluding the first to cols 0-sequence, 1-type
-						createAssays.push(createAssay(study,name))
-					}
-				})
-				Promise.all(createAssays).then(function(assay_ids){
-					Promise.all(createMatures).then(function(mature_miRNA_models){	
-						extractInsertIds(assay_ids)
-						.forEach(function(assay_id,x){
-							rows.forEach(function(row,y){
-								let raw=row[x+2]
-				
-								createAssayData(assay_id,raw).then(function(assay_data_model){
-									mature_miRNA_id=extractInsertIds(mature_miRNA_models)[y]
-									assay_data_id=extractInsertIds([assay_data_model])
-									version=determineAnnotVersion()
-									//date=default should set it
-									createAnnotation(mature_id,version,assay_data_id).then(function(final){
-										//This is the ultimate resolve this is runs a couple of time
-										// I think this should do something.... once last resolves
-										//Ideally send a stream....
-									})
+				maturePromises.push(createMature(seqId,name,accession))
 
-								}).catch(function(err){
-									rej(err)
-								})
+				let assayModels=Promise.all(assayPromises)
+				let mature_miRNA_models=Promise.all(maturePromises)
+				extractInsertIds(assayModels).then(function(assayIDs){
+					assayIDs.forEach(function(assay_id,x){
+						let raw=rows[y][x+2]
+						let assay_data_model=Promise.all([createAssayData(assay_id,raw)])
+						let mature_and_assayData_promises=[]
+						mature_and_assayData_promises.push(extractInsertIds(mature_miRNA_models))
+						mature_and_assayData_promises.push(extractInsertIds(assay_data_model))
+						
+						Promise.all(mature_and_assayData_promises).then(function(ids){
+							mature_miRNA_id=ids[0][y]
+							assay_data_id=ids[1]
+							version=determineAnnotVersion()
+							createAnnotation(mature_miRNA_id,version,assay_data_id).then(function(final){
+								annotation++
+							}).catch(function(err){
+								rej(err)
 							})
-
+						}).catch(function(err){
+							rej(err)
 						})
-
-					}).catch(function(err){
-						rej(err)
 					})
+
 				}).catch(function(err){
-						rej(err)
+					rej(err)
 				})
 			
 			})
@@ -70,19 +62,19 @@ module.exports=function(dataset){
 		}).catch(function(err){
 			rej(err)
 		})
-
+		res(annotation)
 	})
 }
 
 
 
-function extractInsertIdss(model){
-	new Promise(function(res,rej){
+function extractInsertIds(model){
+	return new Promise(function(res,rej){
 		model.then(function(data){
 			if (data instanceof Error) rej(data) //place contraint on id,name as unique if contraint error detected lookup the id to resume
 			ids=[]
 			data.forEach(function(datum){
-				ids.push(dataum.dataValues.id)
+				ids.push(datum.dataValues.id)
 			})
 			res(ids)
 		}).catch(function(err){
@@ -92,7 +84,7 @@ function extractInsertIdss(model){
 }
 
 //do something hash? use algorithum
-genAccession(name){
+function genAccession(name){
 	return name
 }
 
