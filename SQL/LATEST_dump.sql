@@ -672,7 +672,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Target`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+SET character_set_client = utf8mb4 ;
 CREATE TABLE `Target` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `mature_miRNA_id` int(11) NOT NULL,
@@ -681,7 +681,7 @@ CREATE TABLE `Target` (
   KEY `Target_fk0` (`mature_miRNA_id`),
   KEY `Target_fk1` (`transcript_id`),
   CONSTRAINT `Target_fk0` FOREIGN KEY (`mature_miRNA_id`) REFERENCES `Mature_miRNA` (`id`),
-  CONSTRAINT `Target_fk1` FOREIGN KEY (`transcript_id`) REFERENCES `TranscripRNA(`id`)
+  CONSTRAINT `Target_fk1` FOREIGN KEY (`transcript_id`) REFERENCES `Transcript` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -709,8 +709,8 @@ CREATE TABLE `Transcript` (
   PRIMARY KEY (`id`),
   KEY `Transcript_fk0` (`organism_id`),
   KEY `Transcript_fk1` (`gene_id`),
-  CONSTRAINT `Transcript_fk0` FOREIGN KEY (`organism_id`) REFERENCES `Organism`RNAid`),
-  CONSTRAINT `Transcript_fk1` FOREIGN KEY (`gene_id`) REFERENCES `Gene` (`iRNA
+  CONSTRAINT `Transcript_fk0` FOREIGN KEY (`organism_id`) REFERENCES `Organism` (`id`),
+  CONSTRAINT `Transcript_fk1` FOREIGN KEY (`gene_id`) REFERENCES `Gene` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
