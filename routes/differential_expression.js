@@ -6,8 +6,8 @@ var path=require('path')
 var detect =require('detect-file-type');
 var saveSequence = require('./../components/miRNADB/saveSequence')
 var convertFileToMatrix=require('./../components/preProcessing/convertFileToMatrix')
-matrixUploadController=require('./../components/miRNADB/controllers/matrixUploadController')
-
+var matrixUploadController=require('./../components/miRNADB/controllers/matrixUploadController')
+var getDynamicTable=require('./../components/miRNADB/getDynamicTable')
 const uploadDir=path.join(__dirname, '../uploads/de_matrices');
 
 
@@ -90,4 +90,14 @@ router.put('/uploadMatrix',function(req,res){
 	})
 })
 
+router.get('/assays/:study',function(req,res){
+  let tablename="Assay"
+  let studyId=req.params.study
+  let where={'study':studyId}
+  getDynamicTable(tablename,where).then(function(data){
+    data instanceof Error ? res.render('error',data) : res.render('de/assays',{data})
+  }).catch(function(error){
+    res.render('error',error)
+  })
+})
 module.exports = router;

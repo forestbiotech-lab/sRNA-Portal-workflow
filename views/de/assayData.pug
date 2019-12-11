@@ -1,0 +1,58 @@
+extends ../layout
+
+block content
+  script(id="database",src="/javascripts/de.js",defer)
+  .card-block
+    .container-fluid
+      .row  
+        .col-lg-12
+          .card.gen-info
+            .card-header.study
+              h4.card-title  Study id:&nbsp 
+                span.badge.badge-secondary#studyId !{studyId}
+          .card.conflicts
+            .card-header.conflicts
+              h4.card-title Conflicts&nbsp
+                span.badge.badge-secondary#ofConflicts 0
+            .card-body      
+              p Please resolve the following conflicts before saving data
+            .card-header.duplicate-rows
+              h3.card-title Duplicated Rows
+                span.badge.badge-secondary#ofDuplicatedRows 0
+                | &nbsp;sequences
+            .card-body.duplicate-rows
+              table.table.table-hover.duplicate-rows.invisible
+                thead
+                tbody
+            .card-header.duplicate-sequences
+              h3.card-title Duplicated Sequences
+                span.badge.badge-secondary#ofDuplicatedSequences 0
+                | &nbsp;sequences
+            .card-body.duplicate-sequences                  
+              table.table.table-hover.duplicate-sequences.invisible
+                thead
+                tbody
+          .card.upload-table
+            .card-header
+              .row
+                .col-lg-4
+                  h4.card-title(title="This is the number of unique rows. Will decrease if merges occur due to duplicate sequences") Expression Matrix&nbsp
+                    span.badge.badge-secondary#ofUploadSequences 0
+                    | &nbsp;sequences
+                .col-lg-5
+                  .progress(style="position:relative;bottom:-12px;")
+                    .progress-bar(role="progressbar",aria-valuenow="0",aria-valuemin="0",aria-valuemax="100")
+                .col-lg-3
+                  button.btn.btn-primary.upload-matrix(style="float:right") Save matrix 
+              .row
+                .col-lg-12
+                  p.card-title Showing 
+                    span.badge.badge-secondary#ofLoadedRows 0
+                    | &nbsp;sequences
+            .card-body.upload-table  
+              table.table.table-striped.upload-table
+                thead
+                tbody                
+                  tr#lastRow(filename=uploadedFilename) 
+                    td.blockquote.text-center(colspan=1) Loading missing sequences, please wait ...
+

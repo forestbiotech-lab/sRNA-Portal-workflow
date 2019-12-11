@@ -39,4 +39,13 @@ e.getTableValueById = function(attributes) {
         return err
     })
 }
+e.getTableValuesWhere= function(attributes){
+  return db[attributes.tablename].findAll({
+      where:attributes.where
+    }).then(function(res){
+    return res
+  }).catch(function(err){
+    console.log(`getTableValues for table [${attributes.tablename}] - Err:${err}`)
+  })
+}
 module.exports = e

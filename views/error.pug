@@ -1,6 +1,8 @@
 extends layout
 
 block content
-  h1= message
-  h2= error.status || null
+  - error= error? error : Object.keys(this)[0]
+  h1= message || "Unspecified error"
+  - status= error ? error.status : null
+  h2=status 
   pre #{error.stack}
