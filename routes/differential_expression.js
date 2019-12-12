@@ -8,8 +8,9 @@ var saveSequence = require('./../components/miRNADB/saveSequence')
 var convertFileToMatrix=require('./../components/preProcessing/convertFileToMatrix')
 var matrixUploadController=require('./../components/miRNADB/controllers/matrixUploadController')
 var getDynamicTable=require('./../components/miRNADB/getDynamicTable')
-const uploadDir=path.join(__dirname, '../uploads/de_matrices');
+var countAssayDataForStudy=require('./../components/miRNADB/countAssayDataForStudy')
 
+const uploadDir=path.join(__dirname, '../uploads/de_matrices');
 
 
 router.get('/',function(req,res){
@@ -95,9 +96,20 @@ router.get('/assays/:study',function(req,res){
   let studyId=req.params.study
   let where={'study':studyId}
   getDynamicTable(tablename,where).then(function(data){
-    data instanceof Error ? res.render('error',data) : res.render('de/assays',{data})
+    data instanceof Error ? res.render('error',data) : res.render('de/assays',{data,studyId})
   }).catch(function(error){
     res.render('error',error)
   })
 })
+
+router.post('/count/assaydata/',function(req,res){
+  let studyId=req.body.studyId
+  countAssayDataForStudy(studyId).then(data=>{
+    data instanceof Error ? res.status(500).json(data) : res.json(data)
+  }).catch( err =>{
+    res.status(500).json(err)
+  })
+
+})
+
 module.exports = router;

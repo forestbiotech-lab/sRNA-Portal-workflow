@@ -144,6 +144,23 @@ $(document).ready(function(){
   }); 
  
 
+ //Assays
+ let assaybadge=$('.card.assay-list span.badge#assay-data-count')
+ if(assaybadge.length>0){
+  studyId=$('.card-header.studyInfo').attr('studyId')
+  $.ajax({
+    url:"/de/count/assaydata",
+    type:"POST",
+    data:{studyId},
+    success:((data,textStatus,jqXHR) =>{
+      assaybadge.text(`Assay data: ${data}`)
+    }),
+    error:((qXHR,textStatus,err)=>{
+      assaybadge.text(`Assay data: Not Found`)
+    })
+  })
+ }
+
 
 
 });

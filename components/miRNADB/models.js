@@ -145,5 +145,20 @@ e.getSequenceIdBySequence=function(attributes){
     return err
   })
 }
+
+e.countAssayDataInStudy=function(attributes){
+  return db.Assay_data
+  .count({
+    include:[{
+      model:db.Assay,
+      where: { study : attributes.where.studyId } 
+    }]    
+  }).then( res => {
+    return res
+  }).catch( err => {
+    console.log('countAssayDataInStudy - Err: '+err)
+    return err
+  })
+}
 module.exports = e
 
