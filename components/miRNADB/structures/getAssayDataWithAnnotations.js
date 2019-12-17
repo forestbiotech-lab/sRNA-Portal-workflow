@@ -11,9 +11,21 @@ module.exports={
 		_table:"Assay",
 		"assayName":"name",
 	},
-	"id":"",
 	"raw":"",
-	"cpm":""
+	"cpm":"",
+	metadata:{
+		_table:"./",
+		row:{
+			_table:"Assay",
+			assayId:"id"		
+		},
+		cell:{
+			_table:"./",
+			id:"",
+			assayId:{_table:"Assay",_attribute:"id"}
+		}
+
+	}
 
 /*	"mature_miRNA_id":"id",
 	"mature_accession":"accession",

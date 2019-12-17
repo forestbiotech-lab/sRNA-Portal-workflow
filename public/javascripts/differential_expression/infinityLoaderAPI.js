@@ -28,6 +28,7 @@ $(document).ready(function(){
 			addUploadNumber(assaydata.length)
 			loadRows()
 		}).catch(function(err){
+			console.trace(err)
 			alert(err)
 		})
 	}
@@ -94,23 +95,32 @@ $(document).ready(function(){
 	function assembleRows(rows){
 		let result={}
 		let resultHeaders=""
+		let resultMetaCell=""
 		let headers=[]
+		let metaCell=[]	
 		rows.forEach(row=>{
 			let groupingElement={key:"",value:""}
-			let cols=[]	
+			let cols=[]
 			Object.keys(row).forEach(key=>{
 				let value=row[key] || 0
 				let subKeys=Object.keys(value)
 				let subKey=""
 				//process Keys
-				if( subKeys.length==1)
+				if( subKeys.length==1){
 					subKey=subKeys[0]
 					subValue=value[subKey]
+				}
 				if( key == "group" ){
 					groupingElement={key:subKey,value:subValue}
 				} else if( key == "header"){
 					headers.push({key:subKey,value:subValue})
-				} else{
+				}else if( key == "metadata" ){
+					if(value["cell"]){
+						metaCell.push(value.cell)
+					}else{
+						throw "Matrix metadata not found for column"
+					}
+				}else{
 					cols.push({key:key,value:value})
 				}
 			})
@@ -129,6 +139,8 @@ $(document).ready(function(){
 					if(headers.length>1){
 						resultHeaders=headers
 						headers=[resultHeaders.pop()]
+						resultMetaCell=metaCell
+						metaCell=[resultMetaCell.pop()]
 						if(iteration==0){
 							headerSpan=resultHeaders.length
 						}else{
@@ -139,7 +151,9 @@ $(document).ready(function(){
 					}
 				}
 			})
+			//this only apllies for single row iterations. i.e. one row per iter.
 			resultHeaders=headers
+			resultMetaCell=metaCell
 		})
 		if(iteration>0 && resultHeaders.length!=headerSpan){
 			throw "Matrix is corrupted."
@@ -148,20 +162,24 @@ $(document).ready(function(){
 		}else if(resultHeaders.length!=headerSpan){
 			throw "Matrix is corrupted."
 		}
-		matrix={header:[],rows:[]}
+		//bring together all arrays
+		matrix={header:[],rows:[],metadata:{row:[],cell:[]}}
 		Object.keys(result).forEach(seq=>{
 			let row=[]
 			let headers=[]
+			let cellMeta=[]
 			seqData=result[seq]
 			Object.keys(seqData).forEach(attrKey=>{
 				seqData[attrKey].forEach((val,index)=>{
 					row.push(val)
-					headers.push(`${resultHeaders[index].value}(${attrKey})`)					
+					headers.push(`${resultHeaders[index].value}(${attrKey})`)
+					cellMeta.push(resultMetaCell[index])					
 				})
 
 			})
 			matrix.rows.push(row)
 			matrix.header.push(headers)
+			matrix.metadata.cell.push(cellMeta)
 		})
 		return matrix
 	}
