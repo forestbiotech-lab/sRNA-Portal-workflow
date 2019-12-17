@@ -17,6 +17,7 @@ module.exports=function(dataset){
 
 		//Sequeces
 		extractInsertIds(saveSequence(rows)).then(function(sequencesIds){
+			if(sequencesIds instanceof Error) rej(sequencesIds)
 			let assayPromises=[]
 			if(!assays){
 				header.forEach(function(colname,index){
@@ -42,6 +43,7 @@ module.exports=function(dataset){
 					})
 				}else{
 					extractInsertIds(assayModels).then(function(assayIDs){
+						if(assayIDs instanceof Error) rej(assayIDs)
 						proccessAssays(assayIDs,y,rows,mature_miRNA_models,annotation).then(function(result){
 							result instanceof Error ? rej(result) : res(result) 
 						})
@@ -68,7 +70,8 @@ function proccessAssays(assay_IDs,y,rows,mature_miRNA_models,annotation){
 			mature_and_assayData_promises.push(extractInsertIds(assay_data_model))
 			
 			Promise.all(mature_and_assayData_promises).then(function(ids){
-				mature_miRNA_id=ids[0][y]
+				if (ids instanceof Error) rej(ids)
+				mature_miRNA_id=ids[0]
 				assay_data_id=ids[1]
 				version=determineAnnotVersion()
 				createAnnotation(mature_miRNA_id,version,assay_data_id).then(function(final){
