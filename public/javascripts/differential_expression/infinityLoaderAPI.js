@@ -3,7 +3,7 @@ $(document).ready(function(){
 	let assayData=[]
 	let loadedRows=0
 	let api=$('.card.gen-info').attr('api')
-	const rowsPerIter=5
+	const rowsPerIter=10
 	const dataPointsPerRow=9
 	let iteration=0
 	let fulltable=false
@@ -128,7 +128,7 @@ $(document).ready(function(){
 					result[gValue][cKey]=[cValue]
 					if(headers.length>1){
 						resultHeaders=headers
-						headers=[]
+						headers=[resultHeaders.pop()]
 						if(iteration==0){
 							headerSpan=resultHeaders.length
 						}else{
