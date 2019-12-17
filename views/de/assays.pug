@@ -38,8 +38,9 @@ block content
             table.table
               thead
                 tr
-                  each header in Object.keys(data[0])
-                    th=header
+                  if ( data )
+                    each header in Object.keys(data[0])
+                      th=header
               tbody
                 each row in data
                   tr

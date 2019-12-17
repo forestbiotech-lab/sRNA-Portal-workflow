@@ -1,16 +1,28 @@
 $(document).ready(function(){
 
+
+var pathname=document.location.pathname
+var paths=pathname.split("/").splice(1)
+
   scriptName=[
     'helpers',
     'ajax',
     'parser',
     'savetodb',
     'infinityLoader',
-//  'setters',
- //   'getters',
- //   'DOMbasics',
- //   'listeners'
+    'infinityLoaderAPI',
+  //  'setters',
+  //   'getters',
+  //   'DOMbasics',
+  //   'listeners'
   ]
+  if(paths[1]=="assaydata"){
+     scriptName=[
+      'infinityLoaderAPI',
+      'helpers',
+    ]
+  }
+
 
 
   scriptTarget = $('script#actions')[0];

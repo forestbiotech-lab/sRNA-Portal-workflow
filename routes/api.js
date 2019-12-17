@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var getOptions = require('./../components/miRNADB/helpers/getOptions.js');
 var resolveHelper=require('./../components/miRNADB/helpers/resolveHelper');
 var resolveCall = resolveHelper.resolveCall
 /// --------- Call Declaration ----------------------------------------
@@ -8,7 +7,7 @@ var sequenceSearch = require('./../components/miRNADB/sequenceSearch2');
 var nameSearch = require('./../components/miRNADB/nameSearch2');
 var getFeatures = require('./../components/miRNADB/getFeatures');
 var linkedMatureMiRNA = require('./../components/miRNADB/linkedMatureMiRNA');
-
+var getAssayDataWithAnnotations=require('./../components/miRNADB/getAssayDataWithAnnotations')
 /// --------------End -------------------------------------------------
 
 
@@ -37,6 +36,12 @@ router.get('/feature', function(req, res, next) {
 router.get('/linkedMatureMiRNA', function(req, res, next) {
   var errMsg="API Router /feature get - "
   var call=linkedMatureMiRNA
+  resolveCall(call,req,res,errMsg)
+});
+
+router.get('/assaydata/:study', function(req, res, next) {
+  var errMsg="api Router /assayDat get - "
+  var call=getAssayDataWithAnnotations
   resolveCall(call,req,res,errMsg)
 });
 

@@ -160,5 +160,28 @@ e.countAssayDataInStudy=function(attributes){
     return err
   })
 }
+
+e.getAssayDataWithAnnotations=(attributes)=>{
+  return db.Assay_data
+  .findAndCountAll({
+    include:[{
+      model:db.Assay,
+      where: attributes.where    
+    },{
+      model:db.Annotation,
+      include:[{
+        model:db.Mature_miRNA,
+        include:[{
+          model:db.Mature_miRNA_sequence,
+        }]
+      }]
+    }]
+  }).then( res => {
+    return res
+  }).catch( err => {
+    console.log('getAssayDataWithAnnotations - Err: '+err)
+    return err
+  })
+}
 module.exports = e
 

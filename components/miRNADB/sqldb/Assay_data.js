@@ -27,6 +27,10 @@
             foreignKey: 'assay',              //on Assay_data
             targetKey: 'id',  //foreign key  
           }); 
+          Assay_data.belongsTo(models.Annotation, {
+            foreignKey: 'id',              //on Assay_data
+            targetKey: 'assay_data_id',  //foreign key  
+          }); 
         }
       },
     });

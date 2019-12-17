@@ -54,8 +54,8 @@ $(document).ready(function(){
 
 ///Login Related
   //Set hover event for menu.
-  $('.menu span.menuItem1').click(function(){window.location.replace('login')}).mouseover(function(){$(this).toggleClass('hover')}).mouseout(function(){$(this).toggleClass('hover')});
-  $('.authElixir-button#authElixir').click(function(){window.location.replace('/elixir')}); 
+//  $('.menu span.menuItem1').click(function(){window.location.replace('login')}).mouseover(function(){$(this).toggleClass('hover')}).mouseout(function(){$(this).toggleClass('hover')});
+//  $('.authElixir-button#authElixir').click(function(){window.location.replace('/elixir')}); 
   /*$('.manage-resource').click(function(){manageResource()});
   manageResource=function(){
   	data={
@@ -90,6 +90,9 @@ $(document).ready(function(){
   });
 **/
 
+
+
+/********* extract this to specific javascript 
   //Currently applies to tables with CLASS .resizableTable
   //Table Sorter: https://mottie.github.io/tablesorter/docs/example-widget-resizable.html
   $('.resizableTable').tablesorter({
@@ -100,6 +103,8 @@ $(document).ready(function(){
       resizable_addLastColumn : true
     }
   });
+
+
 
 
   //Uploading files to server https://coligo.io/building-ajax-file-uploader-with-node/
@@ -267,7 +272,7 @@ $(document).ready(function(){
     })
   });
 
-
+*/
   //Panel resize on move
   var width=$('.sidePanel').css('width').replace('px','')-20+"px";
   $('.miRPursuitPanel').css('width',width);
@@ -294,7 +299,7 @@ $(document).ready(function(){
     $('.miRPursuitPanel').css('width',width);
   });
 
-
+/******* Extract for specific functions only generic panel related function should stay here
   //Hide .miRPursuitPanel
   $('.miRPursuitPanel button.close').click(function(){
     $('.miRPursuitPanel').hide();
@@ -437,5 +442,5 @@ $(document).ready(function(){
   $('#advancedOptions button.advancedButton1').click(function(){
       $('table.annotationTable .btn.advancedButton1').toggle('hidden');
     });
-
+*/
 });
