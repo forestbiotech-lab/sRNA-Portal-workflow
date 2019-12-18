@@ -7,6 +7,21 @@ module.exports={
 		}
 		
 	},
+	"attributes":{
+		_table:"Annotation",
+		Sequence:{
+			_table:["Mature_miRNA","Mature_miRNA_sequence"],
+			_attribute:"sequence"
+		},
+		Name:{
+			_table:"Mature_miRNA",
+			_attribute:"name"
+		},
+		Accession:{
+			_table:"Mature_miRNA",
+			_attribute:"accession"
+		}
+	},
 	"header":{
 		_table:"Assay",
 		"assayName":"name",

@@ -19,7 +19,7 @@ module.exports = function(options){
   //Do this for each where attribute needed.
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   attribute=options.params.study
-  delete options.query.matureId;
+  delete options.params.study;
   options.where.study=fmtWhereAttr(attribute,'eq')
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

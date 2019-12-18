@@ -10,7 +10,7 @@ var matrixUploadController=require('./../components/miRNADB/controllers/matrixUp
 var getDynamicTable=require('./../components/miRNADB/getDynamicTable')
 var countAssayDataForStudy=require('./../components/miRNADB/countAssayDataForStudy')
 var getAssayDataWithAnnotations=require('./../components/miRNADB/getAssayDataWithAnnotations')
-
+var assembleAssayData=require('./../components/miRNADB/assembleAssayData')
 const uploadDir=path.join(__dirname, '../uploads/de_matrices');
 
 
@@ -107,6 +107,15 @@ router.get('/assaydata/:study', function(req, res, next) {
   var studyId=req.params.study
   res.render('de/assayData',{studyId})
 });
+
+router.get('/assaydata/:study/matrix', function(req,res, next){      
+  assembleAssayData(req).then(data=>{
+    data instanceof Error ? res.status(500).json(data) : res.json(data)
+  }).catch(err=>{
+    res.json('err')
+  })
+})
+
 
 router.post('/count/assaydata/',function(req,res){
   let studyId=req.body.studyId
