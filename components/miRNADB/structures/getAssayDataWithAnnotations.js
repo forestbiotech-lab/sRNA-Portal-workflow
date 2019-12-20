@@ -39,7 +39,6 @@ module.exports={
 			id:"",
 			assayId:{_table:"Assay",_attribute:"id"}
 		}
-
 	}
 
 /*	"mature_miRNA_id":"id",

@@ -138,7 +138,7 @@ function buildMatrix(result,resultMetaCell,resultHeaders,matrix){
 		seqData=result[seq]
 		Object.keys(seqData).forEach(attrKey=>{
 			if(seqData[attrKey].length==1){ //attributes
-				row[attrKey]={value:seqData[attrKey],metadata:resultMetaCell[index]}
+				row[attrKey]={value:seqData[attrKey],metadata:{id:attrKey}}
 				headers.push(attrKey)
 			}else{ 
 				seqData[attrKey].forEach((val,index)=>{
@@ -150,7 +150,7 @@ function buildMatrix(result,resultMetaCell,resultHeaders,matrix){
 		})
 		matrix.rows[seq]=row
 		if (matrix.header.length==0){
-			matrix.header.push(headers)
+			matrix.header=headers
 		}
 	})
 	return matrix

@@ -16,7 +16,7 @@ function getDuplicates(array){
 	  }, {})
 	return Object.keys(uniq).filter((a) => uniq[a] > 1)
 }
-function convertRow2HTML(rows,header){
+function convertRow2HTML(rows,header,metadata){
 	result=""
 	rows.forEach(function(row){
 		result+="<tr>"

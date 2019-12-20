@@ -4,7 +4,6 @@ $(document).ready(function(){
 	let loadedRows=0
 	let api=$('.card.gen-info').attr('api')
 	const rowsPerIter=10
-	const dataPointsPerRow=9
 	let iteration=0
 	let fulltable=false
 	let viewPortHeight=window.innerHeight
@@ -20,12 +19,12 @@ $(document).ready(function(){
 		let call=apiInfo.attr("call")
 		let version=apiInfo.attr("version")
 		let studyId=apiInfo.attr("studyId")
-		url=`/db/api/${version}/${call}/${studyId}`
+		url=`/de/assaydata/${studyId}/matrix`
 		getMatrixObj(url).then(function(data){
-			assaydata=data.result.data
+			assayData=data
 			lastRow=document.getElementById("lastRow");
 			loadedRows=$('table.upload-table tbody tr').length-2
-			addUploadNumber(assaydata.length)
+			addUploadNumber(Object.keys(assayData.rows).length)
 			loadRows()
 		}).catch(function(err){
 			console.trace(err)
@@ -53,18 +52,20 @@ $(document).ready(function(){
 	}
 
 	function loadRows(){
-		let start=iteration*rowsPerIter*dataPointsPerRow
-		let rows=assaydata.slice(start,start+rowsPerIter*dataPointsPerRow)
+		let start=iteration*rowsPerIter
+		let seqs=Object.keys(assayData.rows).slice(start,start+rowsPerIter)
 
-		loadMatrix=assembleRows(rows)
-		rows=loadMatrix.rows
+		rows=[]
+		seqs.forEach(seq=>{
+			rows.push(assayData.rows[seq])
+		})
 		table=$('table.upload-table')
 		if(iteration==0){
-			addHeader(table,loadMatrix.header[0])
-			let colspan=loadMatrix.header[0].length
+			addHeader(table,assayData.header)
+			let colspan=assayData.header.length
 			$('table.upload-table tr#lastRow td').attr('colspan',colspan)
 		}
-		insertInEl(rows,table,'tbody')
+		createAndInsertRows(rows,assayData.header,table,'tbody')
 		$('table.upload-table tr#lastRow').appendTo('table.upload-table tbody')
 		addLoadedRows(rows.length)
 		iteration++
@@ -89,99 +90,36 @@ $(document).ready(function(){
 	}
 	$(window).on('resize',function(){
 		viewPortHeight=window.innerHeight
-
 	})
 
-	function assembleRows(rows){
-		let result={}
-		let resultHeaders=""
-		let resultMetaCell=""
-		let headers=[]
-		let metaCell=[]	
-		rows.forEach(row=>{
-			let groupingElement={key:"",value:""}
-			let cols=[]
-			Object.keys(row).forEach(key=>{
-				let value=row[key] || 0
-				let subKeys=Object.keys(value)
-				let subKey=""
-				//process Keys
-				if( subKeys.length==1){
-					subKey=subKeys[0]
-					subValue=value[subKey]
-				}
-				if( key == "group" ){
-					groupingElement={key:subKey,value:subValue}
-				} else if( key == "header"){
-					headers.push({key:subKey,value:subValue})
-				}else if( key == "metadata" ){
-					if(value["cell"]){
-						metaCell.push(value.cell)
-					}else{
-						throw "Matrix metadata not found for column"
-					}
-				}else{
-					cols.push({key:key,value:value})
-				}
-			})
-			cols.forEach(col=>{
-				cKey=col.key
-				cValue=col.value
-				gValue=groupingElement.value
-				if(result[gValue]){
-					if(result[gValue][cKey])
-						result[gValue][cKey].push(cValue)
-					else
-						result[gValue][cKey]=[cValue]
-				}else{
-					result[gValue]={}
-					result[gValue][cKey]=[cValue]
-					if(headers.length>1){
-						resultHeaders=headers
-						headers=[resultHeaders.pop()]
-						resultMetaCell=metaCell
-						metaCell=[resultMetaCell.pop()]
-						if(iteration==0){
-							headerSpan=resultHeaders.length
-						}else{
-							if(resultHeaders.length!=headerSpan){
-								throw "Matrix is corrupted."
-							}
-						}	
-					}
-				}
-			})
-			//this only apllies for single row iterations. i.e. one row per iter.
-			resultHeaders=headers
-			resultMetaCell=metaCell
-		})
-		if(iteration>0 && resultHeaders.length!=headerSpan){
-			throw "Matrix is corrupted."
-		}else if (iteration==0 && headerSpan==0){
-			headerSpan=resultHeaders.length
-		}else if(resultHeaders.length!=headerSpan){
-			throw "Matrix is corrupted."
-		}
-		//bring together all arrays
-		matrix={header:[],rows:[],metadata:{row:[],cell:[]}}
-		Object.keys(result).forEach(seq=>{
-			let row=[]
-			let headers=[]
-			let cellMeta=[]
-			seqData=result[seq]
-			Object.keys(seqData).forEach(attrKey=>{
-				seqData[attrKey].forEach((val,index)=>{
-					row.push(val)
-					headers.push(`${resultHeaders[index].value}(${attrKey})`)
-					cellMeta.push(resultMetaCell[index])					
-				})
 
-			})
-			matrix.rows.push(row)
-			matrix.header.push(headers)
-			matrix.metadata.cell.push(cellMeta)
+
+
+function createAndInsertRows(rows,headers,table,element){
+	let tableTarget=table.find(element)
+	appendRows(headers,rows,tableTarget)
+}
+function appendRows(headers,rows,tableTarget){
+	rows.forEach(row=>{
+		tableTarget.append(createRow(headers,row))
+	})
+}
+
+function createRow(headers,row){
+	var rowElement=document.createElement('tr')
+	headers.forEach(header=>{
+		dataPoint=row[header]
+		let cell=document.createElement('td')
+		cell.textContent=dataPoint.value
+		Object.keys(dataPoint.metadata).forEach(key=>{
+			let value=dataPoint.metadata[key] 
+			cell.setAttribute(key,value)
 		})
-		return matrix
-	}
+		rowElement.append(cell)
+	})
+	return rowElement
+}
+
+
 
 })
