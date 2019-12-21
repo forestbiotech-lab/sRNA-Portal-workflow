@@ -25,6 +25,20 @@ $(document).ready(function(){
 			lastRow=document.getElementById("lastRow");
 			loadedRows=$('table.upload-table tbody tr').length-2
 			addUploadNumber(Object.keys(assayData.rows).length)
+			let sequencelist=Object.keys(assayData.rows)
+			$('.typeahead').typeahead({ 
+        		source:sequencelist,
+        		autoSelect:true
+      		});
+      		var sequence=assayData.header.indexOf("Sequence")
+      		var name=assayData.header.indexOf("Name")
+      		var accession=assayData.header.indexOf("Accession")
+      		assayData.header.unshift(assayData.header[accession])
+      		assayData.header.unshift(assayData.header[name+1])
+      		assayData.header.unshift(assayData.header[sequence+2])
+      		delete assayData.header[sequence+3]
+      		delete assayData.header[name+3]
+      		delete assayData.header[accession+3]
 			loadRows()
 		}).catch(function(err){
 			console.trace(err)

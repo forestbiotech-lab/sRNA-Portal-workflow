@@ -20,6 +20,7 @@ var paths=pathname.split("/").splice(1)
      scriptName=[
       'infinityLoaderAPI',
       'helpers',
+      'assaydata'
     ]
   }
 
