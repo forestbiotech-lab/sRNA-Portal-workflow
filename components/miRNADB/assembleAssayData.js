@@ -141,7 +141,9 @@ function buildMatrix(result,resultMetaCell,resultHeaders,matrix){
 				row[attrKey]={value:seqData[attrKey],metadata:{id:attrKey}}
 				headers.push(attrKey)
 			}else{ 
+			    resultMetaCell=resultMetaCell.map((v,i)=>{return Object.assign({type:attrKey},v)})
 				seqData[attrKey].forEach((val,index)=>{
+					resultMetaCell
 					row[`${resultHeaders[index].value}(${attrKey})`]={value:val,metadata:resultMetaCell[index]}
 					headers.push(`${resultHeaders[index].value}(${attrKey})`)					
 				})
