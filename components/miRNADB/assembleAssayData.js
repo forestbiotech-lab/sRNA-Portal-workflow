@@ -139,13 +139,12 @@ function buildMatrix(result,resultMetaCell,resultHeaders,matrix){
 		Object.keys(seqData).forEach(attrKey=>{
 			if(seqData[attrKey].length==1){ //attributes
 				row[attrKey]={value:seqData[attrKey],metadata:{id:attrKey}}
-				headers.push(attrKey)
+				headers.push({value:attrKey,metadata:{id:attrKey}})
 			}else{ 
-			    resultMetaCell=resultMetaCell.map((v,i)=>{return Object.assign({type:attrKey},v)})
+			    let metadata=resultMetaCell.map((v,i)=>{return Object.assign({type:attrKey},v)})
 				seqData[attrKey].forEach((val,index)=>{
-					resultMetaCell
-					row[`${resultHeaders[index].value}(${attrKey})`]={value:val,metadata:resultMetaCell[index]}
-					headers.push(`${resultHeaders[index].value}(${attrKey})`)					
+					row[`${resultHeaders[index].value}(${attrKey})`]={value:val,metadata:metadata[index]}
+					headers.push({value:`${resultHeaders[index].value}(${attrKey})`,metadata:{id:attrKey,type:attrKey}})					
 				})
 			}
 

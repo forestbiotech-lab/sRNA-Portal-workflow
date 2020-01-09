@@ -10,8 +10,10 @@ $(document).ready(function(){
 	let lastRow = null
 	let uploadNumber=0
 	let headerSpan=0
-	
-
+	let header=[]
+	let firstcols=["Sequence","Name","Accession"]
+	let hiddenColumns="cpm"
+    
 
 //Specific 
 	if(api){	
@@ -30,15 +32,6 @@ $(document).ready(function(){
         		source:sequencelist,
         		autoSelect:true
       		});
-      		var sequence=assayData.header.indexOf("Sequence")
-      		var name=assayData.header.indexOf("Name")
-      		var accession=assayData.header.indexOf("Accession")
-      		assayData.header.unshift(assayData.header[accession])
-      		assayData.header.unshift(assayData.header[name+1])
-      		assayData.header.unshift(assayData.header[sequence+2])
-      		delete assayData.header[sequence+3]
-      		delete assayData.header[name+3]
-      		delete assayData.header[accession+3]
 			loadRows()
 		}).catch(function(err){
 			console.trace(err)
@@ -75,15 +68,16 @@ $(document).ready(function(){
 		})
 		table=$('table.upload-table')
 		if(iteration==0){
-			addHeader(table,assayData.header)
+			header=createHeader(table,assayData.header)
 			let colspan=assayData.header.length
 			$('table.upload-table tr#lastRow td').attr('colspan',colspan)
 		}
-		createAndInsertRows(rows,assayData.header,table,'tbody')
+		createAndInsertRows(rows,header,table,'tbody')
 		$('table.upload-table tr#lastRow').appendTo('table.upload-table tbody')
 		addLoadedRows(rows.length)
 		iteration++
 		if(loadedRows>=uploadNumber) fulltable=true
+		hideColumns()
 	}
 	function addLoadedRows(value){
 		loadedRows+=value
@@ -108,32 +102,78 @@ $(document).ready(function(){
 
 
 
-
-function createAndInsertRows(rows,headers,table,element){
-	let tableTarget=table.find(element)
-	appendRows(headers,rows,tableTarget)
-}
-function appendRows(headers,rows,tableTarget){
-	rows.forEach(row=>{
-		tableTarget.append(createRow(headers,row))
-	})
-}
-
-function createRow(headers,row){
-	var rowElement=document.createElement('tr')
-	headers.forEach(header=>{
-		dataPoint=row[header]
-		let cell=document.createElement('td')
-		cell.textContent=dataPoint.value
-		Object.keys(dataPoint.metadata).forEach(key=>{
-			let value=dataPoint.metadata[key] 
-			cell.setAttribute(key,value)
+	function createHeader(table,headers){
+		headers=arrangeHeader(headers,firstcols)
+		var colGroup=document.createElement('colgroup')
+		var rowElement=document.createElement('tr')
+		returnHeader=[]
+		headers.forEach(header=>{
+			let cell=document.createElement('th')
+			let col=document.createElement('col')
+			returnHeader.push(header.value)
+			cell.textContent=header.value
+			Object.keys(header.metadata).forEach(key=>{
+				let value=header.metadata[key] 
+				cell.setAttribute(key,value)
+				col.setAttribute(key,value)
+			})
+			rowElement.append(cell)
+			colGroup.append(col)
 		})
-		rowElement.append(cell)
-	})
-	return rowElement
-}
+		table.find('thead').html(colGroup)
+		table.find('thead').append(rowElement)
+        return returnHeader
+		 
+	}
+
+
+	function createAndInsertRows(rows,headers,table,element){
+		let tableTarget=table.find(element)
+		appendRows(headers,rows,tableTarget)
+	}
+	function appendRows(headers,rows,tableTarget){
+		rows.forEach(row=>{
+			tableTarget.append(createRow(headers,row))
+		})
+	}
+
+	function createRow(headers,row){
+		var rowElement=document.createElement('tr')
+		headers.forEach(header=>{
+			dataPoint=row[header]
+			let cell=document.createElement('td')
+			cell.textContent=dataPoint.value
+			Object.keys(dataPoint.metadata).forEach(key=>{
+				let value=dataPoint.metadata[key] 
+				cell.setAttribute(key,value)
+			})
+			rowElement.append(cell)
+		})
+		return rowElement
+	}
 
 
 
+    function arrangeHeader(header,firstcols){
+        let columnIndexes=[]
+        firstcols.forEach((col)=>{
+			header.forEach((val,idx)=>{
+				if(val.value==col){
+                    columnIndexes.push(idx)        
+				}
+			})        	
+        })
+		columnIndexes.forEach((col,idx)=>{
+			header.unshift(header[col+idx])
+		})
+    	columnIndexes.forEach((col,idx)=>{
+            delete header[col+columnIndexes.length]
+		})
+		return header
+    }
+
+    function hideColumns(){
+    	$(`table th[type|="${hiddenColumns}"]`).hide()
+    	$(`table td[type|="${hiddenColumns}"]`).hide()
+    }
 })
