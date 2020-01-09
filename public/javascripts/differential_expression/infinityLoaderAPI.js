@@ -14,6 +14,17 @@ $(document).ready(function(){
 	let firstcols=["Sequence","Name","Accession"]
 	let hiddenColumns="cpm"
     
+    $('.card.upload-table .card-header input#sequence-values-type').change(function(){
+    	let that=$(this)
+    	let option=that.prop('checked')
+    	options=["raw","cpm"]
+    	if(option){
+    		hiddenColumns=options[0]
+    	}else{
+    		hiddenColumns=options[1]
+    	}
+    	hideColumns()
+    })
 
 //Specific 
 	if(api){	
@@ -176,6 +187,8 @@ $(document).ready(function(){
     }
 
     function hideColumns(){
+    	$(`table th`).show()
+    	$(`table td`).show()
     	$(`table th[type|="${hiddenColumns}"]`).hide()
     	$(`table td[type|="${hiddenColumns}"]`).hide()
     }
