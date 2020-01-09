@@ -25,7 +25,7 @@ $(document).ready(function(){
 		getMatrixObj(url).then(function(data){
 			assayData=data
 			lastRow=document.getElementById("lastRow");
-			loadedRows=$('table.upload-table tbody tr').length-2
+			loadedRows=$('table.upload-table tbody tr').length-1
 			addUploadNumber(Object.keys(assayData.rows).length)
 			let sequencelist=Object.keys(assayData.rows)
 			$('.typeahead').typeahead({ 
@@ -76,7 +76,10 @@ $(document).ready(function(){
 		$('table.upload-table tr#lastRow').appendTo('table.upload-table tbody')
 		addLoadedRows(rows.length)
 		iteration++
-		if(loadedRows>=uploadNumber) fulltable=true
+		if(loadedRows>=uploadNumber){
+			fulltable=true
+			$('table.upload-table tr#lastRow').hide()
+		} 
 		hideColumns()
 	}
 	function addLoadedRows(value){
