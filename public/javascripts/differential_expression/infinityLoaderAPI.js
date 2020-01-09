@@ -25,6 +25,15 @@ $(document).ready(function(){
     	}
     	hideColumns()
     })
+    $('.card.upload-table .card-header button').click(function(){
+    	let sequence=$(this).closest('.form-inline').children('input').val()
+    	table=$('table.upload-table')
+    	$('table tbody tr[datatype|="search-result"]').remove()
+    	$('table tbody tr').hide()
+    	let row=[]
+    	row.push(assayData.rows[sequence])
+    	createAndInsertRows(row,header,table,'tbody',search=true)
+    })
 
 //Specific 
 	if(api){	
@@ -141,18 +150,23 @@ $(document).ready(function(){
 	}
 
 
-	function createAndInsertRows(rows,headers,table,element){
+	function createAndInsertRows(rows,headers,table,element,search){
+		search=search || false
 		let tableTarget=table.find(element)
-		appendRows(headers,rows,tableTarget)
+		appendRows(headers,rows,tableTarget,search)
 	}
-	function appendRows(headers,rows,tableTarget){
+	function appendRows(headers,rows,tableTarget,search){
 		rows.forEach(row=>{
-			tableTarget.append(createRow(headers,row))
+			tableTarget.append(createRow(headers,row,search))
 		})
 	}
 
-	function createRow(headers,row){
+	function createRow(headers,row,search){
 		var rowElement=document.createElement('tr')
+		rowElement.setAttribute("sequence",row.Sequence.value[0])
+		if(search){
+			rowElement.setAttribute("datatype","search-result")
+		}
 		headers.forEach(header=>{
 			dataPoint=row[header]
 			let cell=document.createElement('td')
