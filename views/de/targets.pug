@@ -1,0 +1,62 @@
+extends ../layout
+
+block content
+  script(id="database",src="/javascripts/de.js",defer)
+  .card-block
+    .container-fluid
+      .row  
+        .col-lg-12
+          .card
+            .card-body
+              h4.study.card-title Study&nbsp
+                span.badge.badge-secondary#studyTitle
+              button.btn.btn-primary.generate-table-form(table="Study",type='button', data-toggle='collapse', data-target='#table-study', aria-expanded='false', aria-controls='table-study')
+                | Create Study
+              #table-study.collapse
+                .card.card-body
+                  .form-Study
+              button.btn.btn-primary.generate-table-form(table="Person",type='button', data-toggle='collapse', data-target='#table-Person', aria-expanded='false', aria-controls='table-Person')
+                | Create Person              
+              #table-Person.collapse
+                .card.card-body
+                  .form-Person
+              button.btn.btn-primary.generate-table-form.generate-select-form(table="Study",type='button', data-toggle='collapse', data-target='#select-Study', aria-expanded='false', aria-controls='select-Study')
+                | Get studies              
+              #select-Study.collapse
+                .card.card-body
+                  .select-Study
+                  .form-Study
+
+      .row
+        .col-lg-12
+          .card.upload 
+            .card-body
+              h5.card-title Targets file
+              .row
+                .form-group.col-lg-2
+                  label.sr-only(for="type-of-targets") Upload file
+                  select.custom-select(type="file",id="targets-type",name="targets-type")
+                    option(selected) Select target type
+                    option(value="1") psRNA target (Plant Nobel)
+                    option(value="2") Cleaveland
+                    option(value="3") pareSNIP 
+                .form-group
+                  label.sr-only(for="upload-files-upload") Upload file
+                  input(hidden,type="file",id="upload-files-upload",placeholder="tsv file",required="",autofocus="",autocomplete="off",name="uploads[]", accept="mime/*,.tsv")
+                .col-lg-8
+                  .progress(style="position:relative;bottom:-12px;")
+                    .progress-bar(role="progressbar",aria-valuenow="0",aria-valuemin="0",aria-valuemax="100")
+                .col-lg-2
+                  button.btn.btn-primary.upload-targets(type="button") Upload targets  
+            .card-footer
+              .row
+                .form-group.col-lg-12
+                  label(for="file") Uploaded file: 
+                  input.col-lg-10.col-md-8.col-sm-4(type="text",id="file",placeholder="no file",required="",name="file",readonly)
+      .row
+        .col-lg-12
+          form.view-matrix(action="/de/uploaded-file",method="POST")
+            input(type="hidden",name="hash",id="hash")
+            input(type="hidden",name="filename",id="filename")
+            input(type="hidden",name="studyId",id="studyId")
+            input.btn.btn-primary.disabled(type="",role="button",value="View matrix",title="Set the study first to view matrix")

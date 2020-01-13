@@ -11,7 +11,7 @@ var getDynamicTable=require('./../components/miRNADB/getDynamicTable')
 var countAssayDataForStudy=require('./../components/miRNADB/countAssayDataForStudy')
 var getAssayDataWithAnnotations=require('./../components/miRNADB/getAssayDataWithAnnotations')
 var assembleAssayData=require('./../components/miRNADB/assembleAssayData')
-const uploadDir=path.join(__dirname, '../uploads/de_matrices');
+const uploadDir=path.join(__dirname, '../uploads');
 
 
 router.get('/',function(req,res){
@@ -31,7 +31,7 @@ router.post('/upload', function(req, res){
   //Calculate file hash
   form.hash = 'md5';
   // store all uploads in the /uploads directory
-  form.uploadDir = uploadDir;
+  form.uploadDir = path.join(uploadDir,"/de_matrices");
 
   // every time a file has been uploaded successfully,
   // rename it to it's original name
@@ -52,6 +52,7 @@ router.post('/upload', function(req, res){
   		}	
   	})
   });
+
   // log any errors that occur
   form.on('error', function(err) {
     console.log('An error has occured: \n' + err);
@@ -126,6 +127,77 @@ router.post('/count/assaydata/',function(req,res){
   })
 
 })
+
+router.get('/targets/new',function(req,res){
+  res.render('de/targets')
+})
+
+router.post('/targets/upload/:studyid', function(req, res){
+  // create an incoming form object
+  var form = new formidable.IncomingForm();
+
+  // specify that we want to allow the user to upload multiple files in a single request
+  form.multiples = false;
+  //Calculate file hash
+  form.hash = 'md5';
+  // store all uploads in the /uploads directory
+  form.uploadDir = uploadDir;
+
+  // every time a file has been uploaded successfully,
+  // rename it to it's original name
+  form.on('file', function(field, file) {
+    detect.fromFile(file.path,function(err,result){
+      if (err) res.render('error',err);
+      if (result===null){
+      	let destinationDir=path.join(uploadDir,`/${req.params.studyid}/targets`)
+        let destinationFile=path.join(destinationDir, file.name)
+        fs.exists(destinationDir, (exists)=>{
+          if(exists){
+           rename(file.path, destinationFile)	
+          }else{
+            fs.mkdir(destinationDir, { recursive: true }, (err)=>{
+              if (err){ 
+                res.render('error',err);
+              }else{
+                rename(file.path, destinationFile)  
+              }
+            })  
+          }
+          function rename(inFile,outFile){
+            fs.rename(inFile,outFile, (err)=>{
+              if(err){
+              	res.render('error',err);
+              }else{
+                file={hash:form.openedFiles[0].hash, name:form.openedFiles[0].name}
+                res.json(file);            	
+              }
+            });
+          }
+        })          
+      }else{
+        console.log('this is not the right file type')
+        fs.unlink(file.path, (err)=>{
+          err ? res.render('error',err) : res.json({hash:'',name:"UnsupportedFile"})
+        })
+      } 
+    })
+  });
+  
+  // log any errors that occur
+  form.on('error', function(err) {
+    console.log('An error has occured: \n' + err);
+    res.render('error',err);
+  });
+
+  // once all the files have been uploaded, send a response to the client
+  form.on('end', function() {
+    //Not necessary for single file
+  });
+
+  // parse the incoming request containing the form data
+  form.parse(req);
+
+});
 
 
 module.exports = router;

@@ -23,7 +23,11 @@ var paths=pathname.split("/").splice(1)
       'assaydata'
     ]
   }
-
+  if(paths[1]=="targets"){
+     scriptName=[
+      'saveTargetToDB',
+    ]
+  }
 
 
   scriptTarget = $('script#actions')[0];
