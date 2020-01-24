@@ -11,7 +11,8 @@ block content
             h3 Profile: 
               select.profile
                 option select
-                option psRNATarget
+                each profile in profiles
+                  option=profile
         .card.fileSelections
           .card-header 
             h3 File name

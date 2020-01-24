@@ -2,12 +2,20 @@ var model=require('./../../forms/models')
 var db = require('./../sqldb/index');
 const TABLE = "Profile"
 
-function getProfiles(type){
+function listProfiles(type){
   return new Promise((res,rej)=>{
     let where={type}
     let attributes={tablename:TABLE,where}
-    model.getTableValuesWhere(attributes).then((result)=>{
-      result instanceof Error ? rej(result) : res(result)
+    db[TABLE].findAll({attributes:['profile'],where:{type},group:'profile'}).then((result)=>{
+      if( result instanceof Error ){
+        rej(result)
+      }else{
+        profiles=[]
+        result.forEach(profile=>{
+          profiles.push(profile.dataValues.profile)
+        })
+        res(profiles)
+      } 
     })    
   })
 }
@@ -61,6 +69,7 @@ function destroy(destroyPromises,rows,transaction){
 }
 function update(rows,transaction){
   let updates=[]
+  rows=rows || []
   rows.forEach(row=>{
     let where=row.where
     updates.push(db[TABLE].update(row.inserts,{where},{transaction}))
@@ -71,4 +80,4 @@ function update(rows,transaction){
 
 
 
-module.exports={setProfile,getProfile}
+module.exports={setProfile,getProfile,listProfiles}

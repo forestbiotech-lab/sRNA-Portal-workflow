@@ -207,13 +207,18 @@ router.get('/targets/columnAssociation',(req,res)=>{
   let fileHeaders=["miRNA_Acc.","Target_Acc.","Expectation","UPE","miRNA_start","miRNA_end","Target_start","Target_end","miRNA_aligned_fragment","Target_aligned_fragment","Inhibition","Target_Desc."]
   let tables=["Feature","Target","Transcript"]
   let tableData={}
+  let type='target'
   let icon={date:"calendar",number:"list-ordered",text:"text-size",checkbox:"file-binary"}
   tables.forEach(table=>{
     tableStructure=formFromTable(table)
     if (tableStructure instanceof Error) res.render('error',"Unable to get tableStructure") 
     tableData[table]=tableStructure
   })
-  res.render('de/targetColumnAssociation',{tables,tableData,octicons,icon,fileHeaders})
+  targetsProfile.listProfiles(type).then(profiles=>{
+    res.render('de/targetColumnAssociation',{tables,tableData,octicons,icon,fileHeaders,profiles})
+  }).catch(err=>{
+    res.render('error',{message:"Unable to get profiles",error:{status:"The query had issues"},stack:err.stack})
+  })
 })
 
 router.get('/target/profile/get/:type/:profile',(req,res)=>{
