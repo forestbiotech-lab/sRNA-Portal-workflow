@@ -8,11 +8,14 @@ block content
       .col-lg-6
         .card 
           .card-body
-            h3 Profile: 
-              select.profile
-                option select
-                each profile in profiles
-                  option=profile
+            .form-check.form-check-inline
+              label.form-check-label(for='profile') Profile: &nbsp
+                select.form-control-lg#profile.profile
+                  option select
+                  each profile in profiles
+                    option=profile
+            .form-check.form-check-inline
+              button.btn.btn-light(title="add new profile",data-toggle="modal",data-target="#new-profile") !{octicons.plus.toSVG()}
         .card.fileSelections
           .card-header 
             h3 File name
@@ -46,3 +49,15 @@ block content
         strong 
         button.close(type='button', data-dismiss='alert', aria-label='Close')
           span(aria-hidden='true') ×
+  .modal#new-profile(tabindex='-1', role='dialog')
+    .modal-dialog(role='document')
+      .modal-content
+        .modal-header
+          h5.modal-title Add New Profile
+          button.close(type='button', data-dismiss='modal', aria-label='Close')
+            span(aria-hidden='true') ×
+        .modal-body
+          input.form-control(type="text",placeholder="new profile name")
+        .modal-footer
+          button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+          button.save-changes.btn.btn-primary(type='button') Save changes

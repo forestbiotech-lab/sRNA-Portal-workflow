@@ -50,7 +50,7 @@ $(document).ready(function(){
         let fileColumnIndex=idx
         let table=that.find('select#table-attributes').attr('table')
         let columnName=that.find('select#table-attributes').get(0).selectedOptions[0].text
-        if(id==''){
+        if( id=='' || id==undefined ){
           datastructure.create.push({table,columnName,fileColumnIndex})
         }else{
           datastructure.update.push({inserts:{table,columnName,fileColumnIndex},where:{id}})
@@ -136,7 +136,8 @@ $(document).ready(function(){
     }
   }
   function isElementInDB(el){
-    return el.attr('profileid') != "" 
+    if(el.attr('profileid')==undefined) el.attr('profileid','') 
+    return el.attr('profileid') != ""
   }
 
   function triggerAlert(msg,type){
@@ -145,6 +146,20 @@ $(document).ready(function(){
     alert.find('strong').text(msg)
     alert.prependTo('.row.alerts')
   }
+  $('.modal .modal-footer button.save-changes').click(function(){
+    let newProfile=$(this).closest('.modal-content').find('.modal-body input').val()
+    $(this).closest('.modal-content').find('.modal-body input').val("")
+    if(newProfile.length>=0){
+      newProfile=newProfile.replace(" ","_")
+      let newOption=document.createElement('option')
+      newOption.textContent=newProfile
+      $('select#profile.profile').append(newOption)
+      $('select#profile.profile').find('option').prop('selected',false)
+      $(`select#profile.profile option:contains(${newProfile})`).prop('selected',true)
+      $('.modal#new-profile').modal('hide')
+    }
+   })
+
 })
 
 
