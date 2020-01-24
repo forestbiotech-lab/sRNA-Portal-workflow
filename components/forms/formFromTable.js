@@ -7,6 +7,7 @@ let inputType={
 	STRING:"text",
 	DATE:"date",
 	BOOLEAN:"checkbox",
+  TEXT:"text"
 }
 
 
@@ -15,6 +16,7 @@ let inputType={
 
 function ts(table){
 	let tableStructure=[]
+	if (db[table]==undefined) throw new Error(`This table [${table}] does not exist!`);
 	var tableAttributes=db[table].tableAttributes
 	Object.keys( tableAttributes ).forEach(function(attribute){
 		let type=tableAttributes[attribute].type.key

@@ -20,12 +20,24 @@ block content
               #table-Person.collapse
                 .card.card-body
                   .form-Person
-              button.btn.btn-primary.generate-table-form.generate-select-form(table="Study",type='button', data-toggle='collapse', data-target='#select-Study', aria-expanded='false', aria-controls='select-Study')
-                | Get studies              
-              #select-Study.collapse
+              button.btn.btn-primary.generate-table-form(table="Organism",type='button', data-toggle='collapse', data-target='#table-Organism', aria-expanded='false', aria-controls='table-Organism')
+                | Create Organism              
+              #table-Organism.collapse
                 .card.card-body
-                  .select-Study
-                  .form-Study
+                  .form-Organism
+              button.btn.btn-primary.generate-table-form(table="Genome",type='button', data-toggle='collapse', data-target='#table-Genome', aria-expanded='false', aria-controls='table-Genome')
+                  | Create Genome              
+              #table-Genome.collapse
+                .card.card-body
+                  .form-Genome
+              button.btn.btn-primary.generate-table-form.generate-select-form(table="Study",displayAttr='title',type='button', data-toggle='collapse', data-target='#select-Study', aria-expanded='false', aria-controls='select-Study')
+                | Get studies              
+              button.btn.btn-primary.generate-table-form.generate-select-form(table="Genome",displayAttr='genome_build',type='button', data-toggle='collapse', data-target='#select-Genome', aria-expanded='false', aria-controls='select-Genome')
+                | Get Genome              
+              #select-Genome.collapse
+                .card.card-body
+                  .select-Genome
+                  .form-Genome
 
       .row
         .col-lg-12

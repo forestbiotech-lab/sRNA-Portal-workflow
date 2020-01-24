@@ -33,7 +33,6 @@ module.exports=function(dataset){
 				let name=rows[y][1]
 				let accession=genAccession(name)
 				maturePromises.push(createMature(seqId,name,accession))
-
 				let mature_miRNA_models=Promise.all(maturePromises)
 
 				//Don't create assays if IDs are supplied	

@@ -30,7 +30,6 @@ router.post('/factory/select/basic/:table', function(req, res, next){
     res.render('error',error)
   })
 })
-
 router.post('/save/singletable/:tablename',function(req,res){
   let options={inserts:req.body,tablename:req.params.tablename}
   saveSingleTableDynamic.create(options).then(function(data){
@@ -47,8 +46,5 @@ router.post('/update/singletable/:tablename',function(req,res){
     res.render('error',error)
   })
 })
-
-
-
 
 module.exports=router

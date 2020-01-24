@@ -1,0 +1,47 @@
+extends ../layout
+
+block content
+  script(id="database",src="/javascripts/de.js",defer)
+  .container-fluid
+    .row.alerts
+    .row.associationRow
+      .col-lg-6
+        .card 
+          .card-body
+            h3 Profile: 
+              select.profile
+                option select
+                option psRNATarget
+        .card.fileSelections
+          .card-header 
+            h3 File name
+          .card-body
+            each header,idx in fileHeaders 
+              li(id=idx) !{header} 
+                select#associate
+                  option Table
+                  each table in tables
+                    option=table
+          .card-footer
+            button.btn.btn-primary.save save
+      .col-lg-6
+        each table in tables  
+          .card.table-selections(table=table)
+            .card-header 
+              h3=table
+            .card-body
+              each attr in tableData[table]
+                li(id=attr.name) !{octicons[icon[attr.type]].toSVG()} !{attr.name}&nbsp;
+                  span.index.badge.badge-secondary
+                  span.name.badge.badge-success  
+      .table-attributes.d-none
+        each table in tables
+          select#table-attributes(table=table)
+            option attributes
+            each attr in tableData[table]
+              option=attr.name
+      .alert.template.d-none.alert-dismissible.fade.show(role='alert')
+        | Save association, 
+        strong 
+        button.close(type='button', data-dismiss='alert', aria-label='Close')
+          span(aria-hidden='true') ×

@@ -15,11 +15,17 @@
       },
     mature_miRNA_id: DataTypes.INTEGER(11),
     transcript_id: DataTypes.INTEGER(11),
+    date: DataTypes.DATE,
+    version: DataTypes.INTEGER,
+    type: DataTypes.STRING(254),
+    mature_miRNA_id: DataTypes.INTEGER,
+    target_description: DataTypes.TEXT(1000),
+    expectation: DataTypes.FLOAT(3),
+    UPE: DataTypes.FLOAT(6),
   }, {
       tableName: 'Target',
       timestamps: false,
       underscored: false,
-
      classMethods: {
         associate: function associate(models) {    
           Target.belongsTo(models.Mature_miRNA, {

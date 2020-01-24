@@ -11,8 +11,11 @@ var getDynamicTable=require('./../components/miRNADB/getDynamicTable')
 var countAssayDataForStudy=require('./../components/miRNADB/countAssayDataForStudy')
 var getAssayDataWithAnnotations=require('./../components/miRNADB/getAssayDataWithAnnotations')
 var assembleAssayData=require('./../components/miRNADB/assembleAssayData')
+var processTargetsFile=require('./../components/miRNADB/targets/psRNAtargetFile')
+var targetsProfile=require('./../components/miRNADB/targets/profiles')
+var formFromTable=require('./../components/forms/formFromTable').tableStructure
+var octicons = require("@primer/octicons")
 const uploadDir=path.join(__dirname, '../uploads');
-
 
 router.get('/',function(req,res){
 	res.render('differential_expression');
@@ -169,6 +172,7 @@ router.post('/targets/upload/:studyid', function(req, res){
               	res.render('error',err);
               }else{
                 file={hash:form.openedFiles[0].hash, name:form.openedFiles[0].name}
+                processTargetsFile(outFile)
                 res.json(file);            	
               }
             });
@@ -199,5 +203,38 @@ router.post('/targets/upload/:studyid', function(req, res){
 
 });
 
+router.get('/targets/columnAssociation',(req,res)=>{
+  let fileHeaders=["miRNA_Acc.","Target_Acc.","Expectation","UPE","miRNA_start","miRNA_end","Target_start","Target_end","miRNA_aligned_fragment","Target_aligned_fragment","Inhibition","Target_Desc."]
+  let tables=["Feature","Target","Transcript"]
+  let tableData={}
+  let icon={date:"calendar",number:"list-ordered",text:"text-size",checkbox:"file-binary"}
+  tables.forEach(table=>{
+    tableStructure=formFromTable(table)
+    if (tableStructure instanceof Error) res.render('error',"Unable to get tableStructure") 
+    tableData[table]=tableStructure
+  })
+  res.render('de/targetColumnAssociation',{tables,tableData,octicons,icon,fileHeaders})
+})
+
+router.get('/target/profile/get/:type/:profile',(req,res)=>{
+  let type=req.params.type
+  let profile=req.params.profile
+  targetsProfile.getProfile(type,profile).then(result=>{
+    res.json(result)
+  }).catch(function(err){
+    res.status('400').json({err})
+  })
+})
+
+router.post('/target/profile/set/:type/:profile',(req,res)=>{
+  let type=req.params.type
+  let profile=req.params.profile
+  let body=req.body
+  targetsProfile.setProfile(type,profile,body).then(result=>{
+    res.status(200).json("ok")
+  }).catch(function(err){
+    res.status(400).json(err)
+  })
+})
 
 module.exports = router;

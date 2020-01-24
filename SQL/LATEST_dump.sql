@@ -184,10 +184,10 @@ CREATE TABLE `Feature` (
   `type` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `start` int(254) NOT NULL,
   `end` int(254) NOT NULL,
-  `score` float NOT NULL,
+  `score` float DEFAULT NULL,
   `strand` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `phase` int(1) NOT NULL,
-  `attr_id` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phase` int(1) DEFAULT NULL,
+  `attr_id` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `Feature_fk0` (`genome_id`),
   CONSTRAINT `Feature_fk0` FOREIGN KEY (`genome_id`) REFERENCES `Genome` (`id`)
@@ -584,6 +584,33 @@ INSERT INTO `Pre_miRNA_sequence` VALUES (1,'CAAGAGAAACGCAAAGAAACUGACAGAAGAGAGUGA
 UNLOCK TABLES;
 
 --
+-- Table structure for table `Profile`
+--
+
+DROP TABLE IF EXISTS `Profile`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+ SET character_set_client = utf8mb4 ;
+CREATE TABLE `Profile` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(254) NOT NULL,
+  `profile` varchar(254) NOT NULL,
+  `table` varchar(254) NOT NULL,
+  `columnName` varchar(254) NOT NULL,
+  `fileColumnIndex` int(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Profile`
+--
+
+LOCK TABLES `Profile` WRITE;
+/*!40000 ALTER TABLE `Profile` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Profile` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `Protein`
 --
 
@@ -670,13 +697,21 @@ UNLOCK TABLES;
 -- Table structure for table `Target`
 --
 
+
 DROP TABLE IF EXISTS `Target`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 SET character_set_client = utf8mb4 ;
 CREATE TABLE `Target` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `mature_miRNA_id` int(11) NOT NULL,
   `transcript_id` int(11) NOT NULL,
+  `mature_miRNA_id` int(11) NOT NULL,
+  `date` DATETIME NOT NULL,
+  `version` INT NOT NULL,
+  `type` varchar(254) NOT NULL DEFAULT 'Cleavage',
+  `mature_miRNA_id` INT NOT NULL,
+  `target_description` TEXT(1000) DEFAULT NULL,
+  `expectation` FLOAT(3),
+  `UPE` FLOAT(6),
   PRIMARY KEY (`id`),
   KEY `Target_fk0` (`mature_miRNA_id`),
   KEY `Target_fk1` (`transcript_id`),

@@ -11,6 +11,7 @@ var paths=pathname.split("/").splice(1)
     'savetodb',
     'infinityLoader',
     'infinityLoaderAPI',
+    'tableFunctions'
   //  'setters',
   //   'getters',
   //   'DOMbasics',
@@ -26,8 +27,11 @@ var paths=pathname.split("/").splice(1)
   if(paths[1]=="targets"){
      scriptName=[
       'saveTargetToDB',
+      'tableFunctions',
+      'tableAssociation'
     ]
   }
+
 
 
   scriptTarget = $('script#actions')[0];
