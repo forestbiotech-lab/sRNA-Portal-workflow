@@ -36,12 +36,11 @@ $(document).ready(function(){
             $('.progress-bar').text('0%');
             $('.progress-bar').width('0%');
           }else{
+
             $('.card.upload .card-footer input#file').val(filename)  
-            $('form.view-matrix input#filename').val(filename)
-            $('form.view-matrix input#hash').val(hash)
             $('.row.preview-header .card-header input#filename').val(filename)  
             $('.row.preview-header .card-header input#hash').val(hash)
-
+            $('.row.preview-header .card-header input.select-header').removeClass('d-none')
           }
         },
         fail: function(jqXHR,textStatus,err){
@@ -131,11 +130,13 @@ $(document).ready(function(){
   }
 
 
-  $('select').change(function(){
+  $('select#targets-type').change(function(){
     let targetType=$(this).get(0).selectedOptions[0].text.trim()
     $('.row.preview-header.d-none').removeClass("d-none")
     try{
       let templateHeader=defaultHeaders[targetType]
+      stringifiedHeader=JSON.stringify(templateHeader.toString().replace(/,/g,"\t"))
+      $('.row.preview-header .card-header input#template').val(stringifiedHeader)
       previewHeader(templateHeader, 'th')
     }catch(err){
       console.log("No default header for this type program yet! - "+err)

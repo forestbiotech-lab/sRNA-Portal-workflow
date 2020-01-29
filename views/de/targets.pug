@@ -47,7 +47,7 @@ block content
               .row
                 .form-group.col-lg-2
                   label.sr-only(for="type-of-targets") Upload file
-                  select.custom-select(type="file",id="targets-type",name="targets-type")
+                  select.custom-select(id="targets-type",name="targets-type")
                     option(selected) Select target type
                     option(value="1") psRNAtarget
                     option(value="2") Cleaveland
@@ -74,8 +74,8 @@ block content
                 input#filename(name="filename",type="hidden")
                 input#hash(name="hash",type="hidden")
                 input#header(name="header",type="hidden")
-                input#template(name="header",type="hidden")
+                input#template(name="template",type="hidden")
                 input#studyId(name="studyId",type="hidden")  
                 input.col-lg-1.col-md-2#line-selector(name="lineNumber",type="number",increment=1,min=0,value="0",style="width:70px")
-                input.col-lg-2.btn.btn-primary.select-header(type="submit",value="use default header") 
+                input.col-lg-2.btn.d-none.btn-primary.select-header(type="submit",value="use default header") 
             .card-body(style="overflow-x:scroll;")

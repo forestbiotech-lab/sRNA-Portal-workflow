@@ -112,11 +112,23 @@ router.post('/targets/upload/:studyid', function(req, res){
 });
 
 router.post('/targets/columnAssociation',(req,res)=>{
-  let fileHeaders=["miRNA_Acc.","Target_Acc.","Expectation","UPE","miRNA_start","miRNA_end","Target_start","Target_end","miRNA_aligned_fragment","Target_aligned_fragment","Inhibition","Target_Desc."]
+  //dynamic
+  let reqData=req.body
+  let lineNumber=reqData.lineNumber
+  let hash=reqData.hash
+  let filename=reqData.filename
+  let studyId=reqData.studyId
+  let template=reqData.template || JSON.stringify('')
+  template=JSON.parse(template).split('\t') 
+  let header=JSON.parse(reqData.header).split('\t') 
+  let fileHeaders= lineNumber == 0 ? template : header
+
+  //hard-coded
   let tables=["Feature","Target","Transcript"]
   let tableData={}
   let type='target'
   let icon={date:"calendar",number:"list-ordered",text:"text-size",checkbox:"file-binary"}
+  
   tables.forEach(table=>{
     tableStructure=formFromTable(table)
     if (tableStructure instanceof Error) res.render('error',"Unable to get tableStructure") 
