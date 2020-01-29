@@ -64,7 +64,7 @@ $(document).ready(function(){
     })
     let profile=$('select.profile').get(0).selectedOptions[0].text
     $.ajax({
-      url:`/de/target/profile/set/target/${profile}`,
+      url:`/de/targets/profile/set/target/${profile}`,
       type:'POST',
       data:datastructure,
       success:function(data,textStatus,jqXHR){
@@ -79,7 +79,7 @@ $(document).ready(function(){
   $('select.profile').change(function(){
     let profile=$(this).get(0).selectedOptions[0].text
     $.ajax({
-      url:`/de/target/profile/get/target/${profile}`,
+      url:`/de/targets/profile/get/target/${profile}`,
       type:'GET',
       processData:false,
       contentType: false,

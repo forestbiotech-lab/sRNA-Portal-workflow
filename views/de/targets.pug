@@ -49,7 +49,7 @@ block content
                   label.sr-only(for="type-of-targets") Upload file
                   select.custom-select(type="file",id="targets-type",name="targets-type")
                     option(selected) Select target type
-                    option(value="1") psRNA target (Plant Nobel)
+                    option(value="1") psRNAtarget
                     option(value="2") Cleaveland
                     option(value="3") pareSNIP 
                 .form-group
@@ -65,10 +65,17 @@ block content
                 .form-group.col-lg-12
                   label(for="file") Uploaded file: 
                   input.col-lg-10.col-md-8.col-sm-4(type="text",id="file",placeholder="no file",required="",name="file",readonly)
-      .row
-        .col-lg-12
-          form.view-matrix(action="/de/uploaded-file",method="POST")
-            input(type="hidden",name="hash",id="hash")
-            input(type="hidden",name="filename",id="filename")
-            input(type="hidden",name="studyId",id="studyId")
-            input.btn.btn-primary.disabled(type="",role="button",value="View matrix",title="Set the study first to view matrix")
+      .row.preview-header.d-none
+        .col-lg-12.preview-header
+          .card
+            .card-header
+              form(action="/de/targets/columnAssociation",method="post")
+                label(for="line-selector") select line for header: &nbsp
+                input#filename(name="filename",type="hidden")
+                input#hash(name="hash",type="hidden")
+                input#header(name="header",type="hidden")
+                input#template(name="header",type="hidden")
+                input#studyId(name="studyId",type="hidden")  
+                input.col-lg-1.col-md-2#line-selector(name="lineNumber",type="number",increment=1,min=0,value="0",style="width:70px")
+                input.col-lg-2.btn.btn-primary.select-header(type="submit",value="use default header") 
+            .card-body(style="overflow-x:scroll;")
