@@ -2,7 +2,8 @@ $(document).ready(function(){
   var previouslySelectedOption=""
   var previouslySelectedTable=""
   let tableAssignment={}
-  
+  const SPECIAL="Accession_Search"
+
   $('select#associate').click(function(){
       let that=$(this)
       previouslySelectedTable=that.get(0).selectedOptions[0].text 
@@ -10,16 +11,51 @@ $(document).ready(function(){
 
   $('select#associate').change(function(){
     let that=$(this)
-    let table=that.get(0).selectedOptions[0].text 
+    let table=that.get(0).selectedOptions[0].text
+    if(table==SPECIAL){
+      tools=$('span.octicon.octicon-tools').clone()
+      that.closest('li').children('span.special-tools').append(tools)
+      tools.removeClass('d-none')
+      tools.click(function(){
+        that=$(this)
+        
+        let toolSelect=document.createElement('select')
+        let option=document.createElement('option')
+        option.textContent="split"
+        toolSelect.append(option)
+        that.closest('span.special-tools').append(toolSelect)
+        
+        let splitter=document.createElement('input')
+        splitter.setAttribute('name', "splitter")
+        splitter.setAttribute('type', "text")
+        splitter.setAttribute('placeholder', "splitter")
+        that.closest('span.special-tools').append(splitter)
+
+        let indexSelect=document.createElement('select')
+        option=document.createElement('option')
+        indexSelect.append(option)
+        option.textContent=0      
+        option=document.createElement('option')
+        indexSelect.append(option) 
+        option.textContent=1
+        option=document.createElement('option')
+        indexSelect.append(option)
+        option.textContent=2      
+        option=document.createElement('option')
+        indexSelect.append(option)        
+        that.closest('span.special-tools').append(indexSelect)
+
+      })
+    } 
     let select=$(`.table-attributes select[table|=${table}]`).clone()
-    let tableAttributesSelect=that.closest('li').children('select#table-attributes')    
+    let tableAttributesSelect=that.closest('span.selects').children('select#table-attributes')    
     if(tableAttributesSelect.length>0){
       previouslySelectedOption=tableAttributesSelect.get(0).selectedOptions[0].text
       $(`.card[table|=${previouslySelectedTable}] li#${previouslySelectedOption} .badge.index`).text("")
       $(`.card[table|=${previouslySelectedTable}] li#${previouslySelectedOption} .badge.name`).text("")      
     }
-    that.closest('li').children('select#table-attributes').remove()
-    that.closest('li').append(select)
+    that.closest('span.selects').children('select#table-attributes').remove()
+    that.closest('span.selects').append(select)
     select.click(function(){
       let that=$(this)
       previouslySelectedOption=that.get(0).selectedOptions[0].text
@@ -159,6 +195,26 @@ $(document).ready(function(){
       $('.modal#new-profile').modal('hide')
     }
    })
+
+  $('button.test').click(function(){
+    let data={
+
+    }
+    $.ajax({
+      url:"/de/targets/load/db/",
+      method:"POST",
+      data:data,
+      success:function(data,textStatus,jqXHR){
+        $('.card-body.result').text(data) 
+      },
+      error:function(jqXHR,textStatus,err){
+        $('.card-body.result').text(`${textStatus}:${err}`) 
+      }
+    })
+  })
+
+
+
 
 })
 

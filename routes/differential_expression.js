@@ -11,6 +11,7 @@ var countAssayDataForStudy=require('./../components/miRNADB/countAssayDataForStu
 var getAssayDataWithAnnotations=require('./../components/miRNADB/getAssayDataWithAnnotations')
 var assembleAssayData=require('./../components/miRNADB/assembleAssayData')
 var targetsProfile=require('./../components/miRNADB/targets/profiles')
+var targetsFileActions=require('./../components/miRNADB/targets/targetsFileActions')
 var formFromTable=require('./../components/forms/formFromTable').tableStructure
 var upload_data=require('./../components/forms/upload_data')
 const uploadDir=path.join(__dirname, '../uploads');
@@ -135,6 +136,9 @@ router.post('/targets/columnAssociation',(req,res)=>{
     tableData[table]=tableStructure
   })
   targetsProfile.listProfiles(type).then(profiles=>{
+    var accessions="Accession_Search"
+    tables.unshift(accessions)
+    tableData[accessions]=[{name:"miRNA",type:"text"},{name:"transcript",type:"text"}]
     res.render('de/targetColumnAssociation',{tables,tableData,octicons,icon,fileHeaders,profiles})
   }).catch(err=>{
     res.render('error',{message:"Unable to get profiles",error:{status:"The query had issues"},stack:err.stack})
@@ -159,6 +163,27 @@ router.post('/targets/profile/set/:type/:profile',(req,res)=>{
     res.status(200).json("ok")
   }).catch(function(err){
     res.status(400).json(err)
+  })
+})
+
+router.post('/targets/load/db/',(req,res)=>{
+  let body=req.body
+
+  // - must be passed by body -
+  let genome_id=3
+  let studyId=1
+  let filename="psRNATargetJob.tsv"
+  let assay_ids=[1,2]
+
+  // --------------------------
+
+  let file=path.join(uploadDir,`${studyId}/targets/${filename}`)
+  targetInserts=targetsFileActions.loadTargets(file,genome_id,assay_ids).then(getPromises=>{
+    Promise.all(getPromises).then(result=>{
+      result instanceof Error ? res.status(500).json(result) : res.json(result)
+    }).catch(err=>{
+    	res.status(500).json(err)
+    })
   })
 })
 

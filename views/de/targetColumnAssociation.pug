@@ -19,15 +19,22 @@ block content
         .card.fileSelections
           .card-header 
             h3 File name
+            p For each file column choose the appropriate destination or load one of the profiles.
+            li The accession Table gives the instructions to identify the miRNA sequence and the target. 
           .card-body
             each header,idx in fileHeaders 
               li(id=idx) !{header} 
-                select#associate
-                  option Table
-                  each table in tables
-                    option=table
+                span.selects
+                  select#associate
+                    option Table
+                    each table in tables
+                      option=table
+                span.special-tools
           .card-footer
             button.btn.btn-primary.save save
+          .card-footer.test
+            button.btn.btn-primary.test test button!
+          .card-body.result
       .col-lg-6
         each table in tables  
           .card.table-selections(table=table)
@@ -49,6 +56,7 @@ block content
         strong 
         button.close(type='button', data-dismiss='alert', aria-label='Close')
           span(aria-hidden='true') ×
+      span.d-none.octicon.octicon-tools &nbsp!{octicons.tools.toSVG()}
   .modal#new-profile(tabindex='-1', role='dialog')
     .modal-dialog(role='document')
       .modal-content

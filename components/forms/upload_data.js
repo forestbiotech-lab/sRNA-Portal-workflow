@@ -3,7 +3,7 @@ var path=require('path')
 var formidable=require('formidable')
 var detect=require('detect-file-type')
 var formidable = require('formidable')
-var processTargetsFile=require('./../miRNADB/targets/psRNAtargetFile')
+var processTargetsFile=require('./../miRNADB/targets/targetsFileActions')
 
 function uploadFile(req,uploadDir){
   return new Promise((res,rej)=>{
