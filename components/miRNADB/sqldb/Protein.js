@@ -13,7 +13,7 @@
         allowNull: false,
         unique: true,
       },
-    gene_id: DataTypes.INTEGER(11),
+    transcript_gene_id: DataTypes.INTEGER(11),
     protein_id: DataTypes.STRING(254),
     gi: DataTypes.STRING(254),
     name: DataTypes.STRING(254),
@@ -24,8 +24,8 @@
 
      classMethods: {
         associate: function associate(models) {    
-          Protein.belongsTo(models.Gene, {
-            foreignKey: 'gene_id',              //on Protein
+          Protein.belongsTo(models.Transcript, {
+            foreignKey: 'transcript_gene_id',              //on Protein
             targetKey: 'id',  //foreign key  
           }); 
         }

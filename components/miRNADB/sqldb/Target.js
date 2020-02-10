@@ -15,6 +15,7 @@
       },
     mature_miRNA_id: DataTypes.INTEGER(11),
     transcript_id: DataTypes.INTEGER(11),
+    study_id: DataTypes.INTEGER(11),
     date: DataTypes.DATE,
     version: DataTypes.INTEGER,
     type: DataTypes.STRING(254),
@@ -34,6 +35,10 @@
           });
           Target.belongsTo(models.Transcript, {
             foreignKey: 'transcript_id',              //on Target
+            targetKey: 'id',  //foreign key  
+          }); 
+          Target.belongsTo(models.Study, {
+            foreignKey: 'study_id',              //on Target
             targetKey: 'id',  //foreign key  
           }); 
         }

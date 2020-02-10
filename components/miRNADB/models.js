@@ -172,6 +172,7 @@ e.getAssayDataWithAnnotations=(attributes)=>{
       include:[{
         model:db.Mature_miRNA,
         include:[{
+          model:db.Target,
           model:db.Mature_miRNA_sequence,
         }]
       }]

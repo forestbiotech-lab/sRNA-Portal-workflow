@@ -3,34 +3,75 @@ var db = require('./../sqldb/index');
 var transactionModels=require('./../transactions/models')
 
 const fs = require('fs')
-
 const MINSIZE=2
 const PREVIEW_LINES=10
+const MAX_TRANSACTIONS=4
 
 module.exports={getPreview,loadTargets}
 
 
 
-
-function loadTargets(targetsFile,genome_id,assay_ids){
+function loadTargets(targetsFile,genome_id,study_id){
   return new Promise((res,rej)=>{  
     fs.readFile(targetsFile,'utf8', (err, data) => {
       if (err) rej(err);
       //console.log(data);
       let lines=data.split("\n")
       let fieldOfPromises=[]
-      lines.forEach((line)=>{
-        line=line.split("\t")
-        if(line.length>MINSIZE) fieldOfPromises.push(insertLine(line,genome_id))
-    	})
-      res(fieldOfPromises)
+      let results=[]
+      let index=lines.length
+      let date=new Date()
+      res(insertControl(fieldOfPromises, results, lines, targetsFile, genome_id, study_id, index, date))
   	}) 
   })
 }
 
-function insertLine(line,genome_id,assay_ids){
 
-	return db.sequelize.transaction(function (t) {
+function insertControl(fieldOfPromises,results,lines,targetsFile,genome_id,study_id,index, date){
+  while(fieldOfPromises.length<MAX_TRANSACTIONS && lines.length >0){
+    line=lines.pop()
+    line=line.split("\t")
+    if(line.length>MINSIZE) fieldOfPromises.push(insertLine(targetsFile,line,genome_id,study_id,index, date))
+    index--
+  }
+  if(fieldOfPromises.length>0){
+    return Promise.all(fieldOfPromises).then(transactions=>{
+      results.push(transactions)
+      fieldOfPromises=[]
+      console.log(index)
+      return insertControl(fieldOfPromises, results, lines, targetsFile, genome_id, study_id,index,date)
+    })
+  }else{
+    return results.flat() 
+  }
+}
+
+
+function insertLine(filename,line,genome_id,study_id,index,date){
+  feature_attributes={
+    name:line[1],
+    source:'psRNAtarget',
+    type:'miRNA_target',
+    start:line[6],
+    end:line[7]
+  }
+  transcript_attributes={
+    accession:line[1],
+    version:1
+  }
+  sequence=line[0].split('-')[0]
+  target_attributes={
+    study_id,
+    date,
+    type:line[10],
+    target_description:line[11].trim(),
+    expectation:line[2],
+    UPE:line[3],
+  }
+  lineNum=index
+
+
+	return db.sequelize.transaction().then(function(t){
 	  // chain all your queries here. make sure you return them.
 	  //miRNA_Acc.	Target_Acc.	Expectation	UPE	miRNA_start	miRNA_end	Target_start	Target_end	miRNA_aligned_fragment	Target_aligned_fragment	Inhibition	Target_Desc.
 
@@ -38,19 +79,18 @@ function insertLine(line,genome_id,assay_ids){
     sequence=line[0].split('-')[0]
 
     function searchSequenceId(sequence,transaction){
-      attributes={
+      let attributes={
         tablename:"Mature_miRNA_sequence",
         where:{sequence},
         transaction
       }
       return transactionModels.getTableValuesWhere(attributes).then(model=>{
-        return extractId(model)
+        return extractId(model,attributes.tablename)
       })      
     } 
 
-
     function searchSequenceAnnotation(sequence_id,transaction){
-      attributes={
+      let attributes={
         tablename:"Mature_miRNA",
         where:{sequence_id},
         transaction
@@ -71,9 +111,8 @@ function insertLine(line,genome_id,assay_ids){
       })
     }
 
-
     function createFeature(genome_id,feature_attributes,transaction){
-      attributes={
+      let attributes={
         tablename:"Feature",
         inserts:Object.assign({genome_id}, feature_attributes),
         transaction
@@ -81,29 +120,11 @@ function insertLine(line,genome_id,assay_ids){
       return transactionModels.saveSingleTableDynamic(attributes).then(model=>{
         return extractId(model)
       })
-
-
     }
-
-
-    function createTarget(sequence_id,assay_id,genome_id,feature_attributes,transaction){
-      return createFeature(genome_id,feature_attributes,transaction).then(feature_id=>{
-        if( feature_id >-1){
-          let version=1
-          let accession=feature_attributes.name
-          return createTranscript(feature_id, version, accession, transaction)
-        }else{
-          return Error("Unable to create Feature for target!")
-        }
-      })
-
-    }
-
-
-    function createTranscript(feature_id,version,accession,transaction){
-      attibutes={
+    function createTranscript(feature_id,transcript_attributes,transaction){
+      let attributes={
         tablename:"Transcript",
-        inserts:{feature_id,version,accession},
+        inserts:Object.assign({feature_id},transcript_attributes),
         transaction
       }
       return transactionModels.saveSingleTableDynamic(attributes).then(model=>{
@@ -111,58 +132,78 @@ function insertLine(line,genome_id,assay_ids){
       })      
     }
 
-    function extractId(model){
+    function newTarget(lineNum,sequence,genome_id,feature_attributes,transcript_attributes,target_attributes,transaction){
+      return createFeature(genome_id,feature_attributes,transaction).then(feature_id=>{
+        return createTranscript(feature_id, transcript_attributes, transaction).then(transcript_id=>{
+          return getMiRNAannotation(sequence, transaction).then(mature_miRNA_id=>{
+            return createTarget(mature_miRNA_id, transcript_id, target_attributes, transaction).then(target_id=>{
+              return {lineNum,created:{target_id,feature_id,transcript_id},referenced:{mature_miRNA_id}}
+            })
+          })
+        })
+      })      
+    }
+
+    function createTarget(mature_miRNA_id,transcript_id,target_attributes,transaction){
+      let attributes={
+        tablename:"Target",
+        inserts: Object.assign({
+          transcript_id,
+          version:determineVersion(),
+          mature_miRNA_id
+        },target_attributes),
+        transaction
+      }
+      return transactionModels.saveSingleTableDynamic(attributes).then(model=>{
+        return extractId(model)
+      })
+    }
+
+    function determineVersion(){
+      return 1
+    }
+
+    function extractId(model,tablename){
       id=""
       if(model instanceof Array ){
-        id=model[0].dataValues.id || -1
+        if (model.length == 0){
+          if(tablename=="Mature_miRNA_sequence"){
+            let sequence_error=new Error(`Sequence "${sequence}" not found! - Rollback has been triggered for this line`)
+            sequence_error.description={target_line:lineNum,target_file:filename}
+            throw sequence_error 
+          }else{
+            id=-1
+          }
+        }else{
+          id=model[0].dataValues.id
+        }
       }else{
-      	id=model.dataValues.id || Error('Roll back create failed! Or at least produced no id')
+      	id=model.dataValues.id || new Error('Rollback triggered - Create failed! Or at least produced no id')
       }
       return id
     }
 
 
-    feature_attributes={
-      name:line[1],
-      source:'psRNAtarget',
-      type:'miRNA_target',
-      start:line[6],
-      end:line[7]
-    }
-    //return getMiRNAannotation(sequence, t)
 
-  return createTarget(1, 1, genome_id, feature_attributes, t)
-  //Data for Table Target 
-
-/*
-	  return db.Feature.create({
-	  	genome_id:3,
-      name: line[1],
-      source: "psRNAtarget",
-      type: "targetPrediction",
-      start:line[4],
-      end:line[5],
-	  }, {transaction: t}).then(function (feature) {
-        let featureId=feature.dataValues.id
-        let miRNA_sequence=line[0].split("-")[0]
-        return db.Mature_miRNA_sequence.findOne({
-        	where:{sequence:miRNA_sequence}
-        },{transaction:t}).then(function(sequence){
-        	sequence=sequence
-        	throw "lklk"
-        })
-	  });*/
-	}).then(function (result) {
-     //throw Error('This can\'t be allowed to continue!') 
-	 return result
-	  // Transaction has been committed
-	  // result is whatever the result of the promise chain returned to the transaction callback
-	}).catch(function (err) {
-	 return err
-	  // Transaction has been rolled back
-	  // err is whatever rejected the promise chain returned to the transaction callback
-	});
+    return newTarget(lineNum, sequence, genome_id, feature_attributes, transcript_attributes, target_attributes, t).then(function(targetCreation){
+      return t.commit().then(()=>{
+        let status={
+          name:"Success",
+          message:`Line number: ${targetCreation.lineNum} inserted with success!`,
+          created:targetCreation.created,
+          referenced:targetCreation.referenced
+        }
+        return status;
+      })
+    }).catch(function (err) {
+      return t.rollback().then(a=>{
+        return err
+      })
+    });
+  })
 }
+
+
 
 function getPreview(targetsFile,iteration){
   return new Promise((res,rej)=>{
@@ -196,7 +237,7 @@ function getPreview(targetsFile,iteration){
     }).on('close', function () {
       res(acc.slice(0, pos + index).split('\n'));
     }).on('error', function (err) {
-        rej(err);
+      rej(err);
     })
   })
 }

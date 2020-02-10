@@ -117,7 +117,7 @@ router.post('/targets/columnAssociation',(req,res)=>{
   let reqData=req.body
   let lineNumber=reqData.lineNumber
   let hash=reqData.hash
-  let filename=reqData.filename
+  let target_filename=reqData.filename
   let studyId=reqData.studyId
   let template=reqData.template || JSON.stringify('')
   template=JSON.parse(template).split('\t') 
@@ -139,7 +139,7 @@ router.post('/targets/columnAssociation',(req,res)=>{
     var accessions="Accession_Search"
     tables.unshift(accessions)
     tableData[accessions]=[{name:"miRNA",type:"text"},{name:"transcript",type:"text"}]
-    res.render('de/targetColumnAssociation',{tables,tableData,octicons,icon,fileHeaders,profiles})
+    res.render('de/targetColumnAssociation',{tables,tableData,octicons,icon,fileHeaders,profiles,target_filename})
   }).catch(err=>{
     res.render('error',{message:"Unable to get profiles",error:{status:"The query had issues"},stack:err.stack})
   })
@@ -167,20 +167,32 @@ router.post('/targets/profile/set/:type/:profile',(req,res)=>{
 })
 
 router.post('/targets/load/db/',(req,res)=>{
-  let body=req.body
+  let target_filename=req.body.target_filename
 
   // - must be passed by body -
   let genome_id=3
-  let studyId=1
+  let study_id=1
   let filename="psRNATargetJob.tsv"
-  let assay_ids=[1,2]
 
   // --------------------------
 
-  let file=path.join(uploadDir,`${studyId}/targets/${filename}`)
-  targetInserts=targetsFileActions.loadTargets(file,genome_id,assay_ids).then(getPromises=>{
+  let file=path.join(uploadDir,`${study_id}/targets/${target_filename}`)
+  targetInserts=targetsFileActions.loadTargets(file,genome_id,study_id).then(getPromises=>{
     Promise.all(getPromises).then(result=>{
-      result instanceof Error ? res.status(500).json(result) : res.json(result)
+      if (result instanceof Error ){res.status(500).json(result)}else{
+        success=0
+        failure={num:0,lines:[]}
+        result.forEach(entry=>{
+          if (entry instanceof Error){
+            entry.msg=entry.message
+            failure.num++
+            failure.lines.push(entry)
+          }else{
+            success++
+          }
+        })
+        res.json({success,failure})
+      }
     }).catch(err=>{
     	res.status(500).json(err)
     })

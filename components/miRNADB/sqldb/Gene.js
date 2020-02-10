@@ -14,7 +14,7 @@
         unique: true,
       },
     feature_id: DataTypes.INTEGER(11),
-    protein_id: DataTypes.INTEGER(11),
+    accession: DataTypes.STRING(11),
   }, {
       tableName: 'Gene',
       timestamps: false,
@@ -26,14 +26,6 @@
             foreignKey: 'feature_id',              //on Gene
             targetKey: 'id',  //foreign key  
           });
-          Gene.belongsTo(models.Protein, {
-            foreignKey: 'id',              //on Gene
-            targetKey: 'gene_id',  //foreign key  
-          });
-          Gene.belongsTo(models.Transcript, {
-            foreignKey: 'id',              //on Gene
-            targetKey: 'gene_id',  //foreign key  
-          }); 
         }
       },
     });

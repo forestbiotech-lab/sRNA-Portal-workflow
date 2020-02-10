@@ -242,7 +242,7 @@ DROP TABLE IF EXISTS `Gene`;
 CREATE TABLE `Gene` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `feature_id` int(11) NOT NULL,
-  `protein_id` int(11) NOT NULL,
+  `accession` varchar(254) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `Gene_fk0` (`feature_id`),
   CONSTRAINT `Gene_fk0` FOREIGN KEY (`feature_id`) REFERENCES `Feature` (`id`)
@@ -705,18 +705,20 @@ CREATE TABLE `Target` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `transcript_id` int(11) NOT NULL,
   `mature_miRNA_id` int(11) NOT NULL,
+  `study_id` int(11) NOT NULL,
   `date` DATETIME NOT NULL,
   `version` INT NOT NULL,
   `type` varchar(254) NOT NULL DEFAULT 'Cleavage',
-  `mature_miRNA_id` INT NOT NULL,
   `target_description` TEXT(1000) DEFAULT NULL,
   `expectation` FLOAT(3),
   `UPE` FLOAT(6),
   PRIMARY KEY (`id`),
   KEY `Target_fk0` (`mature_miRNA_id`),
   KEY `Target_fk1` (`transcript_id`),
+  KEY `Target_fk2` (`study_id`),
   CONSTRAINT `Target_fk0` FOREIGN KEY (`mature_miRNA_id`) REFERENCES `Mature_miRNA` (`id`),
-  CONSTRAINT `Target_fk1` FOREIGN KEY (`transcript_id`) REFERENCES `Transcript` (`id`)
+  CONSTRAINT `Target_fk1` FOREIGN KEY (`transcript_id`) REFERENCES `Transcript` (`id`),
+  CONSTRAINT `Target_fk2` FOREIGN KEY (`study_id`) REFERENCES `Study` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -738,14 +740,12 @@ DROP TABLE IF EXISTS `Transcript`;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `Transcript` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `organism_id` int(11) NOT NULL,
+  `accession` int(11) NOT NULL,
   `version` int(11) NOT NULL,
-  `gene_id` int(11) NOT NULL,
+  `feature_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `Transcript_fk0` (`organism_id`),
-  KEY `Transcript_fk1` (`gene_id`),
-  CONSTRAINT `Transcript_fk0` FOREIGN KEY (`organism_id`) REFERENCES `Organism` (`id`),
-  CONSTRAINT `Transcript_fk1` FOREIGN KEY (`gene_id`) REFERENCES `Gene` (`id`)
+  KEY `Transcript_fk0` (`feature_id`),
+  CONSTRAINT `Transcript_fk0` FOREIGN KEY (`feature_id`) REFERENCES `Feature` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

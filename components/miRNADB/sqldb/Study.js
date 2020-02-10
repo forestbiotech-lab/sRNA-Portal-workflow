@@ -35,6 +35,10 @@
             foreignKey: 'responsible',              //on Study
             targetKey: 'id',  //foreign key  
           }); 
+          Study.belongsTo(models.Target, {
+            foreignKey: 'id',              //on Study
+            targetKey: 'study_id',  //foreign key  
+          }); 
         }
       },
     });

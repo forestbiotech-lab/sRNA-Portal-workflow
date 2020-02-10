@@ -13,12 +13,7 @@ e.getTableValuesWhere=function(attributes){
 }
 
 e.saveSingleTableDynamic = function(attributes) {
-    return db[attributes.tablename].create(attributes.inserts,{transaction:attributes.transaction}).then(function(res) {
-        return res
-    }).catch(function(err) {
-        console.log(`save single table dynamic table [${attributes.tablename}] - Err:${err}`)
-        return err
-    })
+    return db[attributes.tablename].create(attributes.inserts,{transaction:attributes.transaction})
 }
 
 

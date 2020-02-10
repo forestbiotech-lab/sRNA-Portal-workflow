@@ -13,28 +13,27 @@
         allowNull: false,
         unique: true,
       },
-    organism_id: DataTypes.INTEGER(11),
+    accession: DataTypes.STRING(254),
     version: DataTypes.INTEGER(11),
-    gene_id: DataTypes.INTEGER(11),
+    feature_id: DataTypes.INTEGER(11),
   }, {
       tableName: 'Transcript',
       timestamps: false,
       underscored: false,
-
      classMethods: {
         associate: function associate(models) {    
           Transcript.belongsTo(models.Target, {
             foreignKey: 'id',              //on Transcript
             targetKey: 'transcript_id',  //foreign key  
           });
-          Transcript.belongsTo(models.Organism, {
-            foreignKey: 'organism_id',              //on Transcript
-            targetKey: 'id',  //foreign key  
-          });
-          Transcript.belongsTo(models.Gene, {
-            foreignKey: 'gene_id',              //on Transcript
+          Transcript.belongsTo(models.Feature, {
+            foreignKey: 'feature_id',              //on Transcript
             targetKey: 'id',  //foreign key  
           }); 
+          Transcript.belongsTo(models.Protein, {
+            foreignKey: 'id',              //on Transcript
+            targetKey: 'transcript_gene_id',  //foreign key  
+          });
         }
       },
     });

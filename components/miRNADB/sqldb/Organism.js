@@ -31,10 +31,6 @@
             foreignKey: 'id',              //on Organism
             targetKey: 'organism_id',  //foreign key  
           });
-          Organism.belongsTo(models.Transcript, {
-            foreignKey: 'id',              //on Organism
-            targetKey: 'organism_id',  //foreign key  
-          }); 
         }
       },
     });

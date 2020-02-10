@@ -7,6 +7,9 @@ block content
     .row.associationRow
       .col-lg-6
         .card 
+          .card-body.target_filename
+            label(for='filename') Target file: &nbsp
+            input.form-control(type="text",disabled,value=target_filename)
           .card-body
             .form-check.form-check-inline
               label.form-check-label(for='profile') Profile: &nbsp
@@ -34,7 +37,7 @@ block content
             button.btn.btn-primary.save save
           .card-footer.test
             button.btn.btn-primary.test test button!
-          .card-body.result
+          .card-body.result(style="overflow-x:scroll;")
       .col-lg-6
         each table in tables  
           .card.table-selections(table=table)

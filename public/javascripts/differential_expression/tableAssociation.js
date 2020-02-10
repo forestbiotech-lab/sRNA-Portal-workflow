@@ -198,14 +198,28 @@ $(document).ready(function(){
 
   $('button.test').click(function(){
     let data={
-
+      target_filename:$('.card-body.target_filename input').val()
     }
     $.ajax({
       url:"/de/targets/load/db/",
       method:"POST",
       data:data,
       success:function(data,textStatus,jqXHR){
-        $('.card-body.result').text(data) 
+
+        let table=document.createElement('table')
+        data.failure.lines.forEach(line=>{        
+          let tr=document.createElement('tr')
+          tdMessage=document.createElement('td')
+          tdDescription=document.createElement('td')
+          tdMessage.textContent=line.msg
+          tdDescription.textContent=JSON.stringify(line.description)
+          tr.append(tdMessage)
+          tr.append(tdDescription)
+          table.append(tr)
+          table.setAttribute('class', 'table table-bordered')
+        })
+        $('.card-body.result').append(table) 
+        $('.card-body.result').append(`Success:${data.success}`) 
       },
       error:function(jqXHR,textStatus,err){
         $('.card-body.result').text(`${textStatus}:${err}`) 
