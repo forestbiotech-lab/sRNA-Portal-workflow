@@ -9,6 +9,7 @@ var matrixUploadController=require('./../components/miRNADB/controllers/matrixUp
 var getDynamicTable=require('./../components/miRNADB/getDynamicTable')
 var countAssayDataForStudy=require('./../components/miRNADB/countAssayDataForStudy')
 var getAssayDataWithAnnotations=require('./../components/miRNADB/getAssayDataWithAnnotations')
+var getTargets=require('./../components/miRNADB/getTargets')
 var assembleAssayData=require('./../components/miRNADB/assembleAssayData')
 var targetsProfile=require('./../components/miRNADB/targets/profiles')
 var targetsFileActions=require('./../components/miRNADB/targets/targetsFileActions')
@@ -87,6 +88,7 @@ router.get('/assaydata/:study/matrix', function(req,res, next){
     res.json('err')
   })
 })
+
 
 
 router.post('/count/assaydata/',function(req,res){
@@ -172,8 +174,6 @@ router.post('/targets/load/db/',(req,res)=>{
   // - must be passed by body -
   let genome_id=3
   let study_id=1
-  let filename="psRNATargetJob.tsv"
-
   // --------------------------
 
   let file=path.join(uploadDir,`${study_id}/targets/${target_filename}`)
@@ -199,4 +199,12 @@ router.post('/targets/load/db/',(req,res)=>{
   })
 })
 
+router.post('/targets/get/db/sequence/target/:study_id',function(req,res){
+  options=Object.assign({},{params:req.params,body:req.body,query:req.query})
+  getTargets(options).then(data=>{
+    res.json(data)
+  }).catch(err=>{
+    res.json(data)
+  })
+})
 module.exports = router;

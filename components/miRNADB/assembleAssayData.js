@@ -95,8 +95,11 @@ function digestDBRow(row,headers,groupingElement,attributes,metaCell,values){
 			}else{
 				throw "Matrix metadata not found for column"
 			}
-		}else{
-			values.push({key:key,value:value})
+		}else if ( key == 'grouping_attributes'){
+			subKeys.forEach(function(subkey){
+				subvalue=value[subkey]
+				values.push({key:subkey,value:subvalue})
+			})
 		}
 	})
  return {headers,groupingElement,attributes,metaCell,values}	
@@ -133,21 +136,27 @@ function groupRows(values,groupingElement,result,attributes,headers,metaCell,res
 function buildMatrix(result,resultMetaCell,resultHeaders,matrix){	
 	Object.keys(result).forEach(seq=>{
 		let row={}
-		let headers=[]
+		let headers={}
 		let cellMeta=[]
 		seqData=result[seq]
-		Object.keys(seqData).forEach(attrKey=>{
-			if(seqData[attrKey].length==1){ //attributes
-				row[attrKey]={value:seqData[attrKey],metadata:{id:attrKey}}
-				headers.push({value:attrKey,metadata:{id:attrKey}})
+		Object.keys(seqData).forEach(seqDataAttrKey=>{
+			let seqDataAttribute=seqData[seqDataAttrKey]
+			if(seqDataAttribute.length==1){ //attributes
+				row[seqDataAttrKey]={}
+				headers[seqDataAttrKey]=[]
+				Object.keys(seqDataAttribute[0]).forEach(function(attrKey){
+				  row[seqDataAttrKey][attrKey]={value:seqDataAttribute[0][attrKey],metadata:{id:attrKey}}
+					headers[seqDataAttrKey].push({value:attrKey,metadata:{id:attrKey}})
+			  })
 			}else{ 
-			    let metadata=resultMetaCell.map((v,i)=>{return Object.assign({type:attrKey},v)})
-				seqData[attrKey].forEach((val,index)=>{
-					row[`${resultHeaders[index].value}(${attrKey})`]={value:val,metadata:metadata[index]}
-					headers.push({value:`${resultHeaders[index].value}(${attrKey})`,metadata:{id:attrKey,type:attrKey}})					
+			  let metadata=resultMetaCell.map((v,i)=>{return Object.assign({type:seqDataAttrKey},v)})
+				row[seqDataAttrKey]={}
+				headers[seqDataAttrKey]=[]
+				seqDataAttribute.forEach((val,index)=>{
+					row[seqDataAttrKey][`${resultHeaders[index].value}(${seqDataAttrKey})`]={value:val,metadata:metadata[index]}
+					headers[seqDataAttrKey].push({value:`${resultHeaders[index].value}(${seqDataAttrKey})`,metadata:{id:seqDataAttrKey,type:seqDataAttrKey}})					
 				})
 			}
-
 		})
 		matrix.rows[seq]=row
 		if (matrix.header.length==0){

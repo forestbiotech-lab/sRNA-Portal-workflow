@@ -23,6 +23,8 @@ block content
                     | &nbsp;sequences
               .row
                 .col-lg-3
+                  button.btn.btn-primary.launch-target-modal(type='button', data-toggle='modal', data-target='#exampleModalLong')
+                    | Launch demo modal
                 .col-lg-6
                   form.form-inline
                     label.my-1.mr-2(for='inlineFormCustomSelectPref') Filter
@@ -32,7 +34,7 @@ block content
                       option(value='2') Two
                       option(value='3') Three
                     input#table-search.form-control.typeahead(type='text')
-                    button.btn.btn-primary(type="button") search
+                    button.btn.btn-primary.search(type="button") search
                 .col-lg-3
                   .custom-control.custom-switch
                     input#sequence-values-type.custom-control-input(type='checkbox')
@@ -49,7 +51,20 @@ block content
                     th(id="cpm") cpm
                 tbody                
                   tr#lastRow(filename=uploadedFilename) 
-                    td.blockquote.text-center(colspan=1) 
+                    td.blockquote.text-center(colspan=6) 
                       span(style="background: rgba(0,0,0,0) url(/images/dynamic/loading2.gif) no-repeat center center; background-size:contain") &nbsp&nbsp&nbsp&nbsp
                       | &nbspLoading missing sequences, please wait ...
+  #exampleModalLong.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLongTitle', aria-hidden='true')
+    .modal-dialog.modal-xl(role='document')
+      .modal-content
+        .modal-header
+          h5#exampleModalLongTitle.modal-title Modal title
+          button.close(type='button', data-dismiss='modal', aria-label='Close')
+            span(aria-hidden='true') ×
+        .modal-body
+        .modal-footer
+          button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+          button.btn.btn-primary(type='button') Save changes
+
+
 

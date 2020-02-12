@@ -9,25 +9,42 @@ module.exports={
 	},
 	"attributes":{
 		_table:"Annotation",
-		Sequence:{
-			_table:["Mature_miRNA","Mature_miRNA_sequence"],
-			_attribute:"sequence"
-		},
-		Name:{
+		'row_attributes':{
 			_table:"Mature_miRNA",
-			_attribute:"name"
+			Sequence:{
+				_table:"Mature_miRNA_sequence",
+				_attribute:"sequence"
+			},
+			Name:{
+				_table:"Mature_miRNA",
+				_attribute:"name"
+			},
+			Accession:{
+				_table:"Mature_miRNA",
+				_attribute:"accession"
+			},
 		},
-		Accession:{
+		'targets':{
 			_table:"Mature_miRNA",
-			_attribute:"accession"
+			Target_Accession:{
+				_table:['Target','Transcript'],
+				_attribute:"accession"
+			},
+			Target_Description:{
+				_table:'Target',
+				_attribute:"target_description"
+			}
 		}
 	},
 	"header":{
 		_table:"Assay",
 		"assayName":"name",
 	},
-	"raw":"",
-	"cpm":"",
+	'grouping_attributes':{
+		_table:"./",
+		"raw":"",
+		"cpm":"",
+	},
 	metadata:{
 		_table:"./",
 		row:{
@@ -37,42 +54,7 @@ module.exports={
 		cell:{
 			_table:"./",
 			id:"",
-			assayId:{_table:"Assay",_attribute:"id"}
+			assayId:{_table:"Assay",_attribute:"id"},
 		}
 	}
-
-/*	"mature_miRNA_id":"id",
-	"mature_accession":"accession",
-	"mature_description":"description",
-	"pre_sequence":{"_table":["Mature_has_Pre","Pre_miRNA","Pre_miRNA_sequence"],"_attribute":"sequence"},
-	"Precursor":{
-		"_table":["Mature_has_Pre","Pre_miRNA"],
-		"id":"",
-		"name":"",
-		"accession":"",
-		"description":"",
-	},
-	"Precursor_Feature":{
-		"_table":["Mature_has_Pre","Pre_miRNA","Pre_has_Feature","Feature"],
-		"name":"",
-		"source":"",
-		"type":"",
-		"start":"",
-		"end":"",
-		"score":"",
-		"strand":"",
-		"phase":""
-
-	},
-	"Mature_Feature":{
-		"_table":["Mature_has_Pre","Feature"],
-		"name":"",
-		"source":"",
-		"type":"",
-		"start":"",
-		"end":"",
-		"score":"",
-		"strand":"",
-		"phase":""
-	}*/
 }

@@ -173,6 +173,10 @@ e.getAssayDataWithAnnotations=(attributes)=>{
         model:db.Mature_miRNA,
         include:[{
           model:db.Target,
+          include:[{
+            model:db.Transcript
+          }]
+        },{
           model:db.Mature_miRNA_sequence,
         }]
       }]
@@ -181,6 +185,27 @@ e.getAssayDataWithAnnotations=(attributes)=>{
     return res
   }).catch( err => {
     console.log('getAssayDataWithAnnotations - Err: '+err)
+    return err
+  })
+}
+
+e.getTargetsInfoOnSequence=(attributes)=>{
+  return db.Target
+  .findAndCountAll({
+    include:[{
+      model:db.Transcript
+    },{
+      model:db.Mature_miRNA,
+      include:[{
+        model:db.Mature_miRNA_sequence,
+        where:attributes.where.Mature_miRNA_sequence
+      }]
+    }],
+    where:attributes.where.Target
+  }).then(res=>{
+    return res
+  }).catch( err => {
+    console.log('getTargetsInfoOnSequence - Err: '+err)
     return err
   })
 }

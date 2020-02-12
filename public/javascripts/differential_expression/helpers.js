@@ -46,3 +46,41 @@ function cloneTable(tableClass,targetTableClass){
 function addHeader(table,header){
 	table.find('thead').html(convertRow2HTML([header],true))
 }
+function makeTableFromNestedArrayMatrix(matrix,customHeaders){
+	customHeaders=customHeaders || []
+  let table=document.createElement('table','customHeaders')
+	let thead = document.createElement('thead')
+	let tbody = document.createElement('tbody')
+	table.append(thead)
+	table.append(tbody)
+	table.setAttribute('class', 'table table-bordered')
+  if( customHeaders.length==Object.keys(matrix[0]).length && customHeaders instanceof Array){
+  	makeHeader(customHeaders,thead)
+  }else{
+  	customHeaders=Object.keys(matrix[0])
+  	makeHeader(customHeaders,thead)
+  }
+
+  function makeHeader(headers,thead){
+  	headers.forEach(function(column){
+  		let th=document.createElement('th')
+  		th.textContent=column
+  		thead.append(th)
+  	})
+  	return thead
+  }
+
+	matrix.forEach(line=>{        
+	  let tr=document.createElement('tr')
+	  customHeaders.forEach(function(key){
+	  	let cell=line[key]
+	  	let td=document.createElement('td')
+	  	td.textContent=cell
+	  	tr.append(td)
+	  })
+	  tbody.append(tr)
+	})
+
+	return table
+	
+}

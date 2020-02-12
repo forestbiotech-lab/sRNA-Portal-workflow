@@ -25,7 +25,7 @@ $(document).ready(function(){
     	}
     	hideColumns()
     })
-    $('.card.upload-table .card-header button').click(function(){
+    $('.card.upload-table .card-header button.search').click(function(){
     	let sequence=$(this).closest('.form-inline').children('input').val()
     	table=$('table.upload-table')
     	$('table tbody tr[datatype|="search-result"]').remove()
