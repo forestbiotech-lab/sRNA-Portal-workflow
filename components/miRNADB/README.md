@@ -30,12 +30,15 @@ The struture for this call has 4 main attributes:
 {
   group:{},
   attributes:{
-    row_attributes:{},
-    targets:{}
+    row_attributes:{},  //Takes several attributes here but only single Objects.
+    targets:{}          //
   },
   header:{},
   grouping_attributes:{},
-  metadata:{}
+  metadata:{
+    row:{},  //given to the other elements
+    cell:{} //given to grouped elements
+  }
 }	
 ```
 
@@ -94,5 +97,11 @@ The attributes placed in the "grouping_attributes" attribute, will be appended i
 
 
 ### Adding metadata to grouped attributes
+This can be done simply by placing single value Objects in the "metadata.cell" Object
 
 ### Adding metadata to the other attributes
+The metadata.row attributes are given to the other attributes. 
+
+
+### Using arrays in the input file instead of a single value Object
+If you need to pass a list of values add it as an [array object](https://github.com/forestbiotech-lab/sRNA-Portal-workflow/tree/master/components/miRNADB/structures#creating-an-array-of-objects) with the name list this will not be added to the table but can be processed to access the best option to show.  
