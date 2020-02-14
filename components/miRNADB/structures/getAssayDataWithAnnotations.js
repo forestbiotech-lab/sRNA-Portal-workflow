@@ -1,3 +1,6 @@
+
+//alternative solution create a temp table https://stackoverflow.com/questions/1754674/how-do-i-merge-two-or-more-rows-based-on-their-foreign-key
+
 module.exports={
 	"group":{
 		_table:"Annotation",
@@ -26,14 +29,17 @@ module.exports={
 		},
 		'targets':{
 			_table:"Mature_miRNA",
-			Target_Accession:{
-				_table:['Target','Transcript'],
-				_attribute:"accession"
-			},
-			Target_Description:{
+			list:[{
 				_table:'Target',
-				_attribute:"target_description"
-			}
+				_model:{
+					_table:'Target',
+					id:"",
+					target_accession:{_table:"Transcript",_attribute:"accession"},
+					target_description:"",
+					score:"",
+					expectation:""
+				}
+			}]
 		}
 	},
 	"header":{
@@ -48,8 +54,9 @@ module.exports={
 	metadata:{
 		_table:"./",
 		row:{
-			_table:"Assay",
-			assayId:"id"		
+			_table:"./",
+			assayId:{_table:"Assay",_attribute:"id"},
+			sequnce:{_table:['Annotation',"Mature_miRNA","Mature_miRNA_sequence"],_attribute:"sequence"}
 		},
 		cell:{
 			_table:"./",

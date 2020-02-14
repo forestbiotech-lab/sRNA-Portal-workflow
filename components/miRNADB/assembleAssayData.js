@@ -38,42 +38,47 @@ function assembleRows(rows){
 	let result={}
 	let resultHeaders=""
 	let resultMetaCell=""
+	let resultMetaRow=""
 	let resultAttributes={}
 	let attributes={}
 	let headers=[]
 	let metaCell=[]	
+	let metaRow=[]
 	rows.forEach(row=>{
 		let groupingElement={key:"",value:""}
 		let values=[]
-		let digest=digestDBRow(row,headers,groupingElement,attributes,metaCell,values)
+		let digest=digestDBRow(row,headers,groupingElement,attributes,metaCell,metaRow,values)
 		headers=digest.headers
 		groupingElement=digest.groupingElement
 		attributes=digest.attributes
 		metaCell=digest.metaCell
+		metaRow=digest.metaRow
 		values=digest.values
 		//Row processed
-		groupedRows=groupRows(values,groupingElement,result,attributes,headers,metaCell,resultMetaCell) 
+		groupedRows=groupRows(values,groupingElement,result,attributes,headers,metaCell,metaRow,resultMetaCell,resultMetaRow) 
 		groupingElement=groupedRows.groupingElement
 		result=groupedRows.result
 		attributes=groupedRows.attributes
 		headers=groupedRows.headers
 		metaCell=groupedRows.metaCell
+		metaRow=groupedRows.metaRow
 		resultMetaCell=groupedRows.resultMetaCell
 		//this only apllies for single row iterations. i.e. one row per iter.
 		if(matrix.header.length==0){
 			resultHeaders=headers
 		}
 		resultMetaCell=metaCell
+		resultMetaRow=metaRow
 		resultAttributes=attributes
 	})
 
 	//bring together all arrays
-	matrix=buildMatrix(result,resultMetaCell,resultHeaders,matrix)
+	matrix=buildMatrix(result,resultMetaCell,resultMetaRow,resultHeaders,matrix)
 	return matrix
 }
 
 
-function digestDBRow(row,headers,groupingElement,attributes,metaCell,values){	
+function digestDBRow(row,headers,groupingElement,attributes,metaCell,metaRow,values){	
 	Object.keys(row).forEach(key=>{
 		let value=row[key] || 0
 		let subKeys=Object.keys(value)
@@ -90,10 +95,11 @@ function digestDBRow(row,headers,groupingElement,attributes,metaCell,values){
 		}else if ( key == "attributes"){
 			attributes=value
 		}else if( key == "metadata" ){
-			if(value["cell"]){
+			if( value["cell"] && value['row'] ){ // Separate these this looks bad
 				metaCell.push(value.cell)
+				metaRow.push(value.row)
 			}else{
-				throw "Matrix metadata not found for column"
+				throw Error("Matrix metadata not found for column")
 			}
 		}else if ( key == 'grouping_attributes'){
 			subKeys.forEach(function(subkey){
@@ -102,15 +108,15 @@ function digestDBRow(row,headers,groupingElement,attributes,metaCell,values){
 			})
 		}
 	})
- return {headers,groupingElement,attributes,metaCell,values}	
+ return {headers,groupingElement,attributes,metaCell,metaRow,values}	
 }
 
-function groupRows(values,groupingElement,result,attributes,headers,metaCell,resultMetaCell){
+function groupRows(values,groupingElement,result,attributes,headers,metaCell,metaRow,resultMetaCell,resultMetaRow){
 	values.forEach(val=>{
 		cKey=val.key
 		cValue=val.value
 		gValue=groupingElement.value
-		if(result[gValue]){
+		if(result[gValue]){ //if the grouping value exists in the result Object
 			if(result[gValue][cKey])
 				result[gValue][cKey].push(cValue)
 			else
@@ -127,25 +133,28 @@ function groupRows(values,groupingElement,result,attributes,headers,metaCell,res
 				headers=[resultHeaders.pop()]
 				resultMetaCell=metaCell
 				metaCell=[resultMetaCell.pop()]
+				resultMetaRow=metaRow
+				metaRow=[resultMetaRow.pop()]
 			}
 		}
 	})	
-	return {groupingElement,result,attributes,headers,metaCell,resultMetaCell}	
+	return {groupingElement,result,attributes,headers,metaCell,metaRow,resultMetaCell,resultMetaRow}	
 } 
 
-function buildMatrix(result,resultMetaCell,resultHeaders,matrix){	
+function buildMatrix(result,resultMetaCell,resultMetaRow,resultHeaders,matrix){	
 	Object.keys(result).forEach(seq=>{
 		let row={}
 		let headers={}
-		let cellMeta=[]
+		let cellMeta=[]   // Remove not used
 		seqData=result[seq]
 		Object.keys(seqData).forEach(seqDataAttrKey=>{
 			let seqDataAttribute=seqData[seqDataAttrKey]
-			if(seqDataAttribute.length==1){ //attributes
+			if(seqDataAttribute.length==1){ //non grouped attributes
 				row[seqDataAttrKey]={}
 				headers[seqDataAttrKey]=[]
 				Object.keys(seqDataAttribute[0]).forEach(function(attrKey){
-				  row[seqDataAttrKey][attrKey]={value:seqDataAttribute[0][attrKey],metadata:{id:attrKey}}
+					resultMetaRow[0].header=attrKey //add the header
+				  row[seqDataAttrKey][attrKey]={value:seqDataAttribute[0][attrKey],metadata:resultMetaRow[0]}
 					headers[seqDataAttrKey].push({value:attrKey,metadata:{id:attrKey}})
 			  })
 			}else{ 
@@ -153,8 +162,14 @@ function buildMatrix(result,resultMetaCell,resultHeaders,matrix){
 				row[seqDataAttrKey]={}
 				headers[seqDataAttrKey]=[]
 				seqDataAttribute.forEach((val,index)=>{
-					row[seqDataAttrKey][`${resultHeaders[index].value}(${seqDataAttrKey})`]={value:val,metadata:metadata[index]}
-					headers[seqDataAttrKey].push({value:`${resultHeaders[index].value}(${seqDataAttrKey})`,metadata:{id:seqDataAttrKey,type:seqDataAttrKey}})					
+					let headername=`${resultHeaders[index].value}(${seqDataAttrKey})`
+					row[seqDataAttrKey][headername]={value:val,metadata:metadata[index]}
+					headers[seqDataAttrKey].push({
+						value:`${resultHeaders[index].value}(${seqDataAttrKey})`,
+						metadata:{
+							id:seqDataAttrKey,
+							type:seqDataAttrKey}
+					})					
 				})
 			}
 		})
