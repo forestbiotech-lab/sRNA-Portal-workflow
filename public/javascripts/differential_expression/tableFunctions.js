@@ -1,3 +1,5 @@
+//This script is used to generate forms from tables
+
 $(document).ready(function(){
   $('button.generate-table-form').on('click',function(){
     let that=$(this)

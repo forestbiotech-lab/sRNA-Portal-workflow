@@ -46,14 +46,17 @@ function cloneTable(tableClass,targetTableClass){
 function addHeader(table,header){
 	table.find('thead').html(convertRow2HTML([header],true))
 }
-function makeTableFromNestedArrayMatrix(matrix,customHeaders){
+function makeTableFromNestedArrayMatrix(matrix,customHeaders){ //rename to makeTableFromNestedObjectArray
+	// Generates a table from an array of objects into a table
+	// [{h1:val,h2:val,(...)},{h1:val,h2:val,(...)},{h1:val,h2:val,(...)},{h1:val,h2:val,(...)},(...),{h1:val,h2:val,(...)}]
+	// Headers are extracted from object keys or customHeaders 
 	customHeaders=customHeaders || []
   let table=document.createElement('table','customHeaders')
 	let thead = document.createElement('thead')
 	let tbody = document.createElement('tbody')
 	table.append(thead)
 	table.append(tbody)
-	table.setAttribute('class', 'table table-bordered')
+	table.setAttribute('class', 'table table-bordered script-generated-table mtfnam')
   if( customHeaders.length==Object.keys(matrix[0]).length && customHeaders instanceof Array){
   	makeHeader(customHeaders,thead)
   }else{
