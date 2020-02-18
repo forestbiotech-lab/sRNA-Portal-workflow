@@ -201,7 +201,9 @@ $(document).ready(function(){
     genHeader(sectionOrder,that){
       var colGroup=document.createElement('colgroup')
       var rowElement=document.createElement('tr')
+      var topRowElement=document.createElement('tr')
       sectionOrder.forEach(function(section){
+        let topCell=document.createElement('th')
         that.section(section).forEach(header=>{
           let cell=document.createElement('th')
           let col=document.createElement('col')
@@ -210,12 +212,17 @@ $(document).ready(function(){
             let value=header.metadata[key] 
             cell.setAttribute(key,value)
             col.setAttribute(key,value)
+            topCell.setAttribute(key,value)
           })
           rowElement.append(cell)
           colGroup.append(col)
         })
+        topCell.textContent=section
+        topCell.setAttribute("colspan", that.section(section).length)
+        topRowElement.append(topCell)
       })
       that.jqTable.find('thead').html(colGroup)
+      that.jqTable.find('thead').append(topRowElement)
       that.jqTable.find('thead').append(rowElement)
     }
   }
@@ -272,9 +279,10 @@ $(document).ready(function(){
           let cell=document.createElement('td')
           if(dataPoint.value instanceof Array){
               let span=document.createElement('span')
-              span.setAttribute('class', "badge badge-light")
+              span.setAttribute('class', "badge badge-success")
               span.textContent=dataPoint.value.length
               cell.append(span)
+              cell.setAttribute('title', "click to see list")
               cell.onclick=function(){
                 let table=makeTableFromNestedArrayMatrix(dataPoint.value)
                 $('.modal-body').empty()
@@ -292,7 +300,7 @@ $(document).ready(function(){
           })
           rowElement.append(cell)
           if(dataPoint.value instanceof Array){
-            let listHeader=that.jqTable.find(`thead th[section|=${section}]`)
+            let listHeader=that.jqTable.find(`thead tr:nth(1) th[section|=${section}]`)
             that.appendListEl(processList(dataPoint.value),rowElement,listHeader,section,that)
           }
         })        
