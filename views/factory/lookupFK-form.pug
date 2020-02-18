@@ -1,0 +1,17 @@
+form.basic-form.table-form(id=name,method="POST",action="/forms/save/singletable/"+name)
+  each attribute in table
+    .form-group
+      - fk=""
+      if attribute.type=='select'
+        - fk=`(references table ${attribute.fk.targetTable})`
+      label(for=attribute.name) !{attribute.name} !{fk} 
+      if attribute.type=='select'
+        select.form-control(id=attribute.name,name=attribute.name)
+          option select one
+          each value in attribute.fk.values
+            option=value
+        button.btn.btn-primary(type="button") new entry on !{attribute.fk.targetTable}
+      else     
+        input.form-control(type=attribute.type,id=attribute.name,name=attribute.name)
+  input.btn.btn-primary(type="submit",value="Save")
+  
