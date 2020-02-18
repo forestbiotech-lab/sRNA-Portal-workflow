@@ -21,7 +21,8 @@ var paths=pathname.split("/").splice(1)
      scriptName=[
       'infinityLoaderAPI',
       'helpers',
-      'assaydata'
+      'assaydata',
+      '../scoring/getBestOption'
     ]
   }
   if(paths[1]=="targets"){

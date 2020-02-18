@@ -155,7 +155,7 @@ function buildMatrix(result,resultMetaCell,resultMetaRow,resultHeaders,matrix){
 				Object.keys(seqDataAttribute[0]).forEach(function(attrKey){
 					resultMetaRow[0].header=attrKey //add the header
 				  row[seqDataAttrKey][attrKey]={value:seqDataAttribute[0][attrKey],metadata:resultMetaRow[0]}
-					headers[seqDataAttrKey].push({value:attrKey,metadata:{id:attrKey}})
+					headers[seqDataAttrKey].push({value:attrKey,metadata:{id:attrKey,section:seqDataAttrKey}})
 			  })
 			}else{ 
 			  let metadata=resultMetaCell.map((v,i)=>{return Object.assign({type:seqDataAttrKey},v)})
@@ -168,7 +168,9 @@ function buildMatrix(result,resultMetaCell,resultMetaRow,resultHeaders,matrix){
 						value:`${resultHeaders[index].value}(${seqDataAttrKey})`,
 						metadata:{
 							id:seqDataAttrKey,
-							type:seqDataAttrKey}
+							type:seqDataAttrKey,
+							section:seqDataAttrKey
+						}
 					})					
 				})
 			}

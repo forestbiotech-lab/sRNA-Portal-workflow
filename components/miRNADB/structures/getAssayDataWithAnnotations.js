@@ -33,10 +33,9 @@ module.exports={
 				_table:'Target',
 				_model:{
 					_table:'Target',
-					id:"",
 					target_accession:{_table:"Transcript",_attribute:"accession"},
 					target_description:"",
-					score:"",
+					type:"",
 					expectation:""
 				}
 			}]

@@ -13,7 +13,7 @@ https://[host]/db/v1/api/
 
 #### Call name
 * **address:** /name
-* **Description: ** This call searches the in the database for mature miRNA name. 
+* **Description:** This call searches the in the database for mature miRNA name. 
 * **DataModel specification:**
 	* **Table**: Mature_miRNA 
 	* **Column**: name   
@@ -46,20 +46,19 @@ Structure of the result grouped by sequence or any other grouping
 ```javascript
 {
   headers:{
-    attribute1:{
+    attribute1:[{
       value:"",
       metadata:{
         id:""
       }
-    },
-    "row_attributes":{
+    }],
+    "row_attributes":[{
       value:"",
       metadata:{
         id:"",
         type:""
       }
-    }
-
+    }]
   },
   rows:{
     "ATGC":{ //Sequence key

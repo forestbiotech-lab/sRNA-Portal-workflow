@@ -23,8 +23,6 @@ block content
                     | &nbsp;sequences
               .row
                 .col-lg-3
-                  button.btn.btn-primary.launch-target-modal(type='button', data-toggle='modal', data-target='#exampleModalLong')
-                    | Launch demo modal
                 .col-lg-6
                   form.form-inline
                     label.my-1.mr-2(for='inlineFormCustomSelectPref') Filter
@@ -35,6 +33,7 @@ block content
                       option(value='3') Three
                     input#table-search.form-control.typeahead(type='text')
                     button.btn.btn-primary.search(type="button") search
+                    button.btn.btn-secondary.clear(type="button") clear
                 .col-lg-3
                   .custom-control.custom-switch
                     input#sequence-values-type.custom-control-input(type='checkbox')

@@ -1,58 +1,71 @@
 // This is the infinityLoader for api calls
 $(document).ready(function(){
-	let assayData=[]
 	let loadedRows=0
 	let api=$('.card.gen-info').attr('api')
 	const rowsPerIter=10
 	let iteration=0
 	let fulltable=false
 	let viewPortHeight=window.innerHeight
-	let lastRow = null
 	let uploadNumber=0
 	let headerSpan=0
-	let header=[]
-	let firstcols=["Sequence","Name","Accession"]
+	let header=null
+  let body=null
+
+  //Gerate a view that allows configurate of these attributes
+  let jqTable=$('table.upload-table')
+	let sectionOrder=["row_attributes","raw","cpm","targets"]
 	let hiddenColumns="cpm"
     
-    $('.card.upload-table .card-header input#sequence-values-type').change(function(){
-    	let that=$(this)
-    	let option=that.prop('checked')
-    	options=["raw","cpm"]
-    	if(option){
-    		hiddenColumns=options[0]
-    	}else{
-    		hiddenColumns=options[1]
-    	}
-    	hideColumns()
-    })
-    $('.card.upload-table .card-header button.search').click(function(){
-    	let sequence=$(this).closest('.form-inline').children('input').val()
-    	table=$('table.upload-table')
-    	$('table tbody tr[datatype|="search-result"]').remove()
-    	$('table tbody tr').hide()
-    	let row=[]
-    	row.push(assayData.rows[sequence])
-    	createAndInsertRows(row,header,table,'tbody',search=true)
-    })
+  $('.card.upload-table .card-header input#sequence-values-type').change(function(){
+  	let that=$(this)
+  	let option=that.prop('checked')
+  	options=["raw","cpm"]
+  	if(option){
+  		hiddenColumns=options[0]
+  	}else{
+  		hiddenColumns=options[1]
+  	}
+  	hideColumns()
+  })
+  $('.card.upload-table .card-header button.search').click(function(){
+  	let sequence=$(this).closest('.form-inline').children('input').val()
+  	body.jqTable.find('tbody tr[datatype|="search-result"]').remove()
+  	body.jqTable.find('tbody tr').hide()
+    let rows=[]
+  	rows.push(body.rows[sequence])
+  	body.createSpecificRows(rows,search=true)
+  })
+  $('.card.upload-table .card-header button.clear').click(function(){
+    body.jqTable.find('tbody tr[datatype|="search-result"]').remove()
+    body.jqTable.find('tbody tr').show()
+  })
 
-//Specific 
+  //Specific 
 	if(api){	
-		let apiInfo=$('.card.gen-info')
-		let call=apiInfo.attr("call")
-		let version=apiInfo.attr("version")
-		let studyId=apiInfo.attr("studyId")
-		url=`/de/assaydata/${studyId}/matrix`
-		getMatrixObj(url).then(function(data){
-			assayData=data
-			lastRow=document.getElementById("lastRow");
-			loadedRows=$('table.upload-table tbody tr').length-1
-			addUploadNumber(Object.keys(assayData.rows).length)
-			let sequencelist=Object.keys(assayData.rows)
-			$('.typeahead').typeahead({ 
-        		source:sequencelist,
-        		autoSelect:true
-      		});
-			loadRows()
+    let apiInfo=$('.card.gen-info')
+    let call=apiInfo.attr("call")
+    let version=apiInfo.attr("version")
+    let studyId=apiInfo.attr("studyId")
+    url=`/de/assaydata/${studyId}/matrix`
+    getMatrixObj(url).then(function(data){
+      header=new Header(data.header,data.rows,jqTable)
+      body=new Body(data.header,data.rows,jqTable)
+
+      loadedRows=body.loadedRows
+      addUploadNumber(body.totalRows)
+      
+      function loadSequenceTypeAhead(){
+        $('.typeahead').typeahead({ 
+          source:body.rowNameList,
+          autoSelect:true
+        }); 
+      }
+
+      loadSequenceTypeAhead()
+      header.generateHeader(sectionOrder)
+      header.lastRowTd.attr('colspan',header.columns)
+      body.rowsPerIter=rowsPerIter    
+		  loadRows()
 		}).catch(function(err){
 			console.trace(err)
 			alert(err)
@@ -61,7 +74,7 @@ $(document).ready(function(){
 
 
 
-//Generic
+/////////////////////////////////////////////Generic////////////////////
 	function getMatrixObj(url){
 		return new Promise(function(res,rej){
 			$.ajax({
@@ -79,31 +92,17 @@ $(document).ready(function(){
 	}
 
 	function loadRows(){
-		let start=iteration*rowsPerIter
-		let seqs=Object.keys(assayData.rows).slice(start,start+rowsPerIter)
-
-		rows=[]
-		seqs.forEach(seq=>{
-			rows.push(assayData.rows[seq])
-		})
-		table=$('table.upload-table')
-		if(iteration==0){
-			header=createHeader(table,assayData.header)
-			let colspan=assayData.header.length
-			$('table.upload-table tr#lastRow td').attr('colspan',colspan)
-		}
-		createAndInsertRows(rows,header,table,'tbody')
-		$('table.upload-table tr#lastRow').appendTo('table.upload-table tbody')
-		addLoadedRows(rows.length)
+		body.createAndInsertRows(iteration)
+		addLoadedRows(body.loadedRows)
 		iteration++
 		if(loadedRows>=uploadNumber){
 			fulltable=true
-			$('table.upload-table tr#lastRow').hide()
+			body.jqLastRow.hide()
 		} 
 		hideColumns()
 	}
 	function addLoadedRows(value){
-		loadedRows+=value
+    loadedRows=value
 		$('.card.upload-table .badge#ofLoadedRows').text(loadedRows)
 	}
 	function addUploadNumber(value){
@@ -114,7 +113,7 @@ $(document).ready(function(){
 
 	window.onscroll = function(){ 
 		if(iteration>=1){
-			var distanceFromTop=lastRow.getBoundingClientRect().top
+			var distanceFromTop=body.jsLastRow.getBoundingClientRect().top
 			var relElDistance= ( distanceFromTop - viewPortHeight ) / viewPortHeight 
 			if ( relElDistance <= 0.05 && ! fulltable ) loadRows()	
 		}
@@ -123,87 +122,206 @@ $(document).ready(function(){
 		viewPortHeight=window.innerHeight
 	})
 
-
-
-	function createHeader(table,headers){
-		headers=arrangeHeader(headers,firstcols)
-		var colGroup=document.createElement('colgroup')
-		var rowElement=document.createElement('tr')
-		returnHeader=[]
-		headers.forEach(header=>{
-			let cell=document.createElement('th')
-			let col=document.createElement('col')
-			returnHeader.push(header.value)
-			cell.textContent=header.value
-			Object.keys(header.metadata).forEach(key=>{
-				let value=header.metadata[key] 
-				cell.setAttribute(key,value)
-				col.setAttribute(key,value)
-			})
-			rowElement.append(cell)
-			colGroup.append(col)
-		})
-		table.find('thead').html(colGroup)
-		table.find('thead').append(rowElement)
-        return returnHeader
-		 
-	}
-
-
-	function createAndInsertRows(rows,headers,table,element,search){
-		search=search || false
-		let tableTarget=table.find(element)
-		appendRows(headers,rows,tableTarget,search)
-	}
-	function appendRows(headers,rows,tableTarget,search){
-		rows.forEach(row=>{
-			tableTarget.append(createRow(headers,row,search))
-		})
-	}
-
-	function createRow(headers,row,search){
-		var rowElement=document.createElement('tr')
-		rowElement.setAttribute("sequence",row.Sequence.value[0])
-		if(search){
-			rowElement.setAttribute("datatype","search-result")
-		}
-		headers.forEach(header=>{
-			dataPoint=row[header]
-			let cell=document.createElement('td')
-			cell.textContent=dataPoint.value
-			Object.keys(dataPoint.metadata).forEach(key=>{
-				let value=dataPoint.metadata[key] 
-				cell.setAttribute(key,value)
-			})
-			rowElement.append(cell)
-		})
-		return rowElement
-	}
-
-
-
-    function arrangeHeader(header,firstcols){
-        let columnIndexes=[]
-        firstcols.forEach((col)=>{
-			header.forEach((val,idx)=>{
-				if(val.value==col){
-                    columnIndexes.push(idx)        
-				}
-			})        	
+  function hideColumns(){
+  	$(`table th`).show()
+  	$(`table td`).show()
+  	$(`table th[type|="${hiddenColumns}"]`).hide()
+  	$(`table td[type|="${hiddenColumns}"]`).hide()
+  }
+  class Table{
+    constructor(headers,rows,jqTable){
+      this.rows=rows
+      this.jqTable=jqTable
+      this.rowsPerIteration=10
+      this.headers=headers
+      this._currentHeaders=null
+      if( headers instanceof Object){
+        let sections=Object.keys(this.headers)
+        this.columns=sections.reduce((a,cv)=>{
+        	if( typeof a == "number" ){
+            	return a+headers[cv].length        		
+        	}else{
+        	    return 	headers[a].length +headers[cv].length
+        	}
         })
-		columnIndexes.forEach((col,idx)=>{
-			header.unshift(header[col+idx])
-		})
-    	columnIndexes.forEach((col,idx)=>{
-            delete header[col+columnIndexes.length]
-		})
-		return header
-    }
 
-    function hideColumns(){
-    	$(`table th`).show()
-    	$(`table td`).show()
-    	$(`table th[type|="${hiddenColumns}"]`).hide()
-    	$(`table td[type|="${hiddenColumns}"]`).hide()
+        this.sections=sections
+      }else{
+        throw Error('Not a valid header. Must be an Object')
+      }
     }
+    generateCurrentHeaders(){
+      this._currentHeaders=[]
+      this.jqTable.find('thead th').each(function(){
+        this._currentHeaders.push($(this).text())
+      })
+    }
+    get currentHeaders(){
+      if (this.currentHeaders == null ){
+        this.generateCurrentHeaders()
+      }
+      return this._currentHeaders
+    }
+    get columns(){
+      return this._columns
+    }
+    set columns(cols){
+    	this._columns=cols
+    }
+    get sections(){
+      return this._sections
+    }
+    set sections(sections){
+        this._sections=sections
+    }
+    get lastRowTd(){
+      return this.jqTable.find('tr#lastRow td')
+    }
+    get jsLastRow(){
+      return document.getElementById("lastRow");
+    }
+    get jqLastRow(){
+      return this.jqTable.find('tr#lastRow');
+    }
+    get loadedRows(){
+      return this.jqTable.find('tbody tr').length-1
+    }
+    section(section){
+      if(this.sections.indexOf(section) > -1){
+        return this.headers[section]
+      }else{
+        throw Error('Section not found')
+      }
+    }    
+  }
+  class Header extends Table{
+    generateHeader(sectionOrder){
+        this.genHeader(sectionOrder,this)
+    }
+    genHeader(sectionOrder,that){
+      var colGroup=document.createElement('colgroup')
+      var rowElement=document.createElement('tr')
+      sectionOrder.forEach(function(section){
+        that.section(section).forEach(header=>{
+          let cell=document.createElement('th')
+          let col=document.createElement('col')
+          cell.textContent=header.value
+          Object.keys(header.metadata).forEach(key=>{
+            let value=header.metadata[key] 
+            cell.setAttribute(key,value)
+            col.setAttribute(key,value)
+          })
+          rowElement.append(cell)
+          colGroup.append(col)
+        })
+      })
+      that.jqTable.find('thead').html(colGroup)
+      that.jqTable.find('thead').append(rowElement)
+    }
+  }
+  class Body extends Table{
+    rowFraction(iteration,rowsPerIter){
+      let start=iteration*rowsPerIter
+      let sequences=Object.keys(this.rows).slice(start,start+rowsPerIter)
+      let rows=[]
+      sequences.forEach(seq=>{
+        rows.push(this.rows[seq])
+      })
+      return rows
+    }
+    get totalRows(){
+      return Object.keys(this.rows).length
+    }
+    get rows(){
+    	return this._rows
+    }
+    set rows(rows){
+    	this._rows=rows
+    }
+    get rowNameList(){
+      return Object.keys(this.rows)
+    }
+    set rowsPerIter(rows){
+      this.rowsPerIteration=rows
+    }
+    createAndInsertRows(iteration,search){
+      search=search || false
+      this.appendRows(iteration,search)
+      this.jqTable.find('tbody').append(this.jsLastRow)
+    }
+    createSpecificRows(rows,search){
+      rows.forEach(row=>{
+        this.jqTable.find('tbody').append(this.createRow(row,search))
+      })
+    }
+    appendRows(iteration,search){
+      this.rowFraction(iteration, this.rowsPerIteration).forEach(row=>{
+        this.jqTable.find('tbody').append(this.createRow(row,search))
+      })
+    }
+    createRow(row,search){
+      var rowElement=document.createElement('tr')
+      rowElement.setAttribute("sequence",row.row_attributes.Sequence.value)  //This is hard-coded
+      if(search){
+        rowElement.setAttribute("datatype","search-result")
+      }
+      var that=this  
+      sectionOrder.forEach(function(section){
+        that.section(section).forEach(header=>{
+          let dataPoint=row[section][header.value]
+          let cell=document.createElement('td')
+          if(dataPoint.value instanceof Array){
+              let span=document.createElement('span')
+              span.setAttribute('class', "badge badge-light")
+              span.textContent=dataPoint.value.length
+              cell.append(span)
+              cell.onclick=function(){
+                let table=makeTableFromNestedArrayMatrix(dataPoint.value)
+                $('.modal-body').empty()
+                $('.modal-body').append(table)
+                $('#exampleModalLong').modal('show')
+              }  
+          }else if(dataPoint.value==null){
+              cell.textContent="N.D."	
+          }else{
+              cell.textContent=dataPoint.value	
+          }
+          Object.keys(dataPoint.metadata).forEach(key=>{
+            let value=dataPoint.metadata[key] 
+            cell.setAttribute(key,value)
+          })
+          rowElement.append(cell)
+          if(dataPoint.value instanceof Array){
+            let listHeader=that.jqTable.find(`thead th[section|=${section}]`)
+            that.appendListEl(processList(dataPoint.value),rowElement,listHeader,section,that)
+          }
+        })        
+      })
+      return rowElement
+    }
+    appendListEl(chosenListElement,rowElement,listHeader,section,that){
+      if(listHeader.length==1){
+        listHeader.text(section)
+        let chosenListElementKeys=Object.keys(chosenListElement)
+        chosenListElementKeys.reverse()
+        chosenListElementKeys.forEach(function(col){
+          let header=document.createElement('th')
+          header.textContent=col
+          header.setAttribute('section', section)
+          listHeader.after(header)
+        })
+      }
+      if(chosenListElement instanceof Object){
+        Object.keys(chosenListElement).forEach(function(col){
+          let subCell=document.createElement('td')
+          subCell.textContent=chosenListElement[col]
+          rowElement.append(subCell)
+  	    })
+      }else{
+      	//TODO estimate space to fill with blank
+
+      }
+    }
+  }
+
 })
