@@ -5,7 +5,7 @@ var detect=require('detect-file-type')
 var formidable = require('formidable')
 var processTargetsFile=require('./../miRNADB/targets/targetsFileActions')
 
-function uploadFile(req,uploadDir){
+function uploadFile(req,uploadDir,destination){
   return new Promise((res,rej)=>{
 
     // create an incoming form object
@@ -15,8 +15,9 @@ function uploadFile(req,uploadDir){
     form.multiples = false;
     //Calculate file hash
     form.hash = 'md5';
+    form.studyId = ''
     // store all uploads in the /uploads directory
-    form.uploadDir = path.join(uploadDir,"/de_matrices");
+    form.uploadDir = uploadDir
 
     // every time a file has been uploaded successfully,
     // rename it to it's original name
@@ -24,11 +25,31 @@ function uploadFile(req,uploadDir){
       detect.fromFile(file.path,function(err,result){
         if (err) rej(err)
         if (result===null){
-          fs.rename(file.path, path.join(form.uploadDir, file.name), (err)=>{
-            if(err) rej(err)
-            file={hash:form.openedFiles[0].hash, name:form.openedFiles[0].name}
-            res(file);
-          });
+          let destinationDir=path.join(uploadDir,`/${req.params.studyId}/${destination}`)
+          let destinationFile=path.join(destinationDir, file.name)
+          fs.exists(destinationDir, (exists)=>{
+            if(exists){
+             rename(file.path, destinationFile) 
+            }else{
+              fs.mkdir(destinationDir, { recursive: true }, (err)=>{
+                if (err){ 
+                  rej(err);
+                }else{
+                  rename(file.path, destinationFile)  
+                }
+              })  
+            }
+            function rename(inFile,outFile){
+              fs.rename(inFile,outFile, (err)=>{
+                if(err){
+                  rej(err);
+                }else{
+                  file={hash:form.openedFiles[0].hash, name:form.openedFiles[0].name}
+                  res(file)
+                }
+              });
+            }
+          })          
         }else{
           fs.unlink(file.path, (err)=>{
             err ? rej(err) : res({hash:'',name:"UnsupportedFile"}) 
@@ -54,7 +75,7 @@ function uploadFile(req,uploadDir){
 }
 
 
-function uploadTargets(req,uploadDir,){
+function uploadTargets(req,uploadDir,destination){
   return new Promise((res,rej)=>{
       // create an incoming form object
     var form = new formidable.IncomingForm();
@@ -72,7 +93,7 @@ function uploadTargets(req,uploadDir,){
       detect.fromFile(file.path,function(err,result){
         if (err) rej(err);
         if (result===null){
-          let destinationDir=path.join(uploadDir,`/${req.params.studyid}/targets`)
+          let destinationDir=path.join(uploadDir,`/${req.params.studyid}/${destination}`)
           let destinationFile=path.join(destinationDir, file.name)
           fs.exists(destinationDir, (exists)=>{
             if(exists){
