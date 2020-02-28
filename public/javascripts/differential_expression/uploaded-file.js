@@ -1,0 +1,1 @@
+var studyId=$('.row .card.gen-info .card-header.study span#studyId').text().trim()

@@ -6,17 +6,23 @@ var paths=pathname.split("/").splice(1)
 
   scriptName=[
     'helpers',
-    'ajax',
+    'ajax',  //load matrix. route:/de and one function for assay 
     'parser',
     'savetodb',
     'infinityLoader',
     'infinityLoaderAPI',
     'tableFunctions'
-  //  'setters',
-  //   'getters',
-  //   'DOMbasics',
-  //   'listeners'
   ]
+
+  if(paths[1]=="uploaded-file"){
+     scriptName=[
+      'uploaded-file', //must load first because sets global studyId
+      'infinityLoader',
+      'savetodb',
+      'helpers',
+    ]
+  }
+
   if(paths[1]=="assaydata"){
      scriptName=[
       'infinityLoaderAPI',

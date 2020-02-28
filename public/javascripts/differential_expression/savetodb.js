@@ -1,5 +1,46 @@
+evnt=""
 $(document).ready(function(){
-  var uploadMatrix=varListener.a
+  let rawReadsfilename=$('table tbody tr#lastRow').attr('filename')
+  let iterStep=50
+
+  $('.card.upload-table .card-header button.upload-matrix').click(function(){
+    sequence="ATAGTTTTTT"
+    occurence=0
+    saveRows(studyId,rawReadsfilename,killLines=[{sequence:sequence,keep:occurence}])
+  })
+
+  function saveRows(studyId,rawReadsfilename,killLines){
+   let data={studyId,rawReadsfilename,killLines}
+    $.ajax({
+      url: '/de/uploadMatrix',
+      type: 'POST',
+      data: data,
+      dataType: 'json',
+      success: function(data,textStatus,jqXHR){
+        let hash = data.hash
+        startWebSocket('ws://localhost:8080',`upload-protocol-${hash}`,processEvt)
+      },error:function(jqXHR,textStatus,err){
+        console.log(jqXHR)
+        alert("Upload failed!")
+      }
+    })
+  }
+
+  function processEvt(msg){
+    // calculate the percentage of upload completed
+    let receivedMsg=JSON.parse(msg)
+    
+    
+    percentComplete = parseInt(receivedMsg.percentageComplete);
+      
+    // update the Bootstrap progress bar with the new percentage
+    $('.progress-bar').text(percentComplete + '%');
+    $('.progress-bar').width(percentComplete + '%');
+    $('.upload-table .badge#uploadErrors').text(receivedMsg.errors)
+    $('.upload-table .badge#uploadSuccesses').text(receivedMsg.successes)
+  }
+
+/*  var uploadMatrix=varListener.a
   var now=''
   var then=''
   var successes=0
@@ -51,7 +92,7 @@ $(document).ready(function(){
         iteration++
         showProccessTime()
         if(iteration*rowsPerIter>=uploadableRows) fullTable=true      
-        if(!fullTable) uploadRows(extractUploadRows(),data) //*//
+        if(!fullTable) uploadRows(extractUploadRows(),data) 
       },error:function(jqXHR,textStatus,err){
         errors++
         console.log(jqXHR)
@@ -104,5 +145,7 @@ function showProccessTime(){
   now=new Date()
   elapsedTime=(now-then)/1000
   console.log({successes,errors,elapsedTime})
-}
+}*/
+
 })
+

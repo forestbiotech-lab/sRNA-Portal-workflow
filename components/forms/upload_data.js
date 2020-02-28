@@ -145,14 +145,4 @@ function uploadTargets(req,uploadDir,destination){
   })
 }
 
-
-
 module.exports={uploadFile,uploadTargets}
-
-
-
-
-
-
-
-

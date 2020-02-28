@@ -70,9 +70,10 @@ $(document).ready(function(){
     action=action.replace("save","update")
     form.find('form.basic-form.table-form').attr('action',action)
     $('form.view-matrix input#studyId').val(data.id)
+    $('form.view-matrix input#studyTitle').val(data.title)
     $('.card-body h4.study.card-title span#studyTitle').text(data.title)
+    $('.row.file-submission').removeClass('d-none')
     $('form.view-matrix input.btn.disabled').removeClass('disabled')
     $('form.view-matrix input.btn').attr('type','submit')
-
   }
 })

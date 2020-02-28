@@ -87,3 +87,19 @@ function makeTableFromNestedArrayMatrix(matrix,customHeaders){ //rename to makeT
 	return table
 	
 }
+
+function startWebSocket(address,protocol,callBack){
+  var ws = new WebSocket(address,protocol);
+  ws.onopen = function () {
+      console.log('socket connection opened properly');
+  };
+  ws.onmessage = function (evt) {
+      callBack(evt.data)
+      //console.log("Message received = " + evt.data);
+      //event=JSON.parse(evt.data)
+  };
+  ws.onclose = function () {
+       // websocket is closed.
+      console.log("Connection closed...");
+  };
+}

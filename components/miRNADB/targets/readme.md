@@ -34,6 +34,8 @@ For each line of the target file a response will be generated containing the tra
   }
 ```
 
+Created attributes details all ids created in that line, while referenced are those given by the input.
+
 ### Error Objects
 
 #### Sequence not found

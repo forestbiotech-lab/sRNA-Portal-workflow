@@ -4,30 +4,7 @@ block content
   script(id="database",src="/javascripts/de.js",defer)
   .card-block
     .container-fluid
-      .row  
-        .col-lg-12
-          .card
-            .card-body
-              h4.study.card-title Study&nbsp
-                span.badge.badge-secondary#studyTitle
-              button.btn.btn-primary.generate-table-form(table="Study",type='button', data-toggle='collapse', data-target='#table-study', aria-expanded='false', aria-controls='table-study')
-                | Create Study
-              #table-study.collapse
-                .card.card-body
-                  .form-Study
-              button.btn.btn-primary.generate-table-form(table="Person",type='button', data-toggle='collapse', data-target='#table-Person', aria-expanded='false', aria-controls='table-Person')
-                | Create Person              
-              #table-Person.collapse
-                .card.card-body
-                  .form-Person
-              button.btn.btn-primary.generate-table-form.generate-select-form(table="Study",type='button', data-toggle='collapse', data-target='#select-Study', aria-expanded='false', aria-controls='select-Study')
-                | Get studies              
-              #select-Study.collapse
-                .card.card-body
-                  .select-Study
-                  .form-Study
-
-      .row
+      .row.file-submission.d-none
         .col-lg-12
           .card.upload 
             .card-body
@@ -52,4 +29,28 @@ block content
             input(type="hidden",name="hash",id="hash")
             input(type="hidden",name="filename",id="filename")
             input(type="hidden",name="studyId",id="studyId")
-            input.btn.btn-primary.disabled(type="",role="button",value="View matrix",title="Set the study first to view matrix")
+            input(type="hidden",name="studyTitle",id="studyTitle")
+            input.btn.btn-primary.disabled.d-none(type="",role="button",value="View matrix",title="Set the study first to view matrix")
+      .row  
+        .col-lg-12
+          .card
+            .card-body
+              h4.study.card-title Metadata Selection
+                span.badge.badge-secondary#studyTitle
+              p Either create a new study ou select and existing one, in order to upload data
+              button.btn.btn-primary.generate-table-form(table="Study",type='button', data-toggle='collapse', data-target='#table-study', aria-expanded='false', aria-controls='table-study')
+                | Create Study
+              #table-study.collapse
+                .card.card-body
+                  .form-Study
+              button.btn.btn-primary.generate-table-form(table="Person",type='button', data-toggle='collapse', data-target='#table-Person', aria-expanded='false', aria-controls='table-Person')
+                | Create Person              
+              #table-Person.collapse
+                .card.card-body
+                  .form-Person
+              button.btn.btn-primary.generate-table-form.generate-select-form(table="Study",type='button',displayAttr='title' data-toggle='collapse', data-target='#select-Study', aria-expanded='false', aria-controls='select-Study')
+                | Get studies              
+              #select-Study.collapse
+                .card.card-body
+                  .select-Study
+                  .form-Study      

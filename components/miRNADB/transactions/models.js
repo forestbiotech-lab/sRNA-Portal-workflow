@@ -13,7 +13,11 @@ e.getTableValuesWhere=function(attributes){
 }
 
 e.saveSingleTableDynamic = function(attributes) {
-    return db[attributes.tablename].create(attributes.inserts,{transaction:attributes.transaction})
+    return db[attributes.tablename].create(attributes.inserts,{transaction:attributes.transaction}).then(ss=>{
+      return ss
+    },exce=>{
+      return ss
+    })
 }
 
 

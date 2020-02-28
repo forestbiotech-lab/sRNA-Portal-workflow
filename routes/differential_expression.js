@@ -5,7 +5,7 @@ var path=require('path')
 var octicons = require("@primer/octicons")
 var saveSequence = require('./../components/miRNADB/saveSequence')
 var convertFileToMatrix=require('./../components/preProcessing/convertFileToMatrix')
-var matrixUploadController=require('./../components/miRNADB/controllers/matrixUploadController')
+var rawReadsSaveController=require('./../components/miRNADB/controllers/rawReadsSaveController')
 var getDynamicTable=require('./../components/miRNADB/getDynamicTable')
 var countAssayDataForStudy=require('./../components/miRNADB/countAssayDataForStudy')
 var getAssayDataWithAnnotations=require('./../components/miRNADB/getAssayDataWithAnnotations')
@@ -15,9 +15,11 @@ var targetsProfile=require('./../components/miRNADB/targets/profiles')
 var targetsFileActions=require('./../components/miRNADB/targets/targetsFileActions')
 var formFromTable=require('./../components/forms/formFromTable').tableStructure
 var upload_data=require('./../components/forms/upload_data')
+var wsServer=require('.././components/websockets/wsServer').websocketServer
 const uploadDir=path.join(__dirname, '../uploads');
-
-
+const destinationFolderRawReads = "raw_reads"
+const destinationFolderTargets = "targets"
+const crypto=require('crypto')
 
 //////// upload
 
@@ -33,9 +35,9 @@ router.get('/raw-read-matrix',function(req,res){
 	res.render('de/rawreadmatrix')
 })
 //POST UPLOAD                                     POST UPLOAD    //RESTRICT access required
-router.post('/upload', function(req, res){
-  upload_data.uploadFile(req,uploadDir).then(result=>{
-    result instanceof err ? res.status('400').json(result) : res.json(result)
+router.post('/upload/:studyId', function(req, res){
+  upload_data.uploadFile(req,uploadDir,destinationFolderRawReads).then(result=>{
+    result instanceof Error ? res.status('400').json(result) : res.json(result)
   }).catch(err=>{
     res.status('500').json('err')
   })
@@ -43,27 +45,35 @@ router.post('/upload', function(req, res){
 
 router.post('/uploaded-file',function(req,res){ 	 
   let uploadedFilename=req.body.filename
-  let studyId=req.body.studyId
+  let studyId=req.body.studyId.trim()
+  let studyTitle=req.body.studyTitle
   if( req.body.responseType=="json"){
-    var filePath=path.join(uploadDir, uploadedFilename)
+    var filePath=path.join(uploadDir, `/${studyId}/${destinationFolderRawReads}/${uploadedFilename}`)
     convertFileToMatrix(filePath).then(function(data){
       data instanceof Error ? res.status(404).json(err) : res.json(data)
     }).catch(function(err){
       res.status(404).json(err)
     }) 
   }else{
-    res.render('de/uploadedFile',{uploadedFilename,studyId});
+    res.render('de/uploadedFile',{uploadedFilename,studyId,studyTitle});
   }
 })
 
-router.put('/uploadMatrix',function(req,res){
-  let dataset=Object.assign({},req.body)
-  matrixUploadController(dataset).then(function(data){
-		res.json(data)
-	}).catch(function(err){
-		res.status(500).json(err)
-	})
+router.post('/uploadMatrix',function(req,res){
+  rawReadsFilePath=path.join(uploadDir, `/${req.body.studyId}/${destinationFolderRawReads}/${req.body.rawReadsfilename}`)
+  let dataset=Object.assign({rawReadsFilePath},req.body)
+  let hash=genHash().toString()
+  let ws=new wsServer(hash)
+  rawReadsSaveController.saveRawReads(dataset,ws).then(function(data){
+	ws.connection.close()
+   // ws.close()   
+  }).catch(function(err){
+    ws.connection.close()
+    //ws.close()
+  })
+  res.json({hash})
 })
+
 
 router.get('/assays/:study',function(req,res){
   let tablename="Assay"
@@ -107,7 +117,7 @@ router.get('/targets/new',function(req,res){
 
 router.post('/targets/upload/:studyid', function(req, res){
      //////////////////////////
-     upload_data.uploadTargets(req,uploadDir).then(result=>{
+     upload_data.uploadTargets(req,uploadDir,destinationFolderTargets).then(result=>{
       result instanceof Error ? res.status(400).json(result) : res.json(result)
      }).catch(err=>{
       res.status('500').json('err')
@@ -130,13 +140,14 @@ router.post('/targets/columnAssociation',(req,res)=>{
   let tables=["Feature","Target","Transcript"]
   let tableData={}
   let type='target'
-  let icon={date:"calendar",number:"list-ordered",text:"text-size",checkbox:"file-binary"}
+  let icon={date:"calendar",number:"list-ordered",text:"text-size",checkbox:"file-binary",select:"file-binary"}
   
   tables.forEach(table=>{
     tableStructure=formFromTable(table)
     if (tableStructure instanceof Error) res.render('error',"Unable to get tableStructure") 
     tableData[table]=tableStructure
   })
+
   targetsProfile.listProfiles(type).then(profiles=>{
     var accessions="Accession_Search"
     tables.unshift(accessions)
@@ -176,7 +187,7 @@ router.post('/targets/load/db/',(req,res)=>{
   let study_id=1
   // --------------------------
 
-  let file=path.join(uploadDir,`${study_id}/targets/${target_filename}`)
+  let file=path.join(uploadDir,`${study_id}/${destinationFolderTargets}/${target_filename}`)
   targetInserts=targetsFileActions.loadTargets(file,genome_id,study_id).then(getPromises=>{
     Promise.all(getPromises).then(result=>{
       if (result instanceof Error ){res.status(500).json(result)}else{
@@ -207,4 +218,11 @@ router.post('/targets/get/db/sequence/target/:study_id',function(req,res){
     res.json(data)
   })
 })
+
+function genHash(){
+  let rand=(Math.random()*10000).toString()
+  let hash=crypto.createHash('sha256')
+  hash.update(rand)
+  return genHash=hash.digest('hex')
+}
 module.exports = router;

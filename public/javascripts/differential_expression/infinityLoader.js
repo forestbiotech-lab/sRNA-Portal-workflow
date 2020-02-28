@@ -10,7 +10,7 @@ $(document).ready(function(){
 	let uploadNumber=0
 	
 	if(filename)if(filename.length>0){	
-		getMatrixObj({filename,responseType:'json'}).then(function(data){
+		getMatrixObj({filename,studyId,responseType:'json'}).then(function(data){
 			uploadMatrix=data
 			lastRow=document.getElementById("lastRow");
 			loadedRows=$('table.upload-table tbody tr').length-2

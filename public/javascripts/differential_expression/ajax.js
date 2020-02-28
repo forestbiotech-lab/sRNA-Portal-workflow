@@ -5,7 +5,7 @@ $(document).ready(function(){
     $('.progress-bar').width('0%');
   });
   $('#upload-files-upload').on('change', function(){
-
+    let studyId=$('form.view-matrix input#studyId').val()
     var files = $(this).get(0).files;
     if (files.length == 1){
       // One or more files selected, process the file upload
@@ -15,16 +15,16 @@ $(document).ready(function(){
       var formData = new FormData();
 
       // loop through all the selected files
+
       formData.append('uploads[]', files[0], files[0].name);
 
       $.ajax({
-        url: '/de/upload',
+        url: `/de/upload/${studyId}`,
         type: 'POST',
         data: formData,
         processData: false,
         contentType: false,
         success: function(data,textStatus,jqXHR){
-          console.log(data)
           let filename=data.name
           let hash=data.hash
           if(filename=="UnsupportedFile"){
@@ -35,7 +35,11 @@ $(document).ready(function(){
             $('.card.upload .card-footer input#file').val(filename)  
             $('form.view-matrix input#filename').val(filename)
             $('form.view-matrix input#hash').val(hash)
+            $('form.view-matrix input.btn').removeClass('d-none')
           }
+        },
+        error: function(jqXHR,textStatus,error){
+          $('form.view-matrix input#filename').val('Error! Try again!')
         },
         xhr: function() {
           // create an XMLHttpRequest
