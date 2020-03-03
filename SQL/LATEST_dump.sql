@@ -757,6 +757,31 @@ LOCK TABLES `Transcript` WRITE;
 /*!40000 ALTER TABLE `Transcript` DISABLE KEYS */;
 /*!40000 ALTER TABLE `Transcript` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `Websocket_protocols`
+--
+
+DROP TABLE IF EXISTS `Websocket_protocols`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+ SET character_set_client = utf8mb4 ;
+CREATE TABLE `Websocket_protocols` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(254) NOT NULL,
+  `hash` varchar(254) NOT NULL,
+  `date` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Websocket_protocols`
+--
+
+LOCK TABLES `Websocket_protocols` WRITE;
+/*!40000 ALTER TABLE `Websocket_protocols` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Websocket_protocols` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
