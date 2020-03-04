@@ -17,8 +17,7 @@ $(document).ready(function(){
       data: data,
       dataType: 'json',
       success: function(data,textStatus,jqXHR){
-        let hash = data.hash
-        startWebSocket('ws://localhost:8080',`upload-protocol-${hash}`,processEvt)
+        startWebSocket('ws://localhost:8080',`${data}`,processEvt)
       },error:function(jqXHR,textStatus,err){
         console.log(jqXHR)
         alert("Upload failed!")
@@ -29,7 +28,6 @@ $(document).ready(function(){
   function processEvt(msg){
     // calculate the percentage of upload completed
     let receivedMsg=JSON.parse(msg)
-    
     
     percentComplete = parseInt(receivedMsg.percentageComplete);
       

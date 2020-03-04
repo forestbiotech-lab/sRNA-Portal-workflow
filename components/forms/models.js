@@ -15,6 +15,14 @@ e.saveSingleTableDynamic = function(attributes) {
         return err
     })
 }
+e.destroySingleTableDynamic = function(attributes) {
+    return db[attributes.tablename].destroy({where:attributes.where}).then(function(res) {
+        return res
+    }).catch(function(err) {
+        console.log(`destroy single table dynamic table [${attributes.tablename}] - Err:${err}`)
+        return err
+    })
+}
 e.updateSingleTableDynamic = function(attributes) {
     return db[attributes.tablename].update(attributes.inserts, attributes).then(function(res) {
         return res

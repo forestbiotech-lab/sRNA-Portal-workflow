@@ -51,11 +51,11 @@ class websocketServer{
     }
     sendMessage(message,connection){   //NOT WORKING WELL
         if (message.type === 'utf8') {
-            console.log('Received Message: ' + message.utf8Data);
+            //console.log('Received Message: ' + message.utf8Data);
             connection.sendUTF(message.utf8Data);
         }
         else if (message.type === 'binary') {
-            console.log('Received Binary Message of ' + message.binaryData.length + ' bytes');
+            //console.log('Received Binary Message of ' + message.binaryData.length + ' bytes');
             connection.sendBytes(message.binaryData);
         }
     }    
@@ -87,7 +87,7 @@ class websocketServer{
         let correctProtocolFound=false
         let authProtocol;
         request.requestedProtocols.forEach(protocol=>{
-            if(dbProtocols.indexOf(protocol)!=-1){
+            if(dbProtocols.indexOf(protocol)>-1){
                 correctProtocolFound=true
                 authProtocol=protocol
             }        
@@ -95,7 +95,7 @@ class websocketServer{
         if(!correctProtocolFound){
             request.reject();
             console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected. Invalid Protocol!');
-            return                    
+            return -1                   
         }
         return authProtocol
     } 
@@ -116,7 +116,7 @@ class websocketServer{
             }else{
                authProtocol=that.validateProtocol(request,dbProtocols) 
             } 
-            let connection = request.accept(authProtocol, request.origin);
+            let connection = authProtocol==-1 ? {on:function(){}} : request.accept(authProtocol, request.origin);
             if (activeConnections[authProtocol]){
                 activeConnections[authProtocol].push(connection)  
             }else{

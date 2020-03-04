@@ -15,14 +15,19 @@ var targetsProfile=require('./../components/miRNADB/targets/profiles')
 var targetsFileActions=require('./../components/miRNADB/targets/targetsFileActions')
 var formFromTable=require('./../components/forms/formFromTable').tableStructure
 var upload_data=require('./../components/forms/upload_data')
-var wsServer=require('.././components/websockets/wsServer').websocketServer
+var wsClient=require('.././components/websockets/wsClient').Client
 const uploadDir=path.join(__dirname, '../uploads');
 const destinationFolderRawReads = "raw_reads"
 const destinationFolderTargets = "targets"
 const crypto=require('crypto')
 
-//////// upload
-
+//////// Functions
+function genHash(){
+  let rand=(Math.random()*10000).toString()
+  let hash=crypto.createHash('sha256')
+  hash.update(rand)
+  return hash.digest('hex')
+}
 /////////
 
 
@@ -63,15 +68,19 @@ router.post('/uploadMatrix',function(req,res){
   rawReadsFilePath=path.join(uploadDir, `/${req.body.studyId}/${destinationFolderRawReads}/${req.body.rawReadsfilename}`)
   let dataset=Object.assign({rawReadsFilePath},req.body)
   let hash=genHash().toString()
-  let ws=new wsServer(hash)
+  let ws=new wsClient()
+  let protocol={
+    type:"RawReads",
+    hash   
+  }
+  ws.connect(protocol,res)
   rawReadsSaveController.saveRawReads(dataset,ws).then(function(data){
-	ws.connection.close()
-   // ws.close()   
+	 ws.close()
+  },rej=>{
+    var donothing;
   }).catch(function(err){
-    ws.connection.close()
-    //ws.close()
+    ws.close()
   })
-  res.json({hash})
 })
 
 
@@ -219,10 +228,4 @@ router.post('/targets/get/db/sequence/target/:study_id',function(req,res){
   })
 })
 
-function genHash(){
-  let rand=(Math.random()*10000).toString()
-  let hash=crypto.createHash('sha256')
-  hash.update(rand)
-  return genHash=hash.digest('hex')
-}
 module.exports = router;

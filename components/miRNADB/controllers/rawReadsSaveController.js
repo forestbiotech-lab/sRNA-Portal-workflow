@@ -7,7 +7,6 @@ const PREVIEW_LINES=10
 const MAX_TRANSACTIONS=4
 
 var totalLines;
-var con=null
 var successes=0
 var errors=0
 
@@ -44,7 +43,7 @@ function insertControl(fieldOfPromises,results,lines,rawReadsfilename,study_id,i
   while(fieldOfPromises.length<MAX_TRANSACTIONS && lines.length >0){
     line=lines.pop()
     line=line.split("\t")
-    if(line.length>MINSIZE) fieldOfPromises.push(insertLine(rawReadsfilename,line,study_id,index,date,assay_ids))
+    if(line.length>MINSIZE) fieldOfPromises.push(insertLine(rawReadsfilename,line,study_id,index,date,assay_ids,ws))
     index--
   }
   
@@ -52,22 +51,16 @@ function insertControl(fieldOfPromises,results,lines,rawReadsfilename,study_id,i
     return Promise.all(fieldOfPromises).then(transactions=>{
       results.push(transactions)
       fieldOfPromises=[]
-//      ws.sendMessage((1-(index/totalLines))*100)
       let percentageComplete=(1-(index/totalLines))*100
       updateTransactionsStatus(transactions)
       let msg=JSON.stringify({percentageComplete,successes,errors})
-      if(con){
-        con.sendUTF(msg)
-      }else{
-        con=ws.connection
-        if(con){
-          con.sendUTF(msg)
-        }
-      }
-      return insertControl(fieldOfPromises, results, lines, rawReadsfilename, study_id, index, date, assay_ids)
+      ws.sendMsg(msg)
+      return insertControl(fieldOfPromises, results, lines, rawReadsfilename, study_id, index, date, assay_ids,ws)
     })
   }else{
-    return results.flat() 
+    let msg=JSON.stringify({percentageComplete:100,successes,errors})
+    ws.sendMsg(msg)
+    return results.flat()
   }
 }
 
