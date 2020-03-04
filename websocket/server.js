@@ -6,8 +6,7 @@ const PORT=8080
 
 class websocketServer{
     constructor(){
-        //let authProtocol=`upload-protocol-${hash}`
-        this._connection=null
+        let that=this
         this.server = http.createServer(function(request, response) {
             console.log((new Date()) + ' Received request for ' + request.url);
             response.writeHead(404);
@@ -27,56 +26,37 @@ class websocketServer{
             // to accept it.
             autoAcceptConnections: false
         });
+        let server=this.server
         this.wsServer.on('request', function(request) {
-            getActiveProtocols().then(protocols=>{
-                if (!originIsAllowed(request.origin)) {
-                    // Make sure we only accept requests from an allowed origin
-                   request.reject();
-                   console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
-                   return;
-                }else{
-                   let correctProtocolFound=false
-                   request.requestedProtocols.forEach(protocol=>{
-                        if(authProtocol.indexOf(protocol)!=-1){
-                            correctProtocolFound=true
-                        }        
-                   })     
-                   if(!correctProtocolFound){
-                        request.reject();
-                        console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected. Invalid Protocol!');
-                        return                    
-                    }
-                }   
-            })
-            this.connection = request.accept(authProtocol, request.origin);
-            console.log((new Date()) + ' Connection accepted.');
-            this.connection.on('message', function(message) {
-                if (message.type === 'utf8') {
-                    console.log('Received Message: ' + message.utf8Data);
-                    this.connection.sendUTF(message.utf8Data);
-                }
-                else if (message.type === 'binary') {
-                    console.log('Received Binary Message of ' + message.binaryData.length + ' bytes');
-                    this.connection.sendBytes(message.binaryData);
-                }
-            });
-            let connection=this.connection
-            this.connection.on('close', function(reasonCode, description) {
-                console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
-            });
+            that.validateRequest(that,request)
         });
 
-        function originIsAllowed(origin) {
-            // put logic here to detect whether the specified origin is allowed.
-            return true;
-        }
     }
-    sendMessage(msg){   //NOT WORKING WELL
-        if(this.connection){
-            let con=this.connection
-            con.sendUTF(msg)                
-        }else{
-            console.log('No connection established!')
+    originIsAllowed(origin) {
+        // put logic here to detect whether the specified origin is allowed.
+        return true;
+    }
+    set server(server){
+        this._server=server
+    }
+    get server(){
+        return this._server
+    }
+    sendMessageToProtocol(msg,protocol){
+        let connections=this.wsServer.activeConnections[protocol]    
+        let _this=this
+        connections.forEach(connection=>{
+            _this.sendMessage(msg,connection)
+        })
+    }
+    sendMessage(message,connection){   //NOT WORKING WELL
+        if (message.type === 'utf8') {
+            console.log('Received Message: ' + message.utf8Data);
+            connection.sendUTF(message.utf8Data);
+        }
+        else if (message.type === 'binary') {
+            console.log('Received Binary Message of ' + message.binaryData.length + ' bytes');
+            connection.sendBytes(message.binaryData);
         }
     }    
     close(){
@@ -96,12 +76,62 @@ class websocketServer{
             }
         });
     }
-    get connection(){
-        if(this._connection==null){
-            this._connection=this.wsServer.connection
+    makeProtocolList(dbResponse){
+        let result=[]
+        dbResponse.forEach(protocol=>{
+            result.push(`${protocol.type}-${protocol.hash}`)
+        })
+        return result
+    }  
+    validateProtocol(request,dbProtocols){
+        let correctProtocolFound=false
+        let authProtocol;
+        request.requestedProtocols.forEach(protocol=>{
+            if(dbProtocols.indexOf(protocol)!=-1){
+                correctProtocolFound=true
+                authProtocol=protocol
+            }        
+        })     
+        if(!correctProtocolFound){
+            request.reject();
+            console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected. Invalid Protocol!');
+            return                    
         }
-        return this._connection
-    }    
+        return authProtocol
+    } 
+    validateRequest(that,request){
+        if(!that.wsServer.activeConnections){
+            that.wsServer.activeConnections={} 
+        }
+        let activeConnections=that.wsServer.activeConnections 
+        getActiveProtocols().then(dbValues=>{
+            let dbProtocols=that.makeProtocolList(dbValues)
+            let originIsAllowed=that.originIsAllowed(request.origin)
+            let authProtocol;
+            if (!originIsAllowed){
+                // Make sure we only accept requests from an allowed origin
+               request.reject();
+               console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
+               return;
+            }else{
+               authProtocol=that.validateProtocol(request,dbProtocols) 
+            } 
+            let connection = request.accept(authProtocol, request.origin);
+            if (activeConnections[authProtocol]){
+                activeConnections[authProtocol].push(connection)  
+            }else{
+                activeConnections[authProtocol]=[connection]  
+            } 
+            console.log((new Date()) + ' Connection accepted.');
+            
+            connection.on('close', function(reasonCode, description) {
+                console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
+            });
+            connection.on('message', function(message) {
+                that.sendMessageToProtocol(message,authProtocol)    
+            });      
+        })
+    }
 } 
 
 

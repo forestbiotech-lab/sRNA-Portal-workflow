@@ -9,7 +9,7 @@ var db = require('./sqldb/index');
 var e={}
 
 e.getActiveProtocols=function(attributes){
-  return db.Websockets_protocols
+  return db.Websocket_protocols
   .findAll({
     }).then(function(res){
     return res

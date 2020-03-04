@@ -13,10 +13,11 @@
         allowNull: false,
         unique: true,
       },
-    type: DataTypes.STRING(254),
-    hash: DataTypes.STRING(254),
+      type: DataTypes.STRING(254),
+      hash: DataTypes.STRING(254),
+      date: DataTypes.DATE,
   }, {
-      tableName: 'Person',
+      tableName: 'Websocket_protocols',
       timestamps: false,
       underscored: false,
 
