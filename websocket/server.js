@@ -125,6 +125,15 @@ class websocketServer{
             console.log((new Date()) + ' Connection accepted.');
             
             connection.on('close', function(reasonCode, description) {
+                let protocol=this.protocol
+                let remoteAddress=this.remoteAddress
+                if(remoteAddress=="::ffff:127.0.0.1"){  //IPv4 loopback address written as an IPv6 address works for now!
+                    activeConnections[protocol].forEach(connection=>{
+                        if(connection.connected){
+                            connection.close()
+                        }
+                    })
+                }
                 console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
             });
             connection.on('message', function(message) {
