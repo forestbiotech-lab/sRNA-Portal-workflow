@@ -2,7 +2,6 @@ doctype html
 html
   head
     title="sRNA Plant Portal"
-    link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet', href='/stylesheets/sidePanel.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet', href='/stylesheets/glyphicon.css')
@@ -17,11 +16,11 @@ html
       a(target="blank_",href="http://elixir-europe.org")
         img.tiny-logo-header(src="/images/elixir-logo-transparent-ultrasmall.png")
     .menu
-      span.menuItem1.d-none Login
       .miRPursuit-bar.btn-group.d-none
         span.activity State:
         .progress(style="margin-left:5px; width:100px;height:16px;margin-top:4px;")
           .progress-bar(role="progressbar",aria-valuenow="0",aria-valuemin="0",aria-valuemax="100")
+      button.menuItem1.login-btn.btn.btn-dark(role="button",onclick="document.location='/de'") Login
 
     .container-fluid(style="margin:0px;padding:0px;")
       .row.content-md-left(style="margin:0px")

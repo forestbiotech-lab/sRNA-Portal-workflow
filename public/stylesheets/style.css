@@ -21,23 +21,26 @@ body {
 a{
   color: #ffffff;
 }
-.menu{
-	position: relative; 
-	height:38px;
+body .menu{
+	position: relative;
+	height: 50px;
 	background-color: #EEEEEE;
-	border-bottom: 1px solid #e5e5e5;
+	/*border-bottom: 1px solid #e5e5e5;*/
+	border-top: 2px solid #aea4a4;
+	border-bottom: 2px solid #aea4a4;
+	padding: 5px;
+	/* float: right; */
 }
-.menu span.menuItem1{
-	position: absolute;
-    bottom: 0px;
-    padding: 10px;
-    font-weight: bold;
-    color: #8c8787;
+body .menu button.menuItem1{
+	padding: 5px;
+	font-weight: bold;
+	/* color: #8c8787; */
+	float: right;
+	padding-left: 10px;
+	padding-right: 10px;
 }
-.menu span.menuItem1.hover{
-	position: absolute;
-    bottom: 0px;
-    padding: 10px;
+body .menu button.menuItem1.hover{
+    padding: 6px;
     font-weight: bold;
     color: white;
     background-color: #FE9050;

@@ -2,8 +2,28 @@ extends layout
 
 block content
   script(id="database",src="/javascripts/de.js",defer)
+    - name=`${personInfo.firstName} ${personInfo.lastName}`//"Dr. Unpleasant Guest"
   .card-block
     .container-fluid
+      .row
+        .col-lg-12
+          .card
+            .card-body
+              h4.card-title.personal-stats Welcome to your personal area 
+                span.badge.badge-secondary !{name}
+            .card-body 
+              p You are currently responsible for 
+                span.badge.badge-secondary(title="click to show studies") !{numOfStudies} studies 
+                | , please select a study to edit or complete.   
+              #accordionStudies.accordion
+                .card
+                  #studies.card-header
+                    h2.mb-0.text-center
+                      button.btn.btn-link.generate-table-list(type='button',table="Study", data-toggle='collapse', data-target='#studiesList', aria-expanded='true', aria-controls='studiesList')
+                        | View study list
+                  #studiesList.collapse(aria-labelledby='studiesList', data-parent='#accordionStudies')
+                    .card-body.list-Study
+                    .card-body
       .row.file-submission.d-none
         .col-lg-12
           .card.upload 

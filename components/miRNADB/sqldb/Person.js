@@ -21,7 +21,11 @@
       underscored: false,
 
      classMethods: {
-        associate: function associate(models) {     
+        associate: function associate(models) {
+          Person.belongsTo(models.Study, {
+            foreignKey: 'id',              //on Study
+            targetKey: 'responsible',  //foreign key  
+          });              
         }
       },
     });

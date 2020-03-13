@@ -76,4 +76,86 @@ $(document).ready(function(){
     $('form.view-matrix input.btn.disabled').removeClass('disabled')
     $('form.view-matrix input.btn').attr('type','submit')
   }
+  $('button.generate-table-list').on('click',function(){
+    let that=$(this)
+    var table=that.attr('table')
+    $.ajax({
+      url:`/forms/factory/table/basic/${table}`,
+      type:'GET',
+      success: function(data,textStatus,jqXHR){
+        that.closest('.card').find(`.list-${table}`).html(data)
+        let tableEl=that.closest('.card').find(`.list-${table}`).find('table')
+        setClickActions(tableEl)          
+      }
+    })
+  })
+  function setClickActions(table){
+    table.find('tbody tr').click(function(){
+      let that=$(this)
+      let target=that.closest('.card-body')
+      if(that.attr('isSelected')=="true"){
+        target.next().remove()
+        that.attr('isSelected',"false")    
+      }else{
+        removePreviousSelections(that,target)
+        let tableId=that.attr('tableid')
+        let panel=makePanel(tableId,target)
+        that.attr('isSelected',"true")
+      }
+    })
+  } 
+  function removePreviousSelections(that,target){
+    target.next().remove()
+    that.closest('tbody').find('tr').each(function(){
+      $(this).attr('isSelected',"false")
+    })
+  }
+  function makeLinkButton(name,url,classes){
+    let button = document.createElement('a');
+    button.textContent=name
+    button.className=classes
+    button.href=url
+    return button
+  }
+  async function makePanel(tableId,target){
+    let panel=document.createElement('div')
+    let alert=document.createElement('div')
+    let span=document.createElement('span')
+    panel.className="card-body"
+    alert.className="alert alert-primary"
+    span.className="badge badge-secondary"
+    span.textContent=await countAssociatedTables("Study","Assay",tableId)
+    let uploadData=makeLinkButton('Upload Data',`/de/assays/${tableId}`,"btn btn-primary assays")
+    let assays=makeLinkButton('View Assays',`/de/assays/${tableId}`,"btn btn-primary assays")
+    let targets=makeLinkButton('View Targets',`/de/targets/new`,"btn btn-primary targets")
+
+    panel.append(alert)
+    alert.append(span)
+    alert.insertAdjacentText('afterBegin',"This study has ")
+    alert.insertAdjacentText('beforeEnd'," assays ")
+    alert.append(uploadData)
+    alert.append(assays)
+    alert.append(targets)
+    target.after(panel)
+  }
+  function countAssociatedTables(tablename,associatedTable,tableId){
+    return new Promise((res,rej)=>{
+      let attributes={
+        tableId,
+        associatedTable,
+        tablename
+      }
+      $.ajax({
+        type:"post",
+        url:"/forms/count/associatedTables",
+        data:attributes,
+        success:function(data,textStatus,jqXHR){
+          res(data)
+        },
+        error:function(qXHR,textStatus,err){
+          rej(err)
+        }
+      })
+    })
+  }  
 })

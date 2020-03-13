@@ -1,0 +1,10 @@
+table.table.table-bordered.table-hover
+  thead
+    each key in Object.keys(entries[0])
+      th=key 
+  tbody
+    each row in entries
+      - id = row.id
+      tr(tableId=id,isSelected="false")
+        each attr in Object.keys(row)
+          td=row[attr]

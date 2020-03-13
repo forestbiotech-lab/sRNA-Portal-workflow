@@ -56,4 +56,14 @@ e.getTableValuesWhere= function(attributes){
     console.log(`getTableValues for table [${attributes.tablename}] - Err:${err}`)
   })
 }
+e.countAssociatedTables=function(attributes){
+  return db[attributes.tablename].count({
+    include:[{
+      model:db[attributes.associatedTable]
+    }],
+    where:attributes.where
+  }).catch(function(err){
+    console.log(`countAssociatedTables for table [${attributes.tablename}] - Err:${err}`)
+  })
+}
 module.exports = e

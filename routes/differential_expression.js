@@ -13,9 +13,10 @@ var getTargets=require('./../components/miRNADB/getTargets')
 var assembleAssayData=require('./../components/miRNADB/assembleAssayData')
 var targetsProfile=require('./../components/miRNADB/targets/profiles')
 var targetsFileActions=require('./../components/miRNADB/targets/targetsFileActions')
-var formFromTable=require('./../components/forms/formFromTable').tableStructure
+var formFromTable=require('./../components/forms/formFromTable')
 var upload_data=require('./../components/forms/upload_data')
 var wsClient=require('.././components/websockets/wsClient').Client
+var countAssociatedTables=require('./../components/forms/countAssociatedTables')
 const uploadDir=path.join(__dirname, '../uploads');
 const destinationFolderRawReads = "raw_reads"
 const destinationFolderTargets = "targets"
@@ -33,7 +34,21 @@ function genHash(){
 
 
 router.get('/',function(req,res){
-	res.render('differential_expression');
+  let personId=1;
+  let tablename="Person";
+  let associatedTable="Study"
+  let attributes={tablename,where:{id:personId}}
+  let personInfo=formFromTable.tableEntry(attributes)
+  let studyCount=countAssociatedTables(tablename,associatedTable,personId)
+  Promise.all([personInfo,studyCount]).then(function(data){
+    let personInfo=data[0]
+    let numOfStudies=data[1]
+    res.render('differential_expression',{personInfo,numOfStudies});
+  },rej=>{
+    res.status(404).render('err',{error:rej})
+  }).catch(function(error){
+    res.status(404).json('error',{error})
+  })
 })
 
 router.get('/raw-read-matrix',function(req,res){
@@ -152,7 +167,7 @@ router.post('/targets/columnAssociation',(req,res)=>{
   let icon={date:"calendar",number:"list-ordered",text:"text-size",checkbox:"file-binary",select:"file-binary"}
   
   tables.forEach(table=>{
-    tableStructure=formFromTable(table)
+    tableStructure=formFromTable.tableStructure(table)
     if (tableStructure instanceof Error) res.render('error',"Unable to get tableStructure") 
     tableData[table]=tableStructure
   })

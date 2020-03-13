@@ -39,6 +39,10 @@
             foreignKey: 'id',              //on Study
             targetKey: 'study_id',  //foreign key  
           }); 
+          Study.belongsTo(models.Assay, {
+            foreignKey: 'id',              //on Assay
+            targetKey: 'study',  //foreign key  
+          });
         }
       },
     });
