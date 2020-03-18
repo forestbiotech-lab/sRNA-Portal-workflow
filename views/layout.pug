@@ -20,8 +20,8 @@ html
         span.activity State:
         .progress(style="margin-left:5px; width:100px;height:16px;margin-top:4px;")
           .progress-bar(role="progressbar",aria-valuenow="0",aria-valuemin="0",aria-valuemax="100")
-      button.menuItem1.login-btn.btn.btn-dark(role="button",onclick="document.location='/de'") Login
-
+      a.menuItem1.login-btn.btn.btn-dark.d-none(role="button",href="/login") login
+      a.menuItem1.login-btn.btn.btn-dark(role="button",href="/logout") logout
     .container-fluid(style="margin:0px;padding:0px;")
       .row.content-md-left(style="margin:0px")
         .sidePanel(style="width:20%;")

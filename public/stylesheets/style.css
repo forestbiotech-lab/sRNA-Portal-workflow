@@ -31,7 +31,7 @@ body .menu{
 	padding: 5px;
 	/* float: right; */
 }
-body .menu button.menuItem1{
+body .menu a.menuItem1{
 	padding: 5px;
 	font-weight: bold;
 	/* color: #8c8787; */
@@ -39,7 +39,7 @@ body .menu button.menuItem1{
 	padding-left: 10px;
 	padding-right: 10px;
 }
-body .menu button.menuItem1.hover{
+body .menu a.menuItem1.hover{
     padding: 6px;
     font-weight: bold;
     color: white;

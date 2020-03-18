@@ -7,4 +7,4 @@ table.table.table-bordered.table-hover
       - id = row.id
       tr(tableId=id,isSelected="false")
         each attr in Object.keys(row)
-          td=row[attr]
+          td(id=attr)=row[attr]

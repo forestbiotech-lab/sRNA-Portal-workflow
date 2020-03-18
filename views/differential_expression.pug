@@ -5,7 +5,7 @@ block content
     - name=`${personInfo.firstName} ${personInfo.lastName}`//"Dr. Unpleasant Guest"
   .card-block
     .container-fluid
-      .row
+      .row.welcome-panel
         .col-lg-12
           .card
             .card-body
@@ -15,20 +15,26 @@ block content
               p You are currently responsible for 
                 span.badge.badge-secondary(title="click to show studies") !{numOfStudies} studies 
                 | , please select a study to edit or complete.   
+              button.btn.btn-primary.btn-lg.btn-block.generate-table-form(table="Study",type='button', data-toggle='collapse', data-target='#table-study', aria-expanded='false', aria-controls='table-study')
+                | Create New Study
+              #table-study.collapse
+                .card.card-body
+                  .form-Study
               #accordionStudies.accordion
                 .card
                   #studies.card-header
                     h2.mb-0.text-center
-                      button.btn.btn-link.generate-table-list(type='button',table="Study", data-toggle='collapse', data-target='#studiesList', aria-expanded='true', aria-controls='studiesList')
+                      button.btn.btn.secondary.btn-block.generate-table-list(type='button',table="Study", data-toggle='collapse', data-target='#studiesList', aria-expanded='true', aria-controls='studiesList')
                         | View study list
                   #studiesList.collapse(aria-labelledby='studiesList', data-parent='#accordionStudies')
                     .card-body.list-Study
-                    .card-body
+                    .card-body.info-on-selection
       .row.file-submission.d-none
         .col-lg-12
           .card.upload 
             .card-body
-              h5.card-title Matrix with raw reads counts
+              h5.card-title Matrix with raw reads counts for:
+                span.badge.badge-secondary#studyTitle
               .row
                 .form-group
                   label.sr-only(for="upload-files-upload") Upload file
@@ -43,34 +49,21 @@ block content
                 .form-group.col-lg-12
                   label(for="file") Uploaded file: 
                   input.col-lg-10.col-md-8.col-sm-4(type="text",id="file",placeholder="no file",required="",name="file",readonly)
-      .row
-        .col-lg-12
-          form.view-matrix(action="/de/uploaded-file",method="POST")
-            input(type="hidden",name="hash",id="hash")
-            input(type="hidden",name="filename",id="filename")
-            input(type="hidden",name="studyId",id="studyId")
-            input(type="hidden",name="studyTitle",id="studyTitle")
-            input.btn.btn-primary.disabled.d-none(type="",role="button",value="View matrix",title="Set the study first to view matrix")
-      .row  
+              .row
+                .col-lg-12
+                  form.view-matrix(action="/de/uploaded-file",method="POST")
+                    input(type="hidden",name="hash",id="hash")
+                    input(type="hidden",name="filename",id="filename")
+                    input(type="hidden",name="studyId",id="studyId")
+                    input(type="hidden",name="studyTitle",id="studyTitle")
+                    input.btn.btn-primary.disabled.btn-block.d-none(type="",role="button",value="View matrix",title="Set the study first to view matrix")
+      .row.metadata-edition.d-none
         .col-lg-12
           .card
             .card-body
-              h4.study.card-title Metadata Selection
+              h4.study.card-title Edit Study Metadata for:
                 span.badge.badge-secondary#studyTitle
-              p Either create a new study ou select and existing one, in order to upload data
-              button.btn.btn-primary.generate-table-form(table="Study",type='button', data-toggle='collapse', data-target='#table-study', aria-expanded='false', aria-controls='table-study')
-                | Create Study
-              #table-study.collapse
-                .card.card-body
-                  .form-Study
-              button.btn.btn-primary.generate-table-form(table="Person",type='button', data-toggle='collapse', data-target='#table-Person', aria-expanded='false', aria-controls='table-Person')
-                | Create Person              
-              #table-Person.collapse
-                .card.card-body
-                  .form-Person
-              button.btn.btn-primary.generate-table-form.generate-select-form(table="Study",type='button',displayAttr='title' data-toggle='collapse', data-target='#select-Study', aria-expanded='false', aria-controls='select-Study')
-                | Get studies              
-              #select-Study.collapse
-                .card.card-body
-                  .select-Study
-                  .form-Study      
+                button.close(type='button', aria-label='Close')
+                  span(aria-hidden='true',onclick="$('.row.metadata-edition').addClass('d-none')") &times;  
+                .card
+                  .form-Study.card-body

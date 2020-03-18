@@ -1,6 +1,7 @@
 //This script is used to generate forms from tables
 
 $(document).ready(function(){
+
   $('button.generate-table-form').on('click',function(){
     let that=$(this)
     var table=that.attr('table')
@@ -12,6 +13,7 @@ $(document).ready(function(){
       }
     })
   })
+
   $('button.generate-select-form').on('click',function(){
     let that=$(this)
     var table=that.attr('table')
@@ -38,19 +40,20 @@ $(document).ready(function(){
         var that=$(this)
         var selectedOptions=that.get(0).selectedOptions[0].text
         var id=parseInt(selectedOptions)
-
         var table=that.attr('table')
-        let tableForm=that.closest('.card.card-body').find(`.form-${table}`)
+        let tableTarget=that.closest('.card.card-body').find(`.form-${table}`)
+
         $.ajax({
           url: `/forms/factory/fromTable/byId/${table}/${id}`,
           type: 'get',
           success:function(data,textStatus,jqXHR){
-            loadForm(data,tableForm)
+            loadForm(data,tableTarget)
           },
           error:function(qXHR,textStatus,err){
             console.log(err)
           }
         })
+
       })
 
   }
@@ -65,16 +68,10 @@ $(document).ready(function(){
         input.val(data[attribute])
       }
     })
-    form.find('input.btn.disabled').val('Update')
-    let action=form.find('form.basic-form.table-form').attr('action')
-    action=action.replace("save","update")
-    form.find('form.basic-form.table-form').attr('action',action)
-    $('form.view-matrix input#studyId').val(data.id)
-    $('form.view-matrix input#studyTitle').val(data.title)
-    $('.card-body h4.study.card-title span#studyTitle').text(data.title)
-    $('.row.file-submission').removeClass('d-none')
-    $('form.view-matrix input.btn.disabled').removeClass('disabled')
-    $('form.view-matrix input.btn').attr('type','submit')
+    form.find('input.btn.disabled').val('Update')  //?
+    let action=form.find('form.basic-form.table-form').attr('action') //?
+    action=action.replace("save","update")                           //?
+    form.find('form.basic-form.table-form').attr('action',action)    //?
   }
   $('button.generate-table-list').on('click',function(){
     let that=$(this)
@@ -117,6 +114,13 @@ $(document).ready(function(){
     button.href=url
     return button
   }
+  function makeButton(name,classes,event,action){
+    let button = document.createElement('button');
+    button.textContent=name
+    button.className=classes
+    button.addEventListener(event, action);
+    return button
+  }
   async function makePanel(tableId,target){
     let panel=document.createElement('div')
     let alert=document.createElement('div')
@@ -125,17 +129,22 @@ $(document).ready(function(){
     alert.className="alert alert-primary"
     span.className="badge badge-secondary"
     span.textContent=await countAssociatedTables("Study","Assay",tableId)
-    let uploadData=makeLinkButton('Upload Data',`/de/assays/${tableId}`,"btn btn-primary assays")
-    let assays=makeLinkButton('View Assays',`/de/assays/${tableId}`,"btn btn-primary assays")
-    let targets=makeLinkButton('View Targets',`/de/targets/new`,"btn btn-primary targets")
+
+    let uploadData=makeButton('Upload Data',"btn btn-primary assays",event="click",action=uploadDataAction,)
+    let editStudy=makeButton('Edit Study',"btn btn-primary editStudy",event="click",action=openEditStudyPanel)
 
     panel.append(alert)
     alert.append(span)
     alert.insertAdjacentText('afterBegin',"This study has ")
     alert.insertAdjacentText('beforeEnd'," assays ")
     alert.append(uploadData)
-    alert.append(assays)
-    alert.append(targets)
+    if(span.textContent>1){
+      let assays=makeLinkButton('View Assays',`/de/assays/${tableId}`,"btn btn-primary assays")
+      let targets=makeLinkButton('View Targets',`/de/targets/new`,"btn btn-primary targets")
+      alert.append(assays)
+      alert.append(targets)
+    }
+    alert.append(editStudy)
     target.after(panel)
   }
   function countAssociatedTables(tablename,associatedTable,tableId){
@@ -157,5 +166,69 @@ $(document).ready(function(){
         }
       })
     })
-  }  
+  }
+  function uploadDataAction(){
+    let selectedRow=$('.row.welcome-panel .card-body.list-Study table tbody tr[isselected|="true"]')
+
+    let data={
+      id:selectedRow.find('td#id').text(),
+      title:selectedRow.find('td#title').text(),
+    }
+    $('form.view-matrix input#studyId').val(data.id)
+    $('form.view-matrix input#studyTitle').val(data.title)
+    $('.row.file-submission .card-body h5.card-title span#studyTitle').text(data.title)
+    $('.row.file-submission').removeClass('d-none')
+    $('form.view-matrix input.btn.disabled').removeClass('disabled')
+    $('form.view-matrix input.btn').attr('type','submit')
+  }
+  function openEditStudyPanel(){
+    let selectedRow=$('.row.welcome-panel .card-body.list-Study table tbody tr[isselected|="true"]')
+    let data={
+      id:selectedRow.find('td#id').text(),
+      title:selectedRow.find('td#title').text(),
+    }
+    $('.row.metadata-edition h4.study.card-title span#studyTitle').text(data.title)
+
+    let table="Study"
+    let tableTarget=$(`.row.metadata-edition .card-body .form-${table}`)
+    makeTableForm(table,tableTarget)
+    loadTable(table,data,tableTarget) //await the first?
+
+    /////
+    //TODO
+    //disableEditButton
+    $('.welcome-panel button.editStudy').addClass('d-none')
+    $('.row.metadata-edition').removeClass('d-none')
+
+
+
+  }
+
+
+  function loadTable(table,data,tableTarget){    
+    $.ajax({
+      url: `/forms/factory/fromTable/byId/${table}/${data.id}`,
+      type: 'get',
+      success:function(data,textStatus,jqXHR){
+        loadForm(data,tableTarget)
+      },
+      error:function(qXHR,textStatus,err){
+        let alert=document.createElement('div')
+        alert.className="alert alert-danger"
+        alert.textContent=err
+        $('.row.metadata-edition .form-Study').html(alert)
+      }
+    })
+  }
+
+  function makeTableForm(table,target){
+    $.ajax({
+      url:`/forms/factory/fromtable/basic/${table}`,
+      type:'GET',
+      success: function(data,textStatus,jqXHR){
+        target.html(data)          
+      }
+    })
+  }
+
 })

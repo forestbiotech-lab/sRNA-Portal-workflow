@@ -21,6 +21,10 @@ const uploadDir=path.join(__dirname, '../uploads');
 const destinationFolderRawReads = "raw_reads"
 const destinationFolderTargets = "targets"
 const crypto=require('crypto')
+var Cookies = require('cookies');
+var Keygrip = require("keygrip");
+const keylist = require('./../.config_res').cookie.keylist
+var keys = new Keygrip(keylist,'sha256','hex')
 
 //////// Functions
 function genHash(){
@@ -32,9 +36,12 @@ function genHash(){
 /////////
 
 
-
 router.get('/',function(req,res){
-  let personId=1;
+  var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
+  let personId=cookies.get('person_id',{signed:true})
+  if(personId === undefined ){
+    res.redirect('/')
+  }
   let tablename="Person";
   let associatedTable="Study"
   let attributes={tablename,where:{id:personId}}

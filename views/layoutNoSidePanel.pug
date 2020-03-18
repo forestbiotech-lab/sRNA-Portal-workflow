@@ -14,7 +14,9 @@ html
         img(style="margin-left:30px;height:100px",src="/images/logo.png")    
       a(target="blank_",href="https://biodata.pt/about_elixirpt")
         img.tiny-logo-header(src="/images/elixir_footer-logo.png")
-    .menu(style="height:1px")
+    .menu
+      a.menuItem1.login-btn.btn.btn-dark(href="/login",role="button") login
+      a.menuItem1.login-btn.btn.btn-dark.d-none(href="/logout",role="button") logout
     .container-fluid(style="margin:0px;padding:0px;")
       .row.content-md-left(style="margin:0px")
         .mainPanel(style="width:100%")

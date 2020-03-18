@@ -14,10 +14,9 @@ var atob=require('atob');
 var btoa=require('btoa');
 var Cookies = require('cookies');
 var Keygrip = require("keygrip");
-var keylist=["SEKRIT2", "SEKRIT1"];
+var keylist=require('./../.config_res').cookie.keylist
 var keys = new Keygrip(keylist,'sha256','hex')
-var token="qawsaffsfkjahf3728fh93qo38gfwqig3qq82gdq93yd9wqd39qdxeaiwhah";
-
+var token=require('./../.config_res').cookie.seed
 var nameSearch = require('./../components/miRNADB/nameSearch');
 
 //local only
@@ -34,6 +33,19 @@ function fullAccess(req,res){
   }
 
 }
+
+
+router.get('/login',function(req,res){
+  var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
+  let person_id=1
+  cookies.set( "person_id", person_id ).set( "person_id", person_id, { signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
+  res.redirect('/de')
+})
+router.get('/logout',function(req,res){
+  var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
+  cookies.set( "person_id",{expires: Date.now()}).set( "person_id", "",{ signed: true, maxAge: 0 } ); //sec * min * hour * day * month  
+  res.redirect('/')
+})
 
 
 
