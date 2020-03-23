@@ -14,7 +14,6 @@ $(document).ready(function(){
       },error:function(qXHR,textStatus,err){
         console.log(err)
       }
-
     })
   })
 	

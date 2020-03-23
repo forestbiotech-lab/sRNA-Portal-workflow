@@ -34,45 +34,7 @@ $(document).ready(function(){
       }
     })
   })
-  function loadEntry(context){
-      //for some reason when I do this directly the on change listener doesn't persist
-      context.find('select').on('change',function(){
-        var that=$(this)
-        var selectedOptions=that.get(0).selectedOptions[0].text
-        var id=parseInt(selectedOptions)
-        var table=that.attr('table')
-        let tableTarget=that.closest('.card.card-body').find(`.form-${table}`)
 
-        $.ajax({
-          url: `/forms/factory/fromTable/byId/${table}/${id}`,
-          type: 'get',
-          success:function(data,textStatus,jqXHR){
-            loadForm(data,tableTarget)
-          },
-          error:function(qXHR,textStatus,err){
-            console.log(err)
-          }
-        })
-
-      })
-
-  }
-
-  function loadForm(data,form){
-    Object.keys(data).forEach(function(attribute){
-      let input=form.find(`#${attribute}`)
-      let inputType=input.attr('type')
-      if(inputType=="checkbox"){
-        input.prop('checked',data[attribute])
-      }else{       
-        input.val(data[attribute])
-      }
-    })
-    form.find('input.btn.disabled').val('Update')  //?
-    let action=form.find('form.basic-form.table-form').attr('action') //?
-    action=action.replace("save","update")                           //?
-    form.find('form.basic-form.table-form').attr('action',action)    //?
-  }
   $('button.generate-table-list').on('click',function(){
     let that=$(this)
     var table=that.attr('table')
@@ -86,15 +48,27 @@ $(document).ready(function(){
       }
     })
   })
+  
+
+  function tableSetBackgroundColor(row){
+    row.addClass('table-info')
+  }
+  function tableRemoveBackgroundColors(table){
+    table.find('tbody tr').removeClass('table-info')
+  }
+
   function setClickActions(table){
     table.find('tbody tr').click(function(){
       let that=$(this)
+      //class table-info
       let target=that.closest('.card-body')
       if(that.attr('isSelected')=="true"){
+        removePreviousSelections(that,target)
         target.next().remove()
         that.attr('isSelected',"false")    
       }else{
         removePreviousSelections(that,target)
+        tableSetBackgroundColor(row=that)
         let tableId=that.attr('tableid')
         let panel=makePanel(tableId,target)
         that.attr('isSelected',"true")
@@ -103,6 +77,8 @@ $(document).ready(function(){
   } 
   function removePreviousSelections(that,target){
     target.next().remove()
+    let table=that.closest('table')
+    tableRemoveBackgroundColors(table)
     that.closest('tbody').find('tr').each(function(){
       $(this).attr('isSelected',"false")
     })
@@ -174,12 +150,12 @@ $(document).ready(function(){
       id:selectedRow.find('td#id').text(),
       title:selectedRow.find('td#title').text(),
     }
-    $('form.view-matrix input#studyId').val(data.id)
-    $('form.view-matrix input#studyTitle').val(data.title)
     $('.row.file-submission .card-body h5.card-title span#studyTitle').text(data.title)
+    $('.row.file-submission .card-footer form.view-matrix input#studyId').val(data.id)
+    $('.row.file-submission .card-footer form.view-matrix input#studyTitle').val(data.title)
+    $('.row.file-submission .card-footer form.view-matrix input.btn.disabled').removeClass('disabled')
+    $('.row.file-submission .card-footer form.view-matrix input.btn').attr('type','submit')
     $('.row.file-submission').removeClass('d-none')
-    $('form.view-matrix input.btn.disabled').removeClass('disabled')
-    $('form.view-matrix input.btn').attr('type','submit')
   }
   function openEditStudyPanel(){
     let selectedRow=$('.row.welcome-panel .card-body.list-Study table tbody tr[isselected|="true"]')
@@ -197,14 +173,9 @@ $(document).ready(function(){
     /////
     //TODO
     //disableEditButton
-    $('.welcome-panel button.editStudy').addClass('d-none')
+    $('.row.welcome-panel button.editStudy').addClass('d-none')
     $('.row.metadata-edition').removeClass('d-none')
-
-
-
   }
-
-
   function loadTable(table,data,tableTarget){    
     $.ajax({
       url: `/forms/factory/fromTable/byId/${table}/${data.id}`,
@@ -230,5 +201,44 @@ $(document).ready(function(){
       }
     })
   }
+  function loadEntry(context){
+      //for some reason when I do this directly the on change listener doesn't persist
+      context.find('select').on('change',function(){
+        var that=$(this)
+        var selectedOptions=that.get(0).selectedOptions[0].text
+        var id=parseInt(selectedOptions)
+        var table=that.attr('table')
+        let tableTarget=that.closest('.card.card-body').find(`.form-${table}`)
+
+        $.ajax({
+          url: `/forms/factory/fromTable/byId/${table}/${id}`,
+          type: 'get',
+          success:function(data,textStatus,jqXHR){
+            loadForm(data,tableTarget)
+          },
+          error:function(qXHR,textStatus,err){
+            console.log(err)
+          }
+        })
+
+      })
+
+  }
+  function loadForm(data,form){
+    Object.keys(data).forEach(function(attribute){
+      let input=form.find(`#${attribute}`)
+      let inputType=input.attr('type')
+      if(inputType=="checkbox"){
+        input.prop('checked',data[attribute])
+      }else{       
+        input.val(data[attribute])
+      }
+    })
+    form.find('input.btn.disabled').val('Update')  //?
+    let action=form.find('form.basic-form.table-form').attr('action') //?
+    action=action.replace("save","update")                           //?
+    form.find('form.basic-form.table-form').attr('action',action)    //?
+  }
+
 
 })

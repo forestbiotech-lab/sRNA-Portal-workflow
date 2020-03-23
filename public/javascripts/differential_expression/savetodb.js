@@ -1,4 +1,3 @@
-evnt=""
 $(document).ready(function(){
   let rawReadsfilename=$('table tbody tr#lastRow').attr('filename')
   let iterStep=50

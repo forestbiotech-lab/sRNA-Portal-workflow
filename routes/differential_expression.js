@@ -35,6 +35,13 @@ function genHash(){
 }
 /////////
 
+//This should not have logic.
+//Paths
+//Errors
+//Templates
+//Types Promise or not
+//Multiple Promises or single
+
 
 router.get('/',function(req,res){
   var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
@@ -58,10 +65,8 @@ router.get('/',function(req,res){
   })
 })
 
-router.get('/raw-read-matrix',function(req,res){
-	res.render('de/rawreadmatrix')
-})
-//POST UPLOAD                                     POST UPLOAD    //RESTRICT access required
+
+//This is where the rawReads tsv are sent to save on server
 router.post('/upload/:studyId', function(req, res){
   upload_data.uploadFile(req,uploadDir,destinationFolderRawReads).then(result=>{
     result instanceof Error ? res.status('400').json(result) : res.json(result)
@@ -70,6 +75,7 @@ router.post('/upload/:studyId', function(req, res){
   })
 });
 
+//Template de/UploadedFile - Quality control of upload. 
 router.post('/uploaded-file',function(req,res){ 	 
   let uploadedFilename=req.body.filename
   let studyId=req.body.studyId.trim()
