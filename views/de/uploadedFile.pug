@@ -4,17 +4,32 @@ block content
   script(id="database",src="/javascripts/de.js",defer)
   .card-block
     .container-fluid
-      .row  
+      .row.gen-info  
         .col-lg-12
           .card.gen-info
             .card-header.study
               h4.card-title File Screening
               .card-body
-                p Identifies abnormalities in the uploaded file and previews the first lines of your file.
-                  ul - Structure inconsistancies in .tsv
-                  ul - Repeated lines
-                  ul - Repeated sequences
-                  ul - Shows general statistics
+                p This process identifies abnormalities in the uploaded file and previews the first lines of your file.
+                  ul.InvalidStructure 
+                    span.glyphicon.glyphicon-remove
+                    | File structure of&nbsp; 
+                    .span.badge.badge-secondary .tsv
+                    | &nbsp;file
+                    .alert.err-msg.alert-danger.d-none
+                  ul.RepeatedLines
+                    span.glyphicon.glyphicon-remove
+                    | Repeated lines
+                    .alert.err-msg.alert-danger.d-none
+                  ul.RepeatedSequences
+                    span.glyphicon.glyphicon-remove
+                    | Repeated sequences
+                    .alert.err-msg.alert-danger.d-none
+                  ul.GenStats.Changethis
+                    span.glyphicon.glyphicon-remove
+                    | Shows general statistics
+                    .alert.err-msg.alert-danger.d-none
+                button.btn.btn-primary.btn-block Go back to previous page
               h4.card-title  Study id:&nbsp 
                 span.badge.badge-secondary#studyId !{studyId} 
                 span.badge.badge-success#studyTitle !{studyTitle} 

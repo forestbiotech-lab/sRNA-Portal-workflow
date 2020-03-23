@@ -83,8 +83,9 @@ router.post('/uploaded-file',function(req,res){
   if( req.body.responseType=="json"){
     var filePath=path.join(uploadDir, `/${studyId}/${destinationFolderRawReads}/${uploadedFilename}`)
     convertFileToMatrix(filePath).then(function(data){
-      data instanceof Error ? res.status(404).json(err) : res.json(data)
+      data instanceof Error ? res.status(404).json(data) : res.json(data)
     }).catch(function(err){
+      err.msg=err.message
       res.status(404).json(err)
     }) 
   }else{

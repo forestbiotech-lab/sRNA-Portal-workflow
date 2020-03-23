@@ -12,19 +12,34 @@ module.exports=function(filePath){
       if (err) rej(err)
 
       let rows=data.toString().split(/\r*\n/) 
+      let fileColumnWidth
       rows.forEach(function(row,index){
         row=row.split("\t")  
         if(index==0){
           matrix.header=row
-          
+          fileColumnWidth=matrix.header.length
+          if(fileColumnWidth<3){
+            let err=new Error(`The file doesn't have the proper structure number of columns is less then 3`)
+            err.name="InvalidStructure"
+            err.type="QualityControl"
+            err.msg=err.message
+            rej(err)
+          } 
         }else{
-          if(row.length>0){
+          let rowLength=row.length
+          if(rowLength>0 && rowLength==fileColumnWidth){
             let seq=row[0]
             let hash=hashRow(row)
             sequences.push(seq)
             rowsHashes.push(hash)
             matrix.seqLookup[seq] ? matrix.seqLookup[seq].push(row) : matrix.seqLookup[seq]=[row] 
             matrix.hashLookup[hash] ? matrix.hashLookup[hash].push(row) : matrix.hashLookup[hash]=[row] 
+          }else{
+            let err=new Error(`The row line:${index+1} has an invalid number of columns`)
+            err.name="InvalidStructure"
+            err.type="QualityControl"
+            err.msg=err.message
+            rej(err)
           }          
         }
       })

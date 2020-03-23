@@ -1,39 +1,39 @@
 // This is the infinityLoader for api calls
 $(document).ready(function(){
-	let loadedRows=0
-	let api=$('.card.gen-info').attr('api')
-	const rowsPerIter=10
-	let iteration=0
-	let fulltable=false
-	let viewPortHeight=window.innerHeight
-	let uploadNumber=0
-	let headerSpan=0
-	let header=null
+  let loadedRows=0
+  let api=$('.card.gen-info').attr('api')
+  const rowsPerIter=10
+  let iteration=0
+  let fulltable=false
+  let viewPortHeight=window.innerHeight
+  let uploadNumber=0
+  let headerSpan=0
+  let header=null
   let body=null
 
   //Gerate a view that allows configurate of these attributes
   let jqTable=$('table.upload-table')
-	let sectionOrder=["row_attributes","raw","cpm","targets"]
-	let hiddenColumns="cpm"
+  let sectionOrder=["row_attributes","raw","cpm","targets"]
+  let hiddenColumns="cpm"
     
   $('.card.upload-table .card-header input#sequence-values-type').change(function(){
-  	let that=$(this)
-  	let option=that.prop('checked')
-  	options=["raw","cpm"]
-  	if(option){
-  		hiddenColumns=options[0]
-  	}else{
-  		hiddenColumns=options[1]
-  	}
-  	hideColumns()
+    let that=$(this)
+    let option=that.prop('checked')
+    options=["raw","cpm"]
+    if(option){
+      hiddenColumns=options[0]
+    }else{
+      hiddenColumns=options[1]
+    }
+    hideColumns()
   })
   $('.card.upload-table .card-header button.search').click(function(){
-  	let sequence=$(this).closest('.form-inline').children('input').val()
-  	body.jqTable.find('tbody tr[datatype|="search-result"]').remove()
-  	body.jqTable.find('tbody tr').hide()
+    let sequence=$(this).closest('.form-inline').children('input').val()
+    body.jqTable.find('tbody tr[datatype|="search-result"]').remove()
+    body.jqTable.find('tbody tr').hide()
     let rows=[]
-  	rows.push(body.rows[sequence])
-  	body.createSpecificRows(rows,search=true)
+    rows.push(body.rows[sequence])
+    body.createSpecificRows(rows,search=true)
   })
   $('.card.upload-table .card-header button.clear').click(function(){
     body.jqTable.find('tbody tr[datatype|="search-result"]').remove()
@@ -41,7 +41,7 @@ $(document).ready(function(){
   })
 
   //Specific 
-	if(api){	
+  if(api){  
     let apiInfo=$('.card.gen-info')
     let call=apiInfo.attr("call")
     let version=apiInfo.attr("version")
@@ -65,68 +65,69 @@ $(document).ready(function(){
       header.generateHeader(sectionOrder)
       header.lastRowTd.attr('colspan',header.columns)
       body.rowsPerIter=rowsPerIter    
-		  loadRows()
-		}).catch(function(err){
-			console.trace(err)
-			alert(err)
-		})
-	}
+      loadRows()
+    }).catch(function(err){
+      console.trace(err)
+      alert(err)
+    })
+  }
 
 
 
 /////////////////////////////////////////////Generic////////////////////
-	function getMatrixObj(url){
-		return new Promise(function(res,rej){
-			$.ajax({
-				url:url,
-				type: 'GET',
-				dataType: 'json',
-				success: function(dataRes,textStatus,jqXHR){	
-					res(dataRes)
-				},error:function(qXHR,textStatus,err){
-					console.log(err)
-					rej(err)
-				}
-			})		
-		})
-	}
+  function getMatrixObj(url){
+    return new Promise(function(res,rej){
+      $.ajax({
+        url:url,
+        type: 'GET',
+        dataType: 'json',
+        success: function(dataRes,textStatus,jqXHR){  
+          res(dataRes)
+        },error:function(qXHR,textStatus,err){
+          console.log(err)
+          rej(err)
+        }
+      })    
+    })
+  }
 
-	function loadRows(){
-		body.createAndInsertRows(iteration)
-		addLoadedRows(body.loadedRows)
-		iteration++
-		if(loadedRows>=uploadNumber){
-			fulltable=true
-			body.jqLastRow.hide()
-		} 
-		hideColumns()
-	}
-	function addLoadedRows(value){
+
+  function loadRows(){
+    body.createAndInsertRows(iteration)
+    addLoadedRows(body.loadedRows)
+    iteration++
+    if(loadedRows>=uploadNumber){
+      fulltable=true
+      body.jqLastRow.hide()
+    } 
+    hideColumns()
+  }
+  function addLoadedRows(value){
     loadedRows=value
-		$('.card.upload-table .badge#ofLoadedRows').text(loadedRows)
-	}
-	function addUploadNumber(value){
-		uploadNumber=value
-		$('.card.upload-table .badge#ofUploadSequences').text(value)
-	}	
+    $('.card.upload-table .badge#ofLoadedRows').text(loadedRows)
+  }
+  function addUploadNumber(value){
+    uploadNumber=value
+    $('.card.upload-table .badge#ofUploadSequences').text(value)
+  } 
 
 
-	window.onscroll = function(){ 
-		if(iteration>=1){
-			var distanceFromTop=body.jsLastRow.getBoundingClientRect().top
-			var relElDistance= ( distanceFromTop - viewPortHeight ) / viewPortHeight 
-			if ( relElDistance <= 0.05 && ! fulltable ) loadRows()	
-		}
-	}
-	$(window).on('resize',function(){
-		viewPortHeight=window.innerHeight
-	})
+  window.onscroll = function(){ 
+    if(iteration>=1){
+      var distanceFromTop=body.jsLastRow.getBoundingClientRect().top
+      var relElDistance= ( distanceFromTop - viewPortHeight ) / viewPortHeight 
+      if ( relElDistance <= 0.05 && ! fulltable ) loadRows()  
+    }
+  }
+  $(window).on('resize',function(){
+    viewPortHeight=window.innerHeight
+  })
 
   function hideColumns(){
-  	$(`table th`).show()
-  	$(`table td`).show()
-  	$(`table th[type|="${hiddenColumns}"]`).hide()
-  	$(`table td[type|="${hiddenColumns}"]`).hide()
+    $(`table th`).show()
+    $(`table td`).show()
+    $(`table th[type|="${hiddenColumns}"]`).hide()
+    $(`table td[type|="${hiddenColumns}"]`).hide()
   }
   class Table{
     constructor(headers,rows,jqTable){
@@ -138,11 +139,11 @@ $(document).ready(function(){
       if( headers instanceof Object){
         let sections=Object.keys(this.headers)
         this.columns=sections.reduce((a,cv)=>{
-        	if( typeof a == "number" ){
-            	return a+headers[cv].length        		
-        	}else{
-        	    return 	headers[a].length +headers[cv].length
-        	}
+          if( typeof a == "number" ){
+              return a+headers[cv].length           
+          }else{
+              return  headers[a].length +headers[cv].length
+          }
         })
 
         this.sections=sections
@@ -166,7 +167,7 @@ $(document).ready(function(){
       return this._columns
     }
     set columns(cols){
-    	this._columns=cols
+      this._columns=cols
     }
     get sections(){
       return this._sections
@@ -240,10 +241,10 @@ $(document).ready(function(){
       return Object.keys(this.rows).length
     }
     get rows(){
-    	return this._rows
+      return this._rows
     }
     set rows(rows){
-    	this._rows=rows
+      this._rows=rows
     }
     get rowNameList(){
       return Object.keys(this.rows)
@@ -290,9 +291,9 @@ $(document).ready(function(){
                 $('#exampleModalLong').modal('show')
               }  
           }else if(dataPoint.value==null){
-              cell.textContent="N.D."	
+              cell.textContent="N.D." 
           }else{
-              cell.textContent=dataPoint.value	
+              cell.textContent=dataPoint.value  
           }
           Object.keys(dataPoint.metadata).forEach(key=>{
             let value=dataPoint.metadata[key] 
@@ -324,9 +325,9 @@ $(document).ready(function(){
           let subCell=document.createElement('td')
           subCell.textContent=chosenListElement[col]
           rowElement.append(subCell)
-  	    })
+        })
       }else{
-      	//TODO estimate space to fill with blank
+        //TODO estimate space to fill with blank
 
       }
     }
