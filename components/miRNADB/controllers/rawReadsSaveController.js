@@ -9,13 +9,14 @@ const MAX_TRANSACTIONS=4
 var totalLines;
 var successes=0
 var errors=0
+var killList=""
 
 module.exports={saveRawReads}
 
 function saveRawReads(dataset,ws){
   let studyId=dataset.studyId
   let rawReadsfilename=dataset.rawReadsfilename
-  let killLines=dataset.killLines
+  killList=dataset.killLines
   let rawReadsFilePath=dataset.rawReadsFilePath
   return new Promise((res,rej)=>{  
     fs.readFile(rawReadsFilePath,'utf8', (err, data) => {
@@ -39,11 +40,81 @@ function saveRawReads(dataset,ws){
   })
 }
 
+function screenLine(line){
+  //
+  // Break this into function 
+  //
+  if(line.length>MINSIZE){
+    if(ofInterest(line)){
+      let killListProperities=getKillListProperties(line)
+      if(killListProperities.type=="duplicate"){
+        if(killListProperities.occurrences){
+          killListProperities.occurrences+=1
+          return killLine()
+        }else{
+          killListProperities.occurrences=1
+          return noAction(line)
+        }
+      }else if(killListProperities.type=="merge"){
+        if(killListProperities.occurrences){
+          killListProperities.occurrences+=1
+          return killLine()
+        }else{
+          killListProperities.occurrences=1
+          return substitute(killListProperities.substitute)
+        }        
+      }else{
+        return noAction(line)
+      }
+    }else{ 
+      return noAction(line)
+    }
+  }else{ 
+    return killLine()
+  }
+  
+
+  function getKillListProperties(line){
+    let sequence=line[0].trim()
+    return killList[sequence]
+  }
+  function ofInterest(line){
+    let sequence=line[0].trim()
+    if (killList[sequence] === undefined){ 
+      return false 
+    }else{
+      return true 
+    }
+  }
+
+  let ExamplekillList={
+    ATAGAGATRAG:{
+      type:"duplicate/merge",               //*mandatory
+      substitute:"",                        //*mandatory
+      occurrences:0
+    }
+  }
+  //Outcomes
+  function killLine(){
+    return {insertLine:false,line:[]}
+  }
+  function substituteLine(line){
+    return {insertLine:true,line}
+  }
+  function noAction(line){
+    return {insertLine:true,line}
+  }
+}
+
 function insertControl(fieldOfPromises,results,lines,rawReadsfilename,study_id,index, date,assay_ids,ws){
   while(fieldOfPromises.length<MAX_TRANSACTIONS && lines.length >0){
     line=lines.pop()
     line=line.split("\t")
-    if(line.length>MINSIZE) fieldOfPromises.push(insertLine(rawReadsfilename,line,study_id,index,date,assay_ids,ws))
+    let screeningResult=screenLine(line)
+    if (screeningResult.insertLine){
+      line=screeningResult.line
+      fieldOfPromises.push(insertLine(rawReadsfilename,line,study_id,index,date,assay_ids,ws))
+    }
     index--
   }
   

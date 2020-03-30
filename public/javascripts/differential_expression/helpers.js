@@ -16,25 +16,25 @@ function getDuplicates(array){
 	  }, {})
 	return Object.keys(uniq).filter((a) => uniq[a] > 1)
 }
-function convertRow2HTML(rows,header,metadata){
-	result=""
+function convertRow2HTML(target,rows,header,metadata){
+	target.html('')
 	rows.forEach(function(row){
-		result+="<tr>"
+		let tr=document.createElement('tr')
 		row.forEach(function(col){
-			el= header? 'th' : 'td'
-			result+=`<${el}>${col}</${el}>`
+			let el = header? document.createElement('th') : document.createElement('td')
+			el.textContent=col
+			tr.append(el)
 		})
-		result+="</tr>"
+		target.append(tr)
 	})
-	return result
 }
 function populateTable(rows,table){
 	let newTableTarget=table.find('tbody')
-	newTableTarget.html(convertRow2HTML(rows))
+	convertRow2HTML(newTableTarget,rows)
 }
 function insertInEl(rows,table,element){
 	let tableTarget=table.find(element)
-	tableTarget.append(convertRow2HTML(rows))
+	convertRow2HTML(tableTarget,rows)
 }
 function cloneTable(tableClass,targetTableClass){
 	let targetTable=$(`table.${targetTableClass}`) //table selector
@@ -44,7 +44,8 @@ function cloneTable(tableClass,targetTableClass){
 	return table
 }
 function addHeader(table,header){
-	table.find('thead').html(convertRow2HTML([header],true))
+	let target=table.find('thead')
+	convertRow2HTML(target,[header],true)
 }
 function makeTableFromNestedArrayMatrix(matrix,customHeaders){ //rename to makeTableFromNestedObjectArray
 	// Generates a table from an array of objects into a table
@@ -102,4 +103,33 @@ function startWebSocket(address,protocol,callBack){
        // websocket is closed.
       console.log("Connection closed...");
   };
+}
+
+function loadingPanel(){
+  	if($('.loading-panel').length>0){
+  		$('.loading-panel').toggle()
+  	}else{
+	  divTransparent=document.createElement('div');
+	  div=document.createElement('div');
+	  badge=document.createElement('span');
+	  spinner=document.createElement('div');
+	  span=document.createElement('span')
+	  body=$('body')
+	  divTransparent.className='loading-panel'
+	  divTransparent.setAttribute('style',"width:100%;height:100%;position:fixed;top:0px;left:0px;background-color:#00000073")
+	  spinner.className="spinner-border text-warning"
+	  badge.className="badge badge-info"
+	  badge.textContent=" Loading! Please wait... "
+	  div.setAttribute('style',"position:fixed;top:200px;left:200px;")
+	  span.className="sr-only"
+	  span.textContent="Loading..."
+
+	  spinner.setAttribute("role","status")
+
+	  body.append(divTransparent)
+	  divTransparent.append(div)
+	  div.append(badge)
+	  badge.prepend(spinner)
+	  spinner.append(span)
+	}
 }

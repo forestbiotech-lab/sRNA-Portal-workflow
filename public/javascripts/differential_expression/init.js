@@ -16,17 +16,17 @@ var paths=pathname.split("/").splice(1)
 
   if(paths[1]=="uploaded-file"){
      scriptName=[
+      'helpers',
       'uploaded-file', //must load first because sets global studyId
       'infinityLoader',
       'savetodb',
-      'helpers',
     ]
   }
 
   if(paths[1]=="assaydata"){
      scriptName=[
-      'infinityLoaderAPI',
       'helpers',
+      'infinityLoaderAPI',
       'assaydata',
       '../scoring/getBestOption'
     ]
