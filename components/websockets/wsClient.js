@@ -25,7 +25,7 @@ class Client{
         let client=this.client
         this.protocol=this.lowerCaseProtocol(protocol)
         this.addProtocolToDB(protocol,routerResult).then(protocol=>{
-            client.connect('ws://localhost:8080/', protocol);
+            client.connect('ws://localhost:80/', protocol);
         })
     }
     lowerCaseProtocol(protocol){

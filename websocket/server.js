@@ -2,7 +2,7 @@ var WebSocketServer = require('websocket').server;
 var http = require('http');
 var getActiveProtocols= require('./models').getActiveProtocols
 
-const PORT=8080
+const PORT=80
 
 class websocketServer{
     constructor(){
