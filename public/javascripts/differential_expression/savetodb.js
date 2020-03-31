@@ -18,7 +18,7 @@ $(document).ready(function(){
       success: function(data,textStatus,jqXHR){
         const HOST=document.location.host
         const PORT=8080
-        startWebSocket(`ws://{HOST}:{PORT}`,`${data}`,processEvt)
+        startWebSocket(`ws://${HOST}:${PORT}`,data,processEvt)
       },error:function(jqXHR,textStatus,err){
         console.log(jqXHR)
         alert("Upload failed!")
