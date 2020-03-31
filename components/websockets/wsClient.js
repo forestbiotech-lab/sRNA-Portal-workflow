@@ -1,6 +1,8 @@
 var WebSocketClient = require('websocket').client;
 var models=require('./../forms/models')
 
+const HOST="localhost"
+const PORT=8080
 class Client{
     constructor(){
         let client = new WebSocketClient();
@@ -25,7 +27,7 @@ class Client{
         let client=this.client
         this.protocol=this.lowerCaseProtocol(protocol)
         this.addProtocolToDB(protocol,routerResult).then(protocol=>{
-            client.connect('ws://localhost:80/', protocol);
+            client.connect(`ws://${HOST}:${PORT}/`, protocol);
         })
     }
     lowerCaseProtocol(protocol){
