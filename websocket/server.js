@@ -12,7 +12,7 @@ class websocketServer{
     constructor(){
         let that=this
         if(process.env.mode=="PRODUCTION"){
-            options={
+            const options={
                 key:fs.readFileSync(`/etc/letsencrypt/live/${DOMAIN}/privkey.pem`),
                 cert:fs.readFileSync(`/etc/letsencrypt/live/${DOMAIN}/cert.pem`)
             }
