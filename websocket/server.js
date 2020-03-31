@@ -1,13 +1,19 @@
 var WebSocketServer = require('websocket').server;
-var http = require('http');
+var https = require('https');
 var getActiveProtocols= require('./models').getActiveProtocols
+var fs=require('fs')
 
 const PORT=8080
+
 
 class websocketServer{
     constructor(){
         let that=this
-        this.server = http.createServer(function(request, response) {
+        const options={
+            key:fs.readFileSync('.keys/wss-key.pem'),
+            cert:fs.readFileSync('.keys/wss-cert.pem')
+        }
+        this.server = https.createServer(options, function(request, response) {
             console.log((new Date()) + ' Received request for ' + request.url);
             response.writeHead(404);
             response.end();

@@ -16,9 +16,9 @@ $(document).ready(function(){
       data: data,
       dataType: 'json',
       success: function(data,textStatus,jqXHR){
-        const HOST=document.location.host
+        const HOSTNAME=document.location.hostname
         const PORT=8080
-        startWebSocket(`ws://${HOST}:${PORT}`,data,processEvt)
+        startWebSocket(`wss://${HOSTNAME}:${PORT}`,data,processEvt)
       },error:function(jqXHR,textStatus,err){
         console.log(jqXHR)
         alert("Upload failed!")

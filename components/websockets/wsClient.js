@@ -28,7 +28,7 @@ class Client{
         let client=this.client
         this.protocol=this.lowerCaseProtocol(protocol)
         this.addProtocolToDB(protocol,routerResult).then(protocol=>{
-            client.connect(`ws://${HOST}:${PORT}/`, protocol);
+            client.connect(`wss://${HOST}:${PORT}/`, protocol);
         })
     }
     lowerCaseProtocol(protocol){

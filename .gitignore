@@ -2,6 +2,7 @@
 .env
 .config_res.js
 .config_db.js
+.keys
 
 Utilities/__pycache__
 Utilities/scripts/__pycache__
