@@ -21,6 +21,8 @@ $(document).ready(function(){
       loadConflicts(uploadMatrix)
       addUploadNumber(Object.keys(data.hashLookup).length)
       loadRows()
+    },rej=>{
+      console.error(`Promise rejected! - ${rej}`)
     }).catch(function(err){
       alert(err)
     })

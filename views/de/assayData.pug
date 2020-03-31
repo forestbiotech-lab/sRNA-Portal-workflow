@@ -4,6 +4,17 @@ block content
   script(id="database",src="/javascripts/de.js",defer)
   .card-block
     .container-fluid
+      .row.navagation-buttons
+        .col-lg-12
+          .card
+            .card-body
+              ul.nav.justify-content-center
+                li.nav-item
+                  a.btn.btn-light.nav-link(href='/de') Main
+                li.nav-item
+                  a.btn.btn-light.nav-link(href=`/de/assays/${studyId}`) Assays
+                li.nav-item
+                  a.btn.btn-light.nav-link(href='/de/targets/new') Add Targets      
       .row  
         .col-lg-12
           .card.gen-info(studyId=studyId,api="true",call="assaydata",version="v1")

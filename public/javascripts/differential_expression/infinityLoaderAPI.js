@@ -311,14 +311,16 @@ $(document).ready(function(){
     appendListEl(chosenListElement,rowElement,listHeader,section,that){
       if(listHeader.length==1){
         listHeader.text(section)
-        let chosenListElementKeys=Object.keys(chosenListElement)
-        chosenListElementKeys.reverse()
-        chosenListElementKeys.forEach(function(col){
-          let header=document.createElement('th')
-          header.textContent=col
-          header.setAttribute('section', section)
-          listHeader.after(header)
-        })
+        if(chosenListElement){
+          let chosenListElementKeys=Object.keys(chosenListElement)
+          chosenListElementKeys.reverse()
+          chosenListElementKeys.forEach(function(col){
+            let header=document.createElement('th')
+            header.textContent=col
+            header.setAttribute('section', section)
+            listHeader.after(header)
+          })          
+        }
       }
       if(chosenListElement instanceof Object){
         Object.keys(chosenListElement).forEach(function(col){

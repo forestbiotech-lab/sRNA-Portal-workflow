@@ -2,10 +2,10 @@ $(document).ready(function(){
   let rawReadsfilename=$('table tbody tr#lastRow').attr('filename')
   let iterStep=50
 
-  $('.card.upload-table .card-header button.upload-matrix').click(function(){
+  $('.card.upload-table .card-body button.upload-matrix').click(function(){
     sequence="ATAGTTTTTT"
     occurence=0
-    saveRows(studyId,rawReadsfilename,killLines=[{sequence:sequence,keep:occurence}])
+    saveRows(studyId,rawReadsfilename,killList)
   })
 
   function saveRows(studyId,rawReadsfilename,killLines){
@@ -31,10 +31,13 @@ $(document).ready(function(){
     percentComplete = parseInt(receivedMsg.percentageComplete);
       
     // update the Bootstrap progress bar with the new percentage
-    $('.progress-bar').text(percentComplete + '%');
-    $('.progress-bar').width(percentComplete + '%');
-    $('.upload-table .badge#uploadErrors').text(receivedMsg.errors)
-    $('.upload-table .badge#uploadSuccesses').text(receivedMsg.successes)
+    $('.card.upload-table .card-body .progress-bar').text(percentComplete + '%');
+    $('.card.upload-table .card-body .progress-bar').width(percentComplete + '%');
+    $('.card.upload-table .card-body .badge#uploadErrors').text(receivedMsg.errors)
+    $('.card.upload-table .card-body .badge#uploadSuccesses').text(receivedMsg.successes)
+    if(percentComplete==100){
+      $('.card.upload-table .card-body .view-assays').removeClass('d-none')
+    }
   }
 
 /*  var uploadMatrix=varListener.a

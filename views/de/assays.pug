@@ -4,7 +4,7 @@ block content
   script(id="database",src="/javascripts/de.js",defer)
   .card-block
     .container-fluid
-      .row  
+      .row.d-none  
         .col-lg-12
           .card
             .card-header.studyInfo(studyId=studyId)
@@ -27,6 +27,27 @@ block content
                 .card.card-body
                   .select-Study
                   .form-Study
+    .row.navagation-buttons
+      .col-lg-12
+        .card
+          .card-body
+            ul.nav.justify-content-center
+              li.nav-item
+                a.btn.btn-light.nav-link(href='/de') Main
+              li.nav-item
+                a.btn.btn-light.nav-link(href=`/de/assaydata/${studyId}`) AssayData Matrix
+              li.nav-item
+                a.btn.btn-light.nav-link(href='/de/targets/new') Add Targets
+                    
+    .row.study-design
+      .col-lg-12
+        .card.study-design
+          .card-header
+            h5.card-title Study Design
+          .card-body 
+            button.btn.btn-secondary New Factor
+            button.btn.btn-secondary Generate Contrasts
+
     .row
       .col-lg-12    
         .card.assay-list

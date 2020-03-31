@@ -8,9 +8,6 @@ var paths=pathname.split("/").splice(1)
     'helpers',
     'ajax',  //load matrix. route:/de and one function for assay 
     'parser',
-    'savetodb',
-    'infinityLoader',
-    'infinityLoaderAPI',
     'tableFunctions'
   ]
 

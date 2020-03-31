@@ -61,7 +61,7 @@ function screenLine(line){
           return killLine()
         }else{
           killListProperities.occurrences=1
-          return substitute(killListProperities.substitute)
+          return substituteLine(killListProperities.substitute)
         }        
       }else{
         return noAction(line)
@@ -107,31 +107,35 @@ function screenLine(line){
 }
 
 function insertControl(fieldOfPromises,results,lines,rawReadsfilename,study_id,index, date,assay_ids,ws){
-  while(fieldOfPromises.length<MAX_TRANSACTIONS && lines.length >0){
-    line=lines.pop()
-    line=line.split("\t")
-    let screeningResult=screenLine(line)
-    if (screeningResult.insertLine){
-      line=screeningResult.line
-      fieldOfPromises.push(insertLine(rawReadsfilename,line,study_id,index,date,assay_ids,ws))
+  try{
+    while(fieldOfPromises.length<MAX_TRANSACTIONS && lines.length >0){
+      line=lines.pop()
+      line=line.split("\t")
+      let screeningResult=screenLine(line)
+      if (screeningResult.insertLine){
+        line=screeningResult.line
+        fieldOfPromises.push(insertLine(rawReadsfilename,line,study_id,index,date,assay_ids,ws))
+      }
+      index--
     }
-    index--
-  }
-  
-  if(fieldOfPromises.length>0){
-    return Promise.all(fieldOfPromises).then(transactions=>{
-      results.push(transactions)
-      fieldOfPromises=[]
-      let percentageComplete=(1-(index/totalLines))*100
-      updateTransactionsStatus(transactions)
-      let msg=JSON.stringify({percentageComplete,successes,errors})
+
+    if(fieldOfPromises.length>0){
+      return Promise.all(fieldOfPromises).then(transactions=>{
+        results.push(transactions)
+        fieldOfPromises=[]
+        let percentageComplete=(1-(index/totalLines))*100
+        updateTransactionsStatus(transactions)
+        let msg=JSON.stringify({percentageComplete,successes,errors})
+        ws.sendMsg(msg)
+        return insertControl(fieldOfPromises, results, lines, rawReadsfilename, study_id, index, date, assay_ids,ws)
+      })
+    }else{
+      let msg=JSON.stringify({percentageComplete:100,successes,errors})
       ws.sendMsg(msg)
-      return insertControl(fieldOfPromises, results, lines, rawReadsfilename, study_id, index, date, assay_ids,ws)
-    })
-  }else{
-    let msg=JSON.stringify({percentageComplete:100,successes,errors})
-    ws.sendMsg(msg)
-    return results.flat()
+      return results.flat()
+    }
+  }catch(err){
+    return new Error(`Unable to add lines beyond ${index}!`)
   }
 }
 

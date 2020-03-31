@@ -17,5 +17,5 @@ function getLowestScore(key,list){
       }
     }
   })
-  return list[score.index]
+  return list[score.index] // or maby [] if not found
 }

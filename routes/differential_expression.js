@@ -103,10 +103,10 @@ router.post('/uploadMatrix',function(req,res){
     hash   
   }
   ws.connect(protocol,res)
-  rawReadsSaveController.saveRawReads(dataset,ws).then(function(data){
-	 ws.close()
+  rawReadsSaveController.saveRawReads(dataset,ws).then(data=>{
+    ws.close()
   },rej=>{
-    var donothing;
+    ws.close()
   }).catch(function(err){
     ws.close()
   })

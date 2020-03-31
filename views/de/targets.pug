@@ -4,7 +4,19 @@ block content
   script(id="database",src="/javascripts/de.js",defer)
   .card-block
     .container-fluid
-      .row  
+      .row.navagation-buttons
+        .col-lg-12
+          .card
+            .card-body
+              ul.nav.justify-content-center
+                li.nav-item
+                  a.btn.btn-light.nav-link(href='/de') Main
+                li.nav-item
+                  a.btn.btn-light.nav-link.disabled(href=`/de/assaydata/${studyId}`) AssayData Matrix
+                li.nav-item
+                  a.btn.btn-light.nav-link.active(href='/de/targets/new') Add Targets
+
+      .row.d-none  
         .col-lg-12
           .card
             .card-body
