@@ -1,23 +1,28 @@
 var WebSocketServer = require('websocket').server;
+var http = require('http');
 var https = require('https');
 var getActiveProtocols= require('./models').getActiveProtocols
 var fs=require('fs')
 
 const PORT=8080
+const DOMAIN="srna-portal.biodata.pt"
 
 
 class websocketServer{
     constructor(){
         let that=this
-        const options={
-            key:fs.readFileSync('.keys/wss-key.pem'),
-            cert:fs.readFileSync('.keys/wss-cert.pem')
+        if(process.env.mode=="PRODUCTION"){
+            options={
+                key:fs.readFileSync(`/etc/letsencrypt/live/${DOMAIN}/privkey.pem`),
+                cert:fs.readFileSync(`/etc/letsencrypt/live/${DOMAIN}/cert.pem`)
+            }
         }
-        this.server = https.createServer(options, function(request, response) {
+        function cb(request, response) {
             console.log((new Date()) + ' Received request for ' + request.url);
             response.writeHead(404);
             response.end();
-        });
+        }
+        this.server = process.env.mode=="PRODUCTION" ? https.createServer(options,cb) : http.createServer(cb);
 
         this.server.listen(PORT, function() {
             console.log((new Date()) + ' Server is listening on port '+PORT);

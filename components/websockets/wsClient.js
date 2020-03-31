@@ -1,7 +1,8 @@
 var WebSocketClient = require('websocket').client;
 var models=require('./../forms/models')
 
-const HOST="localhost"
+const DOMAIN="srna-portal.biodata.pt"
+const HOST= process.env.mode=="PRODUCTION" ? DOMAIN : "localhost";
 const PORT=8080
 
 class Client{
@@ -28,7 +29,8 @@ class Client{
         let client=this.client
         this.protocol=this.lowerCaseProtocol(protocol)
         this.addProtocolToDB(protocol,routerResult).then(protocol=>{
-            client.connect(`wss://${HOST}:${PORT}/`, protocol);
+            let connectionProtocol= process.env.mode=="PRODUCTION" ? "wss" : "ws"
+            client.connect(`${connectionProtocol}://${HOST}:${PORT}/`, protocol);
         })
     }
     lowerCaseProtocol(protocol){

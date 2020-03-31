@@ -17,8 +17,9 @@ $(document).ready(function(){
       dataType: 'json',
       success: function(data,textStatus,jqXHR){
         const HOSTNAME=document.location.hostname
+        const CONNECTIONPROTOCOL = HOSTNAME=="localhost" ? "ws" : "wss"
         const PORT=8080
-        startWebSocket(`wss://${HOSTNAME}:${PORT}`,data,processEvt)
+        startWebSocket(`${CONNECTIONPROTOCOL}://${HOSTNAME}:${PORT}`,data,processEvt)
       },error:function(jqXHR,textStatus,err){
         console.log(jqXHR)
         alert("Upload failed!")
