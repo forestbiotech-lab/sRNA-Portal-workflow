@@ -45,6 +45,20 @@ body .menu a.menuItem1.hover{
     color: white;
     background-color: #FE9050;
 }
+body .menu button.menuItem1{
+  padding: 5px;
+  font-weight: bold;
+  /* color: #8c8787; */
+  float: right;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+body .menu button.menuItem1.hover{
+    padding: 6px;
+    font-weight: bold;
+    color: white;
+    background-color: #FE9050;
+}
 .menu .miRPursuit-bar{
   color:white;
   position:absolute;
@@ -108,5 +122,6 @@ table.annotationTable tr.miappe{
 table .expand-row{
   margin-right: 10px;
 }
-
-
+.modal#login-modal{
+  color:black;
+}

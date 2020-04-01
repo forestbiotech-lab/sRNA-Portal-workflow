@@ -16,13 +16,34 @@ html
         img.tiny-logo-header(src="/images/elixir-logo-transparent-ultrasmall.png")
 
     .menu
-      a.menuItem1.login-btn.btn.btn-dark(href="/login",role="button") login
+      button.menuItem1.login-btn.btn.btn-dark(data-toggle="modal" data-target="#login-modal") login
       a.menuItem1.login-btn.btn.btn-dark.d-none(href="/logout",role="button") logout
     .container-fluid(style="margin:0px;padding:0px;")
       .row.content-md-left(style="margin:0px")
         .mainPanel(style="width:100%")
           .content      
             block content
+  .modal#login-modal(tabindex='-1', role='dialog')
+    .modal-dialog(role='document')
+      .modal-content
+        .modal-header
+          h5.modal-title Login
+          button.close(type='button', data-dismiss='modal', aria-label='Close')
+            span(aria-hidden='true') ×
+        .modal-body
+          form(action="/login",method="post")
+            .form-group
+              label(for='login-email') Email address
+              input#login-email.form-control(name="email",type='email', aria-describedby='emailHelp')
+              small#emailHelp.form-text.text-muted We'll never share your email with anyone else.
+            .form-group
+              label(for='login-password') Password (Not implemented!)
+              input#login-password.form-control(name="password",type='password')
+            .form-group.form-check
+              input#exampleCheck1.form-check-input(type='checkbox')
+              label.form-check-label(for='exampleCheck1',title="I do absolutly nothing!") Check me out (I thought you might like to play with me.)
+            input.btn.btn-primary(role="button",type='submit',value="Login")
+            button.btn.btn-secondary(type='button', data-dismiss='modal') Close
     .footer
       include includes/footer.pug
     include includes/thirdpartyScripts.pug  

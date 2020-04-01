@@ -24,4 +24,26 @@ img.expandPanel(src="/images/open.png")
   p 
   p 
   a(style="color:white;",href="https://github.com/forestbiotech-lab/sRNA-Portal-workflow/blob/master/sRNAportal.pdf") Learn about sRNA Plant Portal
-  p 
+  p
+  .modal#login-modal(tabindex='-1', role='dialog')
+    .modal-dialog(role='document')
+      .modal-content
+        .modal-header
+          h5.modal-title Login
+          button.close(type='button', data-dismiss='modal', aria-label='Close')
+            span(aria-hidden='true') ×
+        .modal-body
+          form(action="/login",method="post")
+            .form-group
+              label(for='login-email') Email address
+              input#login-email.form-control(name="email",type='email', aria-describedby='emailHelp')
+              small#emailHelp.form-text.text-muted We'll never share your email with anyone else.
+            .form-group
+              label(for='login-password') Password (Not implemented!)
+              input#login-password.form-control(name="password",type='password')
+            .form-group.form-check
+              input#exampleCheck1.form-check-input(type='checkbox')
+              label.form-check-label(for='exampleCheck1') Check me out (I thought you might like to play with me. I feel loonly)
+            input.btn.btn-primary(role="button",type='submit',value="Login")
+            button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+          

@@ -35,7 +35,9 @@ function fullAccess(req,res){
 }
 
 
-router.get('/login',function(req,res){
+router.post('/login',function(req,res){
+  let email=req.body.email
+  let password=req.body.password
   var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
   let person_id=1
   cookies.set( "person_id", person_id ).set( "person_id", person_id, { signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
