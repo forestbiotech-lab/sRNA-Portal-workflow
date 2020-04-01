@@ -2,10 +2,9 @@ var WebSocketClient = require('websocket').client;
 var models=require('./../forms/models')
 var fs = require('fs')
 
-const DOMAIN='madreputa.no-ip.org'//"srna-portal.biodata.pt"
+const PORT= require('./../.config_res').websocket.port
+const DOMAIN = require('./../.config_res').host.domain
 const HOST= process.env.mode=="PRODUCTION" ? DOMAIN : "localhost";
-const PORT=8081
-
 
 class Client{
     constructor(){
