@@ -14,3 +14,43 @@
     #Renewal of certs
     certbot renew
 ```
+
+## Add domain and port to config file
+``` javascript 
+
+module.exports = {
+  sql: {
+    host:     '127.0.0.1', 
+    database: 'myDB',
+    username: 'user',
+    password: 'secret',
+    operatorsAliases: false,
+    dialect: 'mysql', // PostgreSQL, MySQL, MariaDB, SQLite and MSSQL See more: http://docs.sequelizejs.com/en/latest/
+    logging: console.log,   //True starts to make it cry.
+    timezone: '+00:00',
+  },
+  seedDB:false,
+  seedMongoDB:false,
+  seedDBForce:true,
+  db:'sql', // mongo,sql if you want to use any SQL change dialect above in sql config
+  cookie:{
+    seed:"randomSeedToWriteHere",
+    keylist:[
+      "kçlklçk",
+      "kjlkjlkjlkj",
+      "jlkjlkjkjlk"
+    ]
+  },
+  host:{
+    domain:""
+  },
+  websocket:{
+    port:"8080"
+  }
+
+}
+
+
+
+```
+
