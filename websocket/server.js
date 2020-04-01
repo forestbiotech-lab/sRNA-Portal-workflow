@@ -1,28 +1,25 @@
 var WebSocketServer = require('websocket').server;
 var http = require('http');
-var https = require('https');
+var rootCas=require('ssl-root-cas/latest').create();
+var https = require('https')
+https.globalAgent.options.ca=rootCas;
 var getActiveProtocols= require('./models').getActiveProtocols
 var fs=require('fs')
 
-const PORT=8080
-const DOMAIN="srna-portal.biodata.pt"
-
+const PORT= require('./../.config_res').websocket.port
+const DOMAIN = require('./../.config_res').host.domain
 
 class websocketServer{
     constructor(){
         let that=this
+        this.options={}
         if(process.env.mode=="PRODUCTION"){
-            const options={
-                key:fs.readFileSync(`/etc/letsencrypt/live/${DOMAIN}/privkey.pem`),
-                cert:fs.readFileSync(`/etc/letsencrypt/live/${DOMAIN}/cert.pem`)
+            this.options={
+                key:fs.readFileSync(`/etc/letsencrypt/live/${DOMAIN}/privkey.pem`,'ascii'),
+                cert:fs.readFileSync(`/etc/letsencrypt/live/${DOMAIN}/fullchain.pem`,'ascii')
             }
         }
-        function cb(request, response) {
-            console.log((new Date()) + ' Received request for ' + request.url);
-            response.writeHead(404);
-            response.end();
-        }
-        this.server = process.env.mode=="PRODUCTION" ? https.createServer(options,cb) : http.createServer(cb);
+        this.server = process.env.mode=="PRODUCTION" ? https.createServer(this.options,this.cb) : http.createServer(this.cb);
 
         this.server.listen(PORT, function() {
             console.log((new Date()) + ' Server is listening on port '+PORT);
@@ -43,6 +40,12 @@ class websocketServer{
         });
 
     }
+    cb(request, response) {
+        console.log((new Date()) + ' Received request for ' + request.url);
+        response.writeHead(404);
+        response.end();
+    }
+
     originIsAllowed(origin) {
         // put logic here to detect whether the specified origin is allowed.
         return true;

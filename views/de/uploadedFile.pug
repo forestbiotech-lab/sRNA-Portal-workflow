@@ -6,14 +6,14 @@ block content
     .container-fluid
       .row
         .col-lg-12
-          .card.gen-info
+          .card.gen-info.d-none   ////////////////////////////7
             .card-header.study
               h4.card-title 
                 span.badge.badge-secondary(title="Study id") ID:
                 span.badge.badge-secondary#studyId(title="Study id") !{studyId} 
                 span.badge.badge-success#studyTitle(title="Study Title") !{studyTitle} 
               h5.card-title File Screening
-              .card-body.quality-screening
+              .card-body.quality-screening.d-none ///////////////
                 p This process identifies abnormalities in the uploaded file and previews the first lines of your file.
                   ul.InvalidStructure 
                     span.glyphicon.glyphicon-remove(style="color:red;")
@@ -31,15 +31,15 @@ block content
                     .alert.err-msg.alert-danger.d-none
                 a.go-back.btn.btn-danger.btn-block.d-none(role="button",href="/de") Go back to previous page
           .card.conflicts.d-none
-            .card-header.conflicts
+            .card-header.conflicts.d-none ////////////////////////////
               h4.card-title Conflicts&nbsp
                 span.badge.badge-secondary#ofConflicts 0
-            .card-body.conflicts-general-warning      
+            .card-body.conflicts-general-warning.d-none /////////////////////   
               .alert.alert-warning 
                 .badge.badge-secondary
                   span.glyphicon.glyphicon-warning-sign(style="color:#fff3cd;")
                 | &nbsp; Please resolve the following conflicts before saving data
-            .card-header.duplicate-rows
+            .card-header.duplicate-rows.d-none /////////////////////
               h3.card-title Duplicate Rows&nbsp;
                 span.badge.badge-secondary#ofDuplicateRows 0
               button.btn.btn-primary.remove-duplicate-rows
@@ -48,18 +48,18 @@ block content
               a.btn.btn-warning.go-back(href="/de")
                 span.glyphicon.glyphicon-backward
                 | &nbsp; resubmit file
-            .card-body.duplicate-rows(style="overflow-x:scroll;")  
+            .card-body.duplicate-rows(style="overflow-x:scroll;").d-none ///////////////////  
               table.table.table-hover.duplicate-rows
                 thead
                 tbody
-            .card-header.duplicate-sequences
+            .card-header.duplicate-sequences.d-none /////////////////////////////
               h3.card-title Duplicate Sequences&nbsp;
                 span.badge.badge-secondary#ofDuplicateSequences 0
-            .card-body.duplicate-sequences(style="overflow-x:scroll;")                  
+            .card-body.duplicate-sequences(style="overflow-x:scroll;").d-none /////////                  
               table.table.table-hover.duplicate-sequences
                 thead
                 tbody
-          .card.upload-table.d-none
+          .card.upload-table
             .card-header
               h4.card-title(title="This is the number of unique rows. Will decrease if merges occur due to duplicate sequences") 
                 | Save Raw Expression Data &nbsp

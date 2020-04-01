@@ -40,7 +40,7 @@ e.formSelect = function(attributes) {
     })
 }
 e.getTableValueById = function(attributes) {
-    return db[attributes.tablename].findById(attributes.where.id).then(function(res) {
+    return db[attributes.tablename].findByPk(attributes.where.id).then(function(res) {
         return res
     }).catch(function(err) {
         console.log(`getTableValueById for table [${attributes.tablename}] - Err:${err}`)

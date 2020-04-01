@@ -1,14 +1,28 @@
 var WebSocketClient = require('websocket').client;
 var models=require('./../forms/models')
+var fs = require('fs')
 
-const DOMAIN="srna-portal.biodata.pt"
+const DOMAIN='madreputa.no-ip.org'//"srna-portal.biodata.pt"
 const HOST= process.env.mode=="PRODUCTION" ? DOMAIN : "localhost";
-const PORT=8080
+const PORT=8081
+
 
 class Client{
     constructor(){
         let client = new WebSocketClient();
+ 
+        this.extraRequestOptions={}
+        this.origin={}
+        this.options={}
         let _this=this
+        
+        if(process.env.mode=="PRODUCTION"){
+          this.extraRequestOptions={
+            key:fs.readFileSync(`/etc/letsencrypt/live/${DOMAIN}/privkey.pem`,'ascii'),
+            cert:fs.readFileSync(`/etc/letsencrypt/live/${DOMAIN}/cert.pem`,'ascii')
+          }
+        }
+        
         client.on('connectFailed', function(error) {
             console.log('Connect Error: ' + error.toString());
         });
@@ -27,10 +41,12 @@ class Client{
     }
     connect(protocol,routerResult){
         let client=this.client
-        this.protocol=this.lowerCaseProtocol(protocol)
+        let self=this
+        this.protocol=this.lowerCaseProtocol(protocol) 
         this.addProtocolToDB(protocol,routerResult).then(protocol=>{
             let connectionProtocol= process.env.mode=="PRODUCTION" ? "wss" : "ws"
-            client.connect(`${connectionProtocol}://${HOST}:${PORT}/`, protocol);
+            client.connect(`${connectionProtocol}://${HOST}:${PORT}/`,protocol,self.options,self.origin,self.extraRequestOptions);
+            
         })
     }
     lowerCaseProtocol(protocol){
