@@ -129,7 +129,12 @@ $(document).ready(function(){
           })
         }) 
         //TODO show table with sequences
+      }else{
+        setConfictSolved("DuplicateSequences")
       }
+    }else{
+      setConfictSolved("DuplicateRows")
+      setConfictSolved("DuplicateSequences")
     }
     loadingPanel()
   }
