@@ -2,8 +2,8 @@ var WebSocketClient = require('websocket').client;
 var models=require('./../forms/models')
 var fs = require('fs')
 
-const PORT= require('./../.config_res').websocket.port
-const DOMAIN = require('./../.config_res').host.domain
+const PORT= require('./../../.config_res').websocket.port
+const DOMAIN = require('./../../.config_res').host.domain
 const HOST= process.env.mode=="PRODUCTION" ? DOMAIN : "localhost";
 
 class Client{
