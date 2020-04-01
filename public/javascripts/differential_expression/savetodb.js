@@ -18,7 +18,7 @@ $(document).ready(function(){
       success: function(data,textStatus,jqXHR){
         const HOSTNAME=document.location.hostname
         const CONNECTIONPROTOCOL = HOSTNAME=="localhost" ? "ws" : "wss"
-        const PORT=8081
+        const PORT=8080
         startWebSocket(`${CONNECTIONPROTOCOL}://${HOSTNAME}:${PORT}`,data,processEvt)
       },error:function(jqXHR,textStatus,err){
         console.log(jqXHR)
