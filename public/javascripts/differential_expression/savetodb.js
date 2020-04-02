@@ -5,6 +5,7 @@ $(document).ready(function(){
   $('.card.upload-table .card-body button.upload-matrix').click(function(){
     sequence="ATAGTTTTTT"
     occurence=0
+    killList=killList || {}
     saveRows(studyId,rawReadsfilename,killList)
   })
 

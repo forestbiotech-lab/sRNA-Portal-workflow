@@ -9,14 +9,14 @@ const MAX_TRANSACTIONS=4
 var totalLines;
 var successes=0
 var errors=0
-var killList=""
+var killList={}
 
 module.exports={saveRawReads}
 
 function saveRawReads(dataset,ws){
   let studyId=dataset.studyId
   let rawReadsfilename=dataset.rawReadsfilename
-  killList=dataset.killLines
+  killList=dataset.killLines || {}
   let rawReadsFilePath=dataset.rawReadsFilePath
   return new Promise((res,rej)=>{  
     fs.readFile(rawReadsFilePath,'utf8', (err, data) => {

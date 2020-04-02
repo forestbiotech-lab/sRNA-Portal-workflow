@@ -19,7 +19,12 @@ var paths=pathname.split("/").splice(1)
       'savetodb',
     ]
   }
-
+  if(paths[1]=="assays"){
+     scriptName=[
+      'helpers',
+      'assay',
+    ]
+  }
   if(paths[1]=="assaydata"){
      scriptName=[
       'helpers',
