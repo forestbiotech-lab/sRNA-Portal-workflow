@@ -5,7 +5,7 @@
   'use strict';
 
   module.exports = function(sequelize, DataTypes) {
-    const Modality = sequelize.define('Modality', {
+    const Assay_Modality = sequelize.define('Assay_Modality', {
       id: { 
         type: DataTypes.INTEGER(11),
         autoIncrement: true,
@@ -13,26 +13,26 @@
         allowNull: false,
         unique: true,
       },
-    name: DataTypes.STRING(254),
-    factor_id: DataTypes.INTEGER(11),
+    assay_id: DataTypes.INTEGER(11),
+    modality_id: DataTypes.INTEGER(11),
   }, {
-      tableName: 'Modality',
+      tableName: 'Assay_Modality',
       timestamps: false,
       underscored: false,
 
      classMethods: {
         associate: function associate(models) {    
-          Modality.belongsTo(models.Factor, {
-            foreignKey: 'factor_id',              //on Modality
+          Assay_Modality.belongsTo(models.Assay, {
+            foreignKey: 'assay_id',              //on Assay_Modality
             targetKey: 'id',  //foreign key  
           });
-          Modality.belongsTo(models.Assay_Modality, {
-            foreignKey: 'id',              //on Modality
-            targetKey: 'modality_id',  //foreign key  
-          }); 
+          Assay_Modality.belongsTo(models.Modality, {
+            foreignKey: 'modlity_id',              //on Assay_Modality
+            targetKey: 'id',  //foreign key  
+          });
         }
       },
     });
 
-    return Modality;
+    return Assay_Modality;
   };

@@ -18,10 +18,9 @@
     logFC: DataTypes.FLOAT,
     pValue: DataTypes.FLOAT,
     fdr: DataTypes.FLOAT,
-    study: DataTypes.INTEGER(11),
     modality1: DataTypes.INTEGER(11),
     modality2: DataTypes.INTEGER(11),
-    sequence: DataTypes.INTEGER(11),
+    annotation: DataTypes.INTEGER(11),
   }, {
       tableName: 'Differential_expression',
       timestamps: false,
@@ -41,8 +40,8 @@
             foreignKey: 'modality2',              //on Differential_expression
             targetKey: 'id',  //foreign key  
           });
-          Differential_expression.belongsTo(models.Mature_miRNA_sequence, {
-            foreignKey: 'sequence',              //on Differential_expression
+          Differential_expression.belongsTo(models.Mature_miRNA, {
+            foreignKey: 'annotation',              //on Differential_expression
             targetKey: 'id',  //foreign key  
           }); 
         }

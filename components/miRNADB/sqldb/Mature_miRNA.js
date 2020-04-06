@@ -58,6 +58,10 @@
             foreignKey: 'id',              //on Mature_miRNA
             targetKey: 'mature_miRNA_id',  //foreign key  
           }); 
+          Mature_miRNA.belongsTo(models.Differential_expression, {
+            foreignKey: 'id',              //on Mature_miRNA
+            targetKey: 'annotation',  //foreign key  
+          }); 
         }
       },
     });

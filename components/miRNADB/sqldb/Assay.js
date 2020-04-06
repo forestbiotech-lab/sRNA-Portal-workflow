@@ -33,6 +33,10 @@
           Assay.belongsTo(models.Sample, {
             foreignKey: 'sample',              //on Assay
             targetKey: 'id',  //foreign key  
+          });
+          Assay.belongsTo(models.Assay_Modality, {
+            foreignKey: 'id',              //on Assay
+            targetKey: 'assay_id',  //foreign key  
           }); 
         }
       },

@@ -14,7 +14,6 @@
         unique: true,
       },
     name: DataTypes.STRING(254),
-    assay_id: DataTypes.INTEGER(11),
   }, {
       tableName: 'Factor',
       timestamps: false,
@@ -22,9 +21,9 @@
 
      classMethods: {
         associate: function associate(models) {    
-          Factor.belongsTo(models.Assay, {
-            foreignKey: 'assay_id',              //on Factor
-            targetKey: 'id',  //foreign key  
+          Factor.belongsTo(models.Modality, {
+            foreignKey: 'id',              //on Factor
+            targetKey: 'factor_id',  //foreign key  
           }); 
         }
       },
