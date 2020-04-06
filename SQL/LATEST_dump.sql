@@ -1,13 +1,13 @@
--- MySQL dump 10.13  Distrib 8.0.16, for osx10.14 (x86_64)
+-- MariaDB dump 10.17  Distrib 10.4.11-MariaDB, for Linux (x86_64)
 --
 -- Host: localhost    Database: sRNAPlantPortal
 -- ------------------------------------------------------
--- Server version	8.0.16
+-- Server version	10.4.11-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
- SET NAMES utf8mb4 ;
+/*!40101 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -21,11 +21,11 @@
 
 DROP TABLE IF EXISTS `Annotation`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Annotation` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `mature_miRNA_id` int(11) NOT NULL,
-  `date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `date` datetime DEFAULT current_timestamp(),
   `version` int(11) NOT NULL,
   `assay_data_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
@@ -33,7 +33,7 @@ CREATE TABLE `Annotation` (
   KEY `Annotation_fk1` (`assay_data_id`),
   CONSTRAINT `Annotation_fk0` FOREIGN KEY (`mature_miRNA_id`) REFERENCES `Mature_miRNA` (`id`),
   CONSTRAINT `Annotation_fk1` FOREIGN KEY (`assay_data_id`) REFERENCES `Assay_data` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -51,21 +51,21 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Assay`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Assay` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(255) NOT NULL,
   `study` int(11) NOT NULL,
   `sample` int(11) DEFAULT NULL,
-  `operation` text COLLATE utf8mb4_general_ci,
-  `type` varchar(254) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `operation` text DEFAULT NULL,
+  `type` varchar(254) DEFAULT NULL,
   `output` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `Assay_fk0` (`study`),
   KEY `Assay_fk1` (`sample`),
   CONSTRAINT `Assay_fk0` FOREIGN KEY (`study`) REFERENCES `Study` (`id`),
   CONSTRAINT `Assay_fk1` FOREIGN KEY (`sample`) REFERENCES `Sample` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -78,12 +78,40 @@ LOCK TABLES `Assay` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `Assay_Modality`
+--
+
+DROP TABLE IF EXISTS `Assay_Modality`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Assay_Modality` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `assay_id` int(11) NOT NULL,
+  `modality_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `Assay_Modality_fk0` (`assay_id`),
+  KEY `Assay_Modality_fk1` (`modality_id`),
+  CONSTRAINT `Assay_Modality_fk0` FOREIGN KEY (`assay_id`) REFERENCES `Assay` (`id`),
+  CONSTRAINT `Assay_Modality_fk1` FOREIGN KEY (`modality_id`) REFERENCES `Modality` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Assay_Modality`
+--
+
+LOCK TABLES `Assay_Modality` WRITE;
+/*!40000 ALTER TABLE `Assay_Modality` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Assay_Modality` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `Assay_data`
 --
 
 DROP TABLE IF EXISTS `Assay_data`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Assay_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `assay` int(11) NOT NULL,
@@ -92,7 +120,7 @@ CREATE TABLE `Assay_data` (
   PRIMARY KEY (`id`),
   KEY `Assay_data_fk0` (`assay`),
   CONSTRAINT `Assay_data_fk0` FOREIGN KEY (`assay`) REFERENCES `Assay` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -110,7 +138,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Differential_expression`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Differential_expression` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `logCPM` float DEFAULT NULL,
@@ -118,20 +146,17 @@ CREATE TABLE `Differential_expression` (
   `logFC` float DEFAULT NULL,
   `pValue` float DEFAULT NULL,
   `fdr` float DEFAULT NULL,
-  `study` int(11) DEFAULT NULL,
   `modality1` int(11) DEFAULT NULL,
   `modality2` int(11) DEFAULT NULL,
-  `sequence` int(11) NOT NULL,
+  `annotation` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `Differential_expression_fk0` (`study`),
   KEY `Differential_expression_fk1` (`modality1`),
   KEY `Differential_expression_fk2` (`modality2`),
-  KEY `Differential_expression_fk3` (`sequence`),
-  CONSTRAINT `Differential_expression_fk0` FOREIGN KEY (`study`) REFERENCES `Study` (`id`),
+  KEY `Differential_expression_fk3` (`annotation`),
   CONSTRAINT `Differential_expression_fk1` FOREIGN KEY (`modality1`) REFERENCES `Modality` (`id`),
   CONSTRAINT `Differential_expression_fk2` FOREIGN KEY (`modality2`) REFERENCES `Modality` (`id`),
-  CONSTRAINT `Differential_expression_fk3` FOREIGN KEY (`sequence`) REFERENCES `Mature_miRNA_sequence` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  CONSTRAINT `Differential_expression_fk3` FOREIGN KEY (`annotation`) REFERENCES `Mature_miRNA` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -149,15 +174,12 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Factor`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Factor` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(254) COLLATE utf8mb4_general_ci NOT NULL,
-  `assay_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `Factor_fk0` (`assay_id`),
-  CONSTRAINT `Factor_fk0` FOREIGN KEY (`assay_id`) REFERENCES `Assay` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `name` varchar(254) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -175,19 +197,19 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Feature`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Feature` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `genome_id` int(11) NOT NULL,
-  `name` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `source` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `type` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `source` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
   `start` int(254) NOT NULL,
   `end` int(254) NOT NULL,
   `score` float DEFAULT NULL,
-  `strand` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `strand` varchar(1) COLLATE utf8mb4_unicode_ci NOT NULL,
   `phase` int(1) DEFAULT NULL,
-  `attr_id` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `attr_id` varchar(254) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `Feature_fk0` (`genome_id`),
   CONSTRAINT `Feature_fk0` FOREIGN KEY (`genome_id`) REFERENCES `Genome` (`id`)
@@ -210,12 +232,12 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Feature_attribute_list`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Feature_attribute_list` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `feature_id` int(11) NOT NULL,
-  `key` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `value` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `key` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `Feature_attribute_list_fk0` (`feature_id`),
   CONSTRAINT `Feature_attribute_list_fk0` FOREIGN KEY (`feature_id`) REFERENCES `Feature` (`id`) ON DELETE CASCADE
@@ -238,11 +260,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Gene`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Gene` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `feature_id` int(11) NOT NULL,
-  `accession` varchar(254) NOT NULL,
+  `accession` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `Gene_fk0` (`feature_id`),
   CONSTRAINT `Gene_fk0` FOREIGN KEY (`feature_id`) REFERENCES `Feature` (`id`)
@@ -264,17 +286,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Genome`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Genome` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `organism_id` int(11) NOT NULL,
-  `assembly_key` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `assembly_value` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `external_id_key` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `external_id_value` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `project_key` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `project_value` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `genome_build` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `assembly_key` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `assembly_value` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `external_id_key` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `external_id_value` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `project_key` varchar(254) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `project_value` varchar(254) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `genome_build` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `Genome_fk0` (`organism_id`),
   CONSTRAINT `Genome_fk0` FOREIGN KEY (`organism_id`) REFERENCES `Organism` (`id`)
@@ -297,7 +319,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `HasStar`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `HasStar` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `miRNA_id` int(11) NOT NULL,
@@ -325,7 +347,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Mature_has_Pre`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Mature_has_Pre` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `mature_miRNA_id` int(20) NOT NULL,
@@ -357,16 +379,16 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Mature_miRNA`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Mature_miRNA` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `accession` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `accession` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
   `family` int(6) DEFAULT NULL,
-  `lettered_suffix` varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `lettered_suffix` varchar(3) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `numbered_suffix` int(3) DEFAULT NULL,
-  `description` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `arm` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` varchar(254) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `arm` varchar(254) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `sequence_id` int(100) NOT NULL,
   `feature_id` int(100) DEFAULT NULL,
   `pre_miRNA_id` int(100) DEFAULT NULL,
@@ -396,10 +418,10 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Mature_miRNA_sequence`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Mature_miRNA_sequence` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `sequence` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sequence` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sequence` (`sequence`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3664 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -421,15 +443,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Modality`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Modality` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(254) COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(254) NOT NULL,
   `factor_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `Modality_fk0` (`factor_id`),
   CONSTRAINT `Modality_fk0` FOREIGN KEY (`factor_id`) REFERENCES `Factor` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -447,16 +469,16 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Organism`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Organism` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `abbreviation` varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `common_name` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `genus` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `specific_name` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `subspecific_name_key` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `subspecific_name_value` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `ncbi_taxon_id` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `abbreviation` varchar(3) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `common_name` varchar(254) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `genus` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `specific_name` varchar(254) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `subspecific_name_key` varchar(254) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `subspecific_name_value` varchar(254) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ncbi_taxon_id` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -477,13 +499,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Person`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Person` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `firstName` varchar(254) COLLATE utf8mb4_general_ci NOT NULL,
-  `lastName` varchar(254) COLLATE utf8mb4_general_ci NOT NULL,
+  `firstName` varchar(254) NOT NULL,
+  `lastName` varchar(254) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -501,7 +523,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Pre_has_Feature`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Pre_has_Feature` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `pre_miRNA_id` int(20) NOT NULL,
@@ -530,15 +552,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Pre_miRNA`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Pre_miRNA` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `accession` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `accession` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(254) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `family` int(6) DEFAULT NULL,
-  `lettered_suffix` varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `lettered_suffix` varchar(3) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `numbered_suffix` int(3) DEFAULT NULL,
-  `description` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
   `feature_id` int(11) DEFAULT NULL,
   `sequence_id` int(20) NOT NULL,
   PRIMARY KEY (`id`),
@@ -565,10 +587,10 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Pre_miRNA_sequence`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Pre_miRNA_sequence` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `sequence` varchar(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sequence` varchar(700) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1820 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -589,13 +611,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Profile`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Profile` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `type` varchar(254) NOT NULL,
-  `profile` varchar(254) NOT NULL,
-  `table` varchar(254) NOT NULL,
-  `columnName` varchar(254) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `profile` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `table` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `columnName` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
   `fileColumnIndex` int(20) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -616,13 +638,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Protein`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Protein` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `gene_id` int(11) NOT NULL,
-  `protein_id` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `gi` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `protein_id` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `gi` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `Protein_fk0` (`gene_id`),
   CONSTRAINT `Protein_fk0` FOREIGN KEY (`gene_id`) REFERENCES `Gene` (`id`)
@@ -644,13 +666,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Sample`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Sample` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `Sample` binary(1) NOT NULL,
-  `processed_by` varchar(254) COLLATE utf8mb4_general_ci NOT NULL,
+  `processed_by` varchar(254) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -668,20 +690,20 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Study`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Study` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(254) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `title` varchar(254) DEFAULT NULL,
   `responsible` int(11) DEFAULT NULL,
-  `description` text COLLATE utf8mb4_general_ci,
+  `description` text DEFAULT NULL,
   `releaseDate` date DEFAULT NULL,
-  `objective` text COLLATE utf8mb4_general_ci,
-  `active` tinyint(1) NOT NULL DEFAULT '1',
-  `public` tinyint(1) NOT NULL DEFAULT '0',
+  `objective` text DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `public` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `Study_fk0` (`responsible`),
   CONSTRAINT `Study_fk0` FOREIGN KEY (`responsible`) REFERENCES `Person` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -697,21 +719,20 @@ UNLOCK TABLES;
 -- Table structure for table `Target`
 --
 
-
 DROP TABLE IF EXISTS `Target`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Target` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `transcript_id` int(11) NOT NULL,
   `mature_miRNA_id` int(11) NOT NULL,
   `study_id` int(11) NOT NULL,
-  `date` DATETIME NOT NULL,
-  `version` INT NOT NULL,
-  `type` varchar(254) NOT NULL DEFAULT 'Cleavage',
-  `target_description` TEXT(1000) DEFAULT NULL,
-  `expectation` FLOAT(3),
-  `UPE` FLOAT(6),
+  `date` datetime NOT NULL,
+  `version` int(11) NOT NULL,
+  `type` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Cleavage',
+  `target_description` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `expectation` float DEFAULT NULL,
+  `UPE` float DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `Target_fk0` (`mature_miRNA_id`),
   KEY `Target_fk1` (`transcript_id`),
@@ -737,7 +758,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Transcript`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Transcript` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `accession` int(11) NOT NULL,
@@ -764,14 +785,14 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Websocket_protocols`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Websocket_protocols` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` varchar(254) NOT NULL,
   `hash` varchar(254) NOT NULL,
-  `date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `date` datetime DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -792,4 +813,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-12-04 11:22:13
+-- Dump completed on 2020-04-06 19:14:20
