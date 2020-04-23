@@ -91,8 +91,9 @@ CREATE TABLE `Assay_Modality` (
   PRIMARY KEY (`id`),
   KEY `Assay_Modality_fk0` (`assay_id`),
   KEY `Assay_Modality_fk1` (`modality_id`),
-  CONSTRAINT `Assay_Modality_fk0` FOREIGN KEY (`assay_id`) REFERENCES `Assay` (`id`),
-  CONSTRAINT `Assay_Modality_fk1` FOREIGN KEY (`modality_id`) REFERENCES `Modality` (`id`)
+  CONSTRAINT `Assay_Modality_fk0` FOREIGN KEY (`assay_id`) REFERENCES `Assay` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `Assay_Modality_fk1` FOREIGN KEY (`modality_id`) REFERENCES `Modality` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `Assay_Modality_u0` UNIQUE (`assay_id`, `modality_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -450,7 +451,8 @@ CREATE TABLE `Modality` (
   `factor_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `Modality_fk0` (`factor_id`),
-  CONSTRAINT `Modality_fk0` FOREIGN KEY (`factor_id`) REFERENCES `Factor` (`id`)
+  CONSTRAINT `Modality_fk0` FOREIGN KEY (`factor_id`) REFERENCES `Factor` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `Modality_u0` UNIQUE (`name`,`factor_id`) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
