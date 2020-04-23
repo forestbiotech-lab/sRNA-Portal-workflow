@@ -7,7 +7,7 @@ block content
       .row.d-none  
         .col-lg-12
           .card
-            .card-header.studyInfo(studyId=studyId)
+            .card-header.studyInfo(studyId=study_id)
               h4.study.card-title Study&nbsp
                 span.badge.badge-secondary#studyTitle
             .card-body
@@ -35,7 +35,7 @@ block content
               li.nav-item
                 a.btn.btn-light.nav-link(href='/de') Main
               li.nav-item
-                a.btn.btn-light.nav-link(href=`/de/assaydata/${studyId}`) AssayData Matrix
+                a.btn.btn-light.nav-link(href=`/de/assaydata/${study_id}`) AssayData Matrix
               li.nav-item
                 a.btn.btn-light.nav-link(href='/de/targets/new') Add Targets
                     
@@ -44,17 +44,18 @@ block content
         .card.study-design
           .card-header
             h5.card-title Study Design
-          .card-body 
+          .card-body.design-factory 
             button.btn.btn-secondary.add-factor Add factor
-            table.table
+            table.table.design-factory
               thead
                 tr
                   th Actions
                   th Factor name
                   th Modality
               tbody
-            button.btn.btn-secondary Generate Contrasts
-
+            button.btn.btn-secondary.generate-contrasts Generate Contrasts
+            
+            
 
     .row
       .col-lg-12    
@@ -63,15 +64,18 @@ block content
             h4.assay.card-title Assay list
                span.badge.badge-secondary#assay-data-count
                span.badge.badge-secondary#mature-miRNA
-          .card-body
-            table.table
+               button.btn.btn-secondary.calculate-cpms(style="float:right") Calculate CPMs 
+          .card-body(style="overflow-x:scroll;")
+            table.table.assays
               thead
                 tr
                   if ( data )
                     each header in Object.keys(data[0])
-                      th=header
+                      th(colname=header)=header
               tbody
                 each row in data
-                  tr
+                  tr(id=row['id'])
                     each key in Object.keys(row)
-                      td=row[key]
+                      td(colname=key)=row[key]
+  div(aria-live='polite', aria-atomic='true', style='position: relative; min-height: 200px;')
+    .toaster(style='position: fixed; top: 0; right: 0;')

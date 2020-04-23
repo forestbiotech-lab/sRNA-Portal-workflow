@@ -55,6 +55,30 @@ router.post('/save/singletable/:tablename',function(req,res){
     res.render('error',error)
   })
 })
+router.post('/create/entry/:tablename',function(req,res){
+  let options={inserts:req.body,tablename:req.params.tablename}
+  saveSingleTableDynamic.create(options).then(function(data){
+    data instanceof Error ? res.status(304).json({error:data}) : res.json(data)
+  }).catch(function(error){
+    res.status(300).json(error)
+  })
+})
+router.post('/update/entry/:tablename',function(req,res){
+  let options={inserts:req.body,tablename:req.params.tablename}
+  saveSingleTableDynamic.update(options).then(function(data){
+    data instanceof Error ? res.status(304).json({error:data}) : res.json(data)
+  }).catch(function(error){
+    res.status(300).json(error)
+  })
+})
+router.post('/destroy/entry/:tablename',function(req,res){
+  let options={inserts:req.body,tablename:req.params.tablename}
+  saveSingleTableDynamic.destroy(options).then(function(data){
+    data instanceof Error ? res.status(304).json({error:data}) : res.json(data)
+  }).catch(function(error){
+    res.status(300).json(error)
+  })
+})
 router.post('/update/singletable/:tablename',function(req,res){
   let options={inserts:req.body,tablename:req.params.tablename}
     saveSingleTableDynamic.update(options).then(function(data){
@@ -76,6 +100,5 @@ router.post('/count/associatedTables',function(req,res){
     res.status(404).json(error)
   })
 })
-
 
 module.exports=router

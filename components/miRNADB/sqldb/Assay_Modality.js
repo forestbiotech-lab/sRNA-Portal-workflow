@@ -27,7 +27,7 @@
             targetKey: 'id',  //foreign key  
           });
           Assay_Modality.belongsTo(models.Modality, {
-            foreignKey: 'modlity_id',              //on Assay_Modality
+            foreignKey: 'modality_id',              //on Assay_Modality
             targetKey: 'id',  //foreign key  
           });
         }

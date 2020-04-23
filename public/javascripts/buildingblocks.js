@@ -30,10 +30,42 @@ function makeRow(attributes,contents,metadata,header){
   let tr=mkel('tr',attributes)
   if(contents instanceof Array){
     contents.forEach(content=>{
-      let cell=mkel((header?"th":"td"),metadata)
+      if(metadata instanceof Array && metadata.length != contents.length ) metadata={}
+      let cell=mkel((header?"th":"td"),(metadata instanceof Array ? metadata[index] : metadata))
       cell.append(content)
       tr.append(cell)
     }) 
   }
   return tr
+}
+function makeToast(title,body){
+  let toast=mkel('div',{class:"toast",role:"alert","aria-live":"assertive","aria-atomic":"true","data-delay":"20000"})
+  let toastHeader=mkel('div',{class:"toast-header"})
+  let toastBody=mkel('div',{class:"toast-body"})
+  toast.append(toastHeader)
+  toast.append(toastBody)
+
+  let img=mkel('img',{class:"rounded mr-2",src:"...",alt:"..."})
+  let strong=mkel('strong',{class:"mr-auto"})
+  let small=mkel('small',{class:"text-muted"})
+  strong.textContent=title
+  small.textContent='just now'
+  let buttonClose=mkel('button',{class:"ml-2 mb-1 close",type:"button","data-dismiss":"toast","aria-label":"Close"})
+  let span=mkel("span",{"aria-hidden":'true'})
+  span.textContent="x"
+  buttonClose.append(span)
+  toastHeader.append(strong)
+  toastHeader.append(small)
+  toastHeader.append(buttonClose)
+  toastBody.append(body)
+  return toast
+}
+function makeSelect(attributes,options){
+  let select=mkel('select',attributes)
+  options.forEach(option=>{
+    let selectOption=mkel('option',option)
+    selectOption.textContent=option.name
+    select.append(selectOption)
+  })
+  return select
 }

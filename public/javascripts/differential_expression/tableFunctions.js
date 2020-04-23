@@ -29,7 +29,7 @@ $(document).ready(function(){
         selectTarget.html(data)
         selectTarget.change(loadEntry(selectTarget))         
       },
-      error:function(err){
+      error:function(qXHR,textStatus,err){
         console.log(err)
       }
     })

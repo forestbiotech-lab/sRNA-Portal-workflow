@@ -7,6 +7,7 @@ var saveSequence = require('./../components/miRNADB/saveSequence')
 var convertFileToMatrix=require('./../components/preProcessing/convertFileToMatrix')
 var rawReadsSaveController=require('./../components/miRNADB/controllers/rawReadsSaveController')
 var getDynamicTable=require('./../components/miRNADB/getDynamicTable')
+var assay=require('./../components/miRNADB/queryModels/assay')
 var countAssayDataForStudy=require('./../components/miRNADB/countAssayDataForStudy')
 var getAssayDataWithAnnotations=require('./../components/miRNADB/getAssayDataWithAnnotations')
 var getTargets=require('./../components/miRNADB/getTargets')
@@ -25,7 +26,7 @@ var Cookies = require('cookies');
 var Keygrip = require("keygrip");
 const keylist = require('./../.config_res').cookie.keylist
 var keys = new Keygrip(keylist,'sha256','hex')
-
+var calculateCPM=require('./../components/miRNADB/transactions/calculateCPM')
 //////// Functions
 function genHash(){
   let rand=(Math.random()*10000).toString()
@@ -114,15 +115,39 @@ router.post('/uploadMatrix',function(req,res){
 
 
 router.get('/assays/:study',function(req,res){
-  let tablename="Assay"
-  let studyId=req.params.study
-  let where={'study':studyId}
-  getDynamicTable(tablename,where).then(function(data){
-    data instanceof Error ? res.render('error',data) : res.render('de/assays',{data,studyId})
+  let study_id=req.params.study
+  assay.index(study_id).then(function(data){
+    data instanceof Error ? res.render('error',data) : res.render('de/assays',{data:data.data,study_id})
   }).catch(function(error){
     res.render('error',error)
   })
 })
+router.get('/assays/:study/matrix',function(req,res){
+  let study_id=req.params.study
+  assay.index(study_id).then(function(data){
+    data instanceof Error ? res.json(data) : res.json(data)
+  }).catch(function(error){
+    res.json(error)
+  })
+})
+router.post('/assays/:study/CPM',async function(req,res){
+  let study_id=req.params.study
+  let hash=genHash().toString()
+  let ws=new wsClient()
+  let protocol={
+    type:"RawReads",
+    hash   
+  }
+  ws.connect(protocol,res)
+  await ws.isConnected()
+  calculateCPM.main(study_id,ws).then(function(data){
+    data instanceof Error ? console.log(data) : console.log(data)
+  }).catch(function(error){
+    console.log(error)
+  })
+})
+
+
 
 router.get('/assaydata/:study', function(req, res, next) {
   var studyId=req.params.study
