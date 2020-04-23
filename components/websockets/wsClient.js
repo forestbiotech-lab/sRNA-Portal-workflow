@@ -35,8 +35,36 @@ class Client{
             connection.on('close', function() {
                 console.log('echo-protocol Connection Closed');
             });
+
         });
         this.client=client
+    }
+    isConnected(){
+        let self=this
+        return new Promise((res,rej)=>{
+            let keepTesting=true
+            setTimeout(function(){
+                if(self.connection){
+                    keepTesting=false
+                    res("Connected")                    
+                }else{
+                    rej("Timed out")    
+                }
+            },60000)
+
+            function connected(self,res){
+                if(self.connection){
+                    res("connected")
+                }else{
+                    setTimeout(function(){
+                       if(keepTesting){
+                         connected(self,res)    
+                       } 
+                    },3000)
+                }
+            }
+            connected(self,res)
+        })
     }
     connect(protocol,routerResult){
         let client=this.client
@@ -47,6 +75,7 @@ class Client{
             client.connect(`${connectionProtocol}://${HOST}:${PORT}/`,protocol,self.options,self.origin,self.extraRequestOptions);
             
         })
+
     }
     lowerCaseProtocol(protocol){
         Object.keys(protocol).forEach(key=>{
@@ -55,11 +84,14 @@ class Client{
         return protocol
     }
     sendMsg(msg){
+      if(this.connection)
         if(this.connection.connected){
-            this.connection.sendUTF(msg)
+          this.connection.sendUTF(msg)
         }else{
-            console.log("Please connect first")
-        }
+          console.log("Please connect first")
+      }else{
+        console.log("Please connect first")
+      }    
     }
     close(){
         let protocol=this.protocol
