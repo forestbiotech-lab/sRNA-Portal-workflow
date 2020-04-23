@@ -720,7 +720,7 @@ $('document').ready(function() {
     multiselectForm.multiselect('select',assay.id)
   }
 
-
+//--------------------------Calculate CPMs -----------------------------------
   $('.card.assay-list button.calculate-cpms').click(function(){
   	let data={assayIds:[]} //Assay ids
   	$('table.assays tbody td[colname|=output]').each(function(){
@@ -732,13 +732,13 @@ $('document').ready(function() {
       }  
   	})
     if(data.assayIds.length>0){
-
       let studyId=$('.card-header.studyInfo').attr('studyId')
         $.ajax({
           url:`/de/assays/${studyId}/CPM`,
           data,
           type:"POST",
           success:((data,textStatus,jqXHR) =>{
+            loadingPanel()
             trackProgress(data)
           }),
           error:((qXHR,textStatus,err)=>{
@@ -751,37 +751,67 @@ $('document').ready(function() {
   })
 
   function trackProgress(data){
+  	let loading=true
   	let port="8080"
   	let hostname=document.location.hostname
   	let address=`${(hostname=="localhost" ? "ws" : "wss")}://${hostname}:${port}`
   	let protocol=data
   	startWebSocket(address,protocol,callback)
   	function callback(data){
-  		console.log(data)
+  	    if(loading){
+  	     loadingPanel()  
+  	     loading=false
+  	    }
+  	    
   		let parsedData=JSON.parse(data)
+
   		if(parsedData.assayId){
   		  let assayId=parsedData.assayId
   		  let target=$(`table.assays tbody tr[id|=${assayId}]`).find('td[colname|=output]')
+  		
   		  if(parsedData.size){
             let size=parsedData.size
-  		    target.attr('output',target.text())
-  		    let progress=mkel('div',{class:"progress"})
-  		    let progressbar=mkel('div',{class:"progress-bar",role:"progressbar","aria-valuenow":"0","aria-valuemin":"0","aria-valuemax":"100"
-,"aria-valuenow":"0","aria-valuemin":"0","aria-valuemax":"100",entries:size})
-            progress.append(progressbar)
-  		    target.html(progress)
+            addProgressBar(size,target)  		    
   		  }else if(parsedData.successes){
-  		    let progressbar=target.find('.progress-bar')
-  		    let size=progressbar.attr('entries')
-  		    let updatedValues=parsedData.successes.length
-  		    let percentComplete=updatedValues/parseInt(size)*100
-  		    progressbar.width(percentComplete)
-  		  }else{
-  		    //Confirmation msg
+  		    updateProgressBar(parsedData.successes,target)
   		  }
+  		}else{
+  		  Object.keys(parsedData).forEach(key=>{
+            let assayId=key
+            let target=$(`table.assays tbody tr[id|=${assayId}]`).find('td[colname|=output]')
+            updateProgressBar(parsedData[key].successes,target)
+  		  })
+  		}
+
+
+
+  		function addProgressBar(size,target){
+          let progress=mkel('div',{class:"progress"})
+          let progressbar=mkel('div',{
+            "class":"progress-bar",
+            "role":"progressbar",
+            "aria-valuenow":"0",
+            "aria-valuemin":"0",
+            "aria-valuemax":"100",
+            "aria-valuenow":"0",
+            "aria-valuemin":"0",
+            "aria-valuemax":"100",
+            "entries":size
+           })
+          target.attr('output',target.text())
+          progress.append(progressbar)
+          target.html(progress)
+  		}
+  		function updateProgressBar(successes,target){
+   		    let progressbar=target.find('.progress-bar')
+  		    let size=progressbar.attr('entries')
+  		    let updatedValues=successes.length
+  		    let percentComplete=updatedValues/parseInt(size)*100
+  		    progressbar.width(percentComplete+"%")
+  		    progressbar.text(Math.round(percentComplete)+"%")
   		}
   	}
   }
-
+//-------------------END-------Calculate CPMs -----------------------------------
 
 })

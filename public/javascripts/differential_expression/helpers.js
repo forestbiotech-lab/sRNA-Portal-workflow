@@ -120,7 +120,9 @@ function loadingPanel(){
 	  spinner.className="spinner-border text-warning"
 	  badge.className="badge badge-info"
 	  badge.textContent=" Loading! Please wait... "
-	  div.setAttribute('style',"position:fixed;top:200px;left:200px;")
+	  let top=window.innerHeight*0.50 || "200"
+	  let left=window.innerWidth*0.50 || "200"
+	  div.setAttribute('style',`position:fixed;top:${top}px;left:${left}px;`)
 	  span.className="sr-only"
 	  span.textContent="Loading..."
 
