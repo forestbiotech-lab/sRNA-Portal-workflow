@@ -64,7 +64,9 @@ block content
             h4.assay.card-title Assay list
                span.badge.badge-secondary#assay-data-count
                span.badge.badge-secondary#mature-miRNA
-               button.btn.btn-secondary.calculate-cpms(style="float:right") Calculate CPMs 
+               button.btn.btn-secondary.calculate-cpms(style="float:right",type='button', data-toggle='tooltip', data-placement='bottom', title='CPM will only be calculated for libraries that have output values!') Calculate CPMs 
+               button.btn.btn-info(style="float:right",type='button', data-toggle='tooltip', data-placement='left', title='Double click cell to edit the values of the cells')
+                span.glyphicon.glyphicon-info-sign
           .card-body(style="overflow-x:scroll;")
             table.table.assays
               thead

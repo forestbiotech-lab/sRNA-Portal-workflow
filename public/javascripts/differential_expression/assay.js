@@ -1,6 +1,9 @@
 $('document').ready(function() {
   var editableColumns = ["output", "type", "operation"]
   const colorLabels=["primary","secondary","success","danger","warning","info","light","dark"]
+  $(function () {
+  	$('[data-toggle="tooltip"]').tooltip()
+  })
   class ColorPicker{
     constructor(colorLabels){
       this.labels=colorLabels
@@ -27,7 +30,7 @@ $('document').ready(function() {
   	$('table.assays [colname|=factor_id]').hide()
   	$('table.assays [colname|=assignment_id]').hide()
   }
-  hideIds()
+  
   function addIds(){
   	$('table.assays tbody tr').each(function(){
   		let row=$(this)
@@ -41,10 +44,12 @@ $('document').ready(function() {
   		modality.attr("db-id-assignment",assignment_id.text())
   	})
   }
+  $(function addFormType() {
+  	$('table.assays tbody td[colname|=output]').attr('form-type','number')
+  })
+
+  hideIds()
   addIds()
-  function addModality(){
-  	$('')
-  }
   var label=new ColorPicker(colorLabels)
   //-------END---INITIATION ------------------------------------------
 
@@ -492,9 +497,10 @@ $('document').ready(function() {
   $('table.assays td').dblclick(function() {
     let self = $(this)
     if (editable(self)) {
+
       let currentText = self.text()
       let cellInput = mkel("input", {
-        type: "text",
+        type: (self.attr("form-type")? self.attr("form-type"):"text"),
         class: "form",
         text: currentText
       })
@@ -716,19 +722,32 @@ $('document').ready(function() {
 
 
   $('.card.assay-list button.calculate-cpms').click(function(){
-  	let data=[1,2] //Assay ids
-  	let studyId=$('.card-header.studyInfo').attr('studyId')
-	  $.ajax({
-	  	url:`/de/assays/${studyId}/CPM`,
-	  	data,
-	  	type:"POST",
-  	    success:((data,textStatus,jqXHR) =>{
-    	  trackProgress(data)
-    	}),
-    	error:((qXHR,textStatus,err)=>{
-	        makeToolTipNotification(self, textStatus,err)
-    	})
-	  })
+  	let data={assayIds:[]} //Assay ids
+  	$('table.assays tbody td[colname|=output]').each(function(){
+  	  let self=$(this)
+  	  let output=self.text()
+      if(output.length>0){
+        let assayId=self.closest('tr').attr('id')
+        data.assayIds.push(assayId)  
+      }  
+  	})
+    if(data.assayIds.length>0){
+
+      let studyId=$('.card-header.studyInfo').attr('studyId')
+        $.ajax({
+          url:`/de/assays/${studyId}/CPM`,
+          data,
+          type:"POST",
+          success:((data,textStatus,jqXHR) =>{
+            trackProgress(data)
+          }),
+          error:((qXHR,textStatus,err)=>{
+              makeToolTipNotification(self, textStatus,err)
+          })
+        })
+    }else{
+      makeToolTipNotification(self,"No outputs","Add output numbers first!")
+    }
   })
 
   function trackProgress(data){

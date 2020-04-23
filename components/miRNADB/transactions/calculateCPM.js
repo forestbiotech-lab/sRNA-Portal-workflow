@@ -12,7 +12,7 @@ module.exports={main}
 
 async function main(assayIds,ws){
     //Static
-    assayIds=[1,2,3,4]
+    
     let result={successes:[],failures:[],errors:[]}
     assayPromisses=[]
     //------

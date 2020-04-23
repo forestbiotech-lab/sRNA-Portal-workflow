@@ -132,6 +132,7 @@ router.get('/assays/:study/matrix',function(req,res){
 })
 router.post('/assays/:study/CPM',async function(req,res){
   let study_id=req.params.study
+  let assay_ids=req.body.assayIds
   let hash=genHash().toString()
   let ws=new wsClient()
   let protocol={
@@ -140,7 +141,7 @@ router.post('/assays/:study/CPM',async function(req,res){
   }
   ws.connect(protocol,res)
   await ws.isConnected()
-  calculateCPM.main(study_id,ws).then(function(data){
+  calculateCPM.main(assay_ids,ws).then(function(data){
     data instanceof Error ? console.log(data) : console.log(data)
   }).catch(function(error){
     console.log(error)
