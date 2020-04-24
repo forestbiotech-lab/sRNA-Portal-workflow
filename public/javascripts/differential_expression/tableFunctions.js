@@ -9,13 +9,9 @@ $(document).ready(function(){
       url:`/forms/factory/fromtable/fks/${table}`,
       type:'GET',
       success: function(data,textStatus,jqXHR){
-        that.next().find(`.form-${table}`).html(data)
-        that.next().find(`.form-${table} select`).each(function(){
-          let self=$(this)
-          let foreignkeyTable=self.attr('foreignkey-table')
-          appendForeignKeyValues(self,"firstName","-1",foreignkeyTable)  //displayAttr should be the first attr after id or first attr that is a string
-        })
-        
+        let target=that.next().find(`.form-${table}`)
+        target.html(data)
+        augmentFKTools(target)
       }
     })
   })
@@ -163,7 +159,7 @@ $(document).ready(function(){
     $('.row.file-submission .card-footer form.view-matrix input.btn').attr('type','submit')
     $('.row.file-submission').removeClass('d-none')
   }
-  function openEditStudyPanel(){
+  async function openEditStudyPanel(){
     let selectedRow=$('.row.welcome-panel .card-body.list-Study table tbody tr[isselected|="true"]')
     let data={
       id:selectedRow.find('td#id').text(),
@@ -173,7 +169,7 @@ $(document).ready(function(){
 
     let table="Study"
     let tableTarget=$(`.row.metadata-edition .card-body .form-${table}`)
-    makeTableForm(table,tableTarget)
+    await makeTableForm(table,tableTarget)
     loadTable(table,data,tableTarget) //await the first?
 
     /////
@@ -199,12 +195,16 @@ $(document).ready(function(){
   }
 
   function makeTableForm(table,target){
-    $.ajax({
-      url:`/forms/factory/fromtable/fks/${table}`,
-      type:'GET',
-      success: function(data,textStatus,jqXHR){
-        target.html(data)          
-      }
+    return new Promise((res,rej)=>{
+      $.ajax({
+        url:`/forms/factory/fromtable/fks/${table}`,
+        type:'GET',
+        success: function(data,textStatus,jqXHR){
+          target.html(data)
+          augmentFKTools(target)
+          res("ok")                  
+        }
+      })
     })
   }
   function loadEntry(context){
@@ -237,18 +237,16 @@ $(document).ready(function(){
       if(inputType=="checkbox"){
         input.prop('checked',data[attribute])
       }else if(inputType=="select-fk"){
-        let fkTargetTable=input.attr('foreignkey-table')
-        let option=mkel('option',{value:data[attribute],name:data[attribute]})
-        option.textContent=data[attribute]
-        input.html(option)
-        appendForeignKeyValues(input,"firstName",data[attribute],fkTargetTable)
+        let id=data[attribute]
+        let option=input.find(`option[id|=${id}]`)
+        option.prop('selected','true')
       }else{       
         input.val(data[attribute])
       }
     })
     form.find('input.btn.disabled').val('Update')  //?
     let action=form.find('form.basic-form.table-form').attr('action') //?
-    action=action.replace("save","update")                           //?
+    action=action.replace("save","update")                           //? path of the url I think
     form.find('form.basic-form.table-form').attr('action',action)    //?
   }
 
@@ -271,4 +269,30 @@ $(document).ready(function(){
       }
     })
   }
+
+  function makeNewFK(){
+    let button=$(this)
+    let targetTable=button.attr('foreignkey-table')
+    let modal=makeModal(`Add new ${targetTable}`,)
+    let target=modal.find('.modal-body')  
+    makeTableForm(targetTable,target)
+  }
+
+  function augmentFKTools(target){
+    addActionToNewFKButtons(target)
+    addValuesToFKSelect(target)
+    function addValuesToFKSelect(target){
+      target.find('select[type|=select-fk]').each(function(){
+          let self=$(this)
+          let foreignkeyTable=self.attr('foreignkey-table')
+          appendForeignKeyValues(self,"firstName","-1",foreignkeyTable)  //displayAttr should be the first attr after id or first attr that is a string        
+      })
+    }    
+    function addActionToNewFKButtons(target){
+      target.find('button.make-new-fk').each(function(){
+        $(this).click(makeNewFK)    
+      })
+    }
+  }
+   
 })

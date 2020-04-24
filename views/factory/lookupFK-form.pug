@@ -9,11 +9,11 @@ form.basic-form.table-form(id=name,method="POST",action="/forms/save/singletable
         - fk=`(references table ${attribute.fk.targetTable})`
       label(for=attribute.name) !{attribute.name} !{fk} 
       if attribute.type=='select'
-        select.form-control(id=attribute.name,name=attribute.name,type="select-fk",foreignkey-table=attribute.fk.targetTable)
+        select.form-control.select-foreign-key(id=attribute.name,name=attribute.name,type="select-fk",foreignkey-table=attribute.fk.targetTable)
           option(id="-1") select one
           each value in attribute.fk.values
             option=value
-        button.btn.btn-primary(type="button",foreignkey-table=attribute.fk.targetTable) new entry on !{attribute.fk.targetTable}
+        button.btn.btn-primary.make-new-fk(type="button",foreignkey-table=attribute.fk.targetTable) new entry on !{attribute.fk.targetTable}
       else     
         input.form-control(type=attribute.type,id=attribute.name,name=attribute.name)
   input.btn.btn-primary(type="submit",value="Save")

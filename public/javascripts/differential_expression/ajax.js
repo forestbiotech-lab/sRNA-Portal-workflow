@@ -1,11 +1,11 @@
 $(document).ready(function(){
 
-
   $('.row.file-submission .card-body .upload-matrix').on('click', function (){
     $('.row.file-submission .card-body #upload-files-upload').click();
     $('.row.file-submission .card-body .progress-bar').text('0%');
     $('.row.file-submission .card-body .progress-bar').width('0%');
   });
+  //Upload file
   $('.row.file-submission .card-body #upload-files-upload').on('change', function(){
     let studyId=$('.row.file-submission form.view-matrix input#studyId').val()
     var files = $(this).get(0).files;
