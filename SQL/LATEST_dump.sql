@@ -89,11 +89,11 @@ CREATE TABLE `Assay_Modality` (
   `assay_id` int(11) NOT NULL,
   `modality_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `Assay_Modality_u0` (`assay_id`,`modality_id`),
   KEY `Assay_Modality_fk0` (`assay_id`),
   KEY `Assay_Modality_fk1` (`modality_id`),
   CONSTRAINT `Assay_Modality_fk0` FOREIGN KEY (`assay_id`) REFERENCES `Assay` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `Assay_Modality_fk1` FOREIGN KEY (`modality_id`) REFERENCES `Modality` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `Assay_Modality_u0` UNIQUE (`assay_id`, `modality_id`)
+  CONSTRAINT `Assay_Modality_fk1` FOREIGN KEY (`modality_id`) REFERENCES `Modality` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -450,9 +450,9 @@ CREATE TABLE `Modality` (
   `name` varchar(254) NOT NULL,
   `factor_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `Modality_u0` (`name`,`factor_id`),
   KEY `Modality_fk0` (`factor_id`),
-  CONSTRAINT `Modality_fk0` FOREIGN KEY (`factor_id`) REFERENCES `Factor` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `Modality_u0` UNIQUE (`name`,`factor_id`) 
+  CONSTRAINT `Modality_fk0` FOREIGN KEY (`factor_id`) REFERENCES `Factor` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -815,4 +815,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-06 19:14:20
+-- Dump completed on 2020-04-24 13:59:30
