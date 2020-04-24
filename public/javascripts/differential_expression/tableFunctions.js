@@ -6,10 +6,16 @@ $(document).ready(function(){
     let that=$(this)
     var table=that.attr('table')
     $.ajax({
-      url:`/forms/factory/fromtable/basic/${table}`,
+      url:`/forms/factory/fromtable/fks/${table}`,
       type:'GET',
       success: function(data,textStatus,jqXHR){
-        that.next().find(`.form-${table}`).html(data)          
+        that.next().find(`.form-${table}`).html(data)
+        that.next().find(`.form-${table} select`).each(function(){
+          let self=$(this)
+          let foreignkeyTable=self.attr('foreignkey-table')
+          appendForeignKeyValues(self,"firstName","-1",foreignkeyTable)  //displayAttr should be the first attr after id or first attr that is a string
+        })
+        
       }
     })
   })
@@ -194,7 +200,7 @@ $(document).ready(function(){
 
   function makeTableForm(table,target){
     $.ajax({
-      url:`/forms/factory/fromtable/basic/${table}`,
+      url:`/forms/factory/fromtable/fks/${table}`,
       type:'GET',
       success: function(data,textStatus,jqXHR){
         target.html(data)          
@@ -230,6 +236,12 @@ $(document).ready(function(){
       let inputType=input.attr('type')
       if(inputType=="checkbox"){
         input.prop('checked',data[attribute])
+      }else if(inputType=="select-fk"){
+        let fkTargetTable=input.attr('foreignkey-table')
+        let option=mkel('option',{value:data[attribute],name:data[attribute]})
+        option.textContent=data[attribute]
+        input.html(option)
+        appendForeignKeyValues(input,"firstName",data[attribute],fkTargetTable)
       }else{       
         input.val(data[attribute])
       }
@@ -240,5 +252,23 @@ $(document).ready(function(){
     form.find('form.basic-form.table-form').attr('action',action)    //?
   }
 
-
+  function appendForeignKeyValues(selectTarget,displayAttr,selectedID,targetTable){
+    attributes=['id',displayAttr,"lastName"]  ///Hardcoded
+    $.ajax({
+      url:`/forms/factory/select/basic/${targetTable}`,
+      type: 'POST',
+      data:{attributes},
+      dataType:'html',
+      success:function(data,textStatus,jqXHR){
+        let incomingHTML=$.parseHTML(data)
+        selectTarget.html(incomingHTML)
+        let options=selectTarget.find('option') //Makes no sense but was unable to parse the jquery Object incomingHTML
+        selectTarget.html(options)
+        selectTarget.find(`option[id|=${selectedID}]`).prop('selected','true')
+      },
+      error:function(qXHR,textStatus,err){
+        console.error(err)
+      }
+    })
+  }
 })

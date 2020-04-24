@@ -8,10 +8,13 @@ module.exports=function(options){
 			if(data instanceof Error ) rej(data)
 			let result=[]	
 			data.forEach(function(row){
-				entry=""
+				let entry={}
+				let text=""
 				options.attributes.forEach(function(attr){
-					entry+=row.dataValues[attr]+" - "
+					entry[attr]=row.dataValues[attr]
+					text+=row.dataValues[attr]+"@€"
 				})
+				entry['text']=text.replace(/@€/,"-").replace(/@€/g," ")
 				result.push(entry)
 			})
 			res(result)
