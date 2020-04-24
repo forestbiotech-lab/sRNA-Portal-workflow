@@ -296,10 +296,10 @@ $('document').ready(function() {
       if(checked){
         let result=await createEntry(table="Assay_Modality",attribute={assay_id:assay.id,modality_id:modalityId})
         let assignmentId=result.id
-        let factorBadge=mkel('span',{class:`badge badge-${labels.pickLabel(factor)}`})
+        let factorBadge=mkel('span',{class:`badge badge-${label.pickLabel(factor)}`})
         factorBadge.textContent=factor
         tdFactor.html(factorBadge)
-        let modalityBadge=mkel('span',{class:`badge badge-${labels.pickLabel(modality)}`})
+        let modalityBadge=mkel('span',{class:`badge badge-${label.pickLabel(modality)}`})
         modalityBadge.textContent=modality
         tdModality.html(modalityBadge)
         tdModality.attr('db-id-assignment',assignmentId)
