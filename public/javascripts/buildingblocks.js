@@ -69,3 +69,45 @@ function makeSelect(attributes,options){
   })
   return select
 }
+
+function makeModal(titleText,bodyContent){
+  let modalPocket=mkel('div',{class:"modal-pocket"})
+  let root=mkel('div',{class:"modal new-table-entry",tabindex:"-1",role:"dialog"})
+  let dialog=mkel('div',{class:"modal-dialog",role:"document"})
+  let content=mkel('div',{class:"modal-content"})
+  let header=mkel('div',{class:"modal-header"})
+  let title=mkel('h5',{class:"modeal-title"})
+  let button=mkel('button',{
+    type:"button",
+    class:"close",
+    "data-dismiss":"modal",
+    "aria-label":"Close"
+  })
+  let span=mkel('span',{"aria-hidden":"true"})
+  let body=mkel('div',{class:"modal-body"})
+  let footer=mkel('div',{class:"modal-footer"})
+
+  title.textContent=titleText
+  span.textContent="x"
+
+  root.append(dialog)
+  dialog.append(content)
+  content.append(header)
+  content.append(body)
+  content.append(footer)
+  header.append(title)
+  header.append(button)
+  button.append(span)
+  body.append(bodyContent)
+  
+  if($('.modal-pocket').length>0){
+    $('.modal-pocket').html(root)
+  }else{
+    $('body').append(modalPocket)
+    $('.modal-pocket').html(root)
+  }
+
+  $('.modal.new-table-entry').modal()
+  return $('.modal.new-table-entry')
+}
+
