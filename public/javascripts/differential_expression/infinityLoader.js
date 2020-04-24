@@ -23,8 +23,11 @@ $(document).ready(function(){
       loadRows()
     },rej=>{
       console.error(`Promise rejected! - ${rej}`)
+      alert(rej)
+      window.history.back();
     }).catch(function(err){
       alert(err)
+      window.history.back();
     })
   }
 
