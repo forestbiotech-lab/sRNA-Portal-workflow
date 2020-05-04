@@ -17,6 +17,7 @@
     "dateformat": "^3.0.3",
     "debug": "^4.0.1",
     "detect-file-type": "^0.2.7",
+    "dockerode": "^3.2.0",
     "drawrnajs": "^1.2.6",
     "express": "^4.16.3",
     "formidable": "^1.2.1",
