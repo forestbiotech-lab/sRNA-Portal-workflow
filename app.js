@@ -31,7 +31,7 @@ app.set('view engine', 'pug');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 
 //Loggin for production 
-if (process.env.mode=="PRODUCTION") process.env.log="combined"
+if (process.env.mode=="PRODUCTION") process.env.logger="combined"
 
 app.use(logger(process.env.logger || 'dev'));
 app.use(bodyParser.json());
