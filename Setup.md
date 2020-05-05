@@ -85,7 +85,7 @@ sudo chsh ${USERNAME} -s /usr/bin/zsh
 
 ## Install Docker
 
-[Official info]](https://docs.docker.com/engine/install/ubuntu/)
+[Official info](https://docs.docker.com/engine/install/ubuntu/)
 
 
 ``` bash
