@@ -115,9 +115,9 @@ sudo chsh ${USERNAME} -s /usr/bin/zsh
 
   #Test if it is working 
   sudo docker run hello-world
-
-	#To use docker with-out root add your username to docker group
-	sudo usermod -aG docker USER
+  
+  #To use docker with-out root add your username to docker group
+  sudo usermod -aG docker USER
 ```
 
 
