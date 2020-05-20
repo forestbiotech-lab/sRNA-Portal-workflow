@@ -49,9 +49,10 @@ $(document).ready(function(){
           response.type=response.type || null
           if(response.type=="QualityControl"){
             processErrorGetMatrix(response)
+            loadingPanel()
+          }else{
+            rej(err)
           }
-          loadingPanel()
-          rej(err)
         }
       })    
     })
