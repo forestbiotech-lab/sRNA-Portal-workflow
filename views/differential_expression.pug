@@ -10,12 +10,12 @@ block content
           .card
             .card-body
               h4.card-title.personal-stats Welcome to your personal area 
-                span.badge.badge-secondary !{name}
+                span.badge.badge-success !{name}
             .card-body 
               p You are currently responsible for 
-                span.badge.badge-secondary(title="click to show studies") !{numOfStudies} studies 
+                span.badge.badge-success(title="click to show studies") !{numOfStudies} studies 
                 | , please select a study to edit or complete.   
-              button.btn.btn-primary.btn-lg.btn-block.generate-table-form(table="Study",type='button', data-toggle='collapse', data-target='#table-study', aria-expanded='false', aria-controls='table-study')
+              button.btn.btn-secondary.btn-lg.btn-block.generate-table-form(table="Study",type='button', data-toggle='collapse', data-target='#table-study', aria-expanded='false', aria-controls='table-study')
                 | Create New Study
               #table-study.collapse
                 .card.card-body
