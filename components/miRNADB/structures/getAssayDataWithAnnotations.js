@@ -55,7 +55,7 @@ module.exports={
 		row:{
 			_table:"./",
 			assayId:{_table:"Assay",_attribute:"id"},
-			sequnce:{_table:['Annotation',"Mature_miRNA","Mature_miRNA_sequence"],_attribute:"sequence"}
+			sequence:{_table:['Annotation',"Mature_miRNA","Mature_miRNA_sequence"],_attribute:"sequence"}
 		},
 		cell:{
 			_table:"./",

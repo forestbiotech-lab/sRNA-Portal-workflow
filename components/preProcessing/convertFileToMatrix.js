@@ -19,7 +19,7 @@ module.exports=function(filePath){
           if(index==0){
             matrix.header=row
             fileColumnWidth=matrix.header.length
-            if(fileColumnWidth<3){
+            if(fileColumnWidth<3){  //ignores last line
               let err=new Error(`The file doesn't have the proper structure number of columns is less then 3`)
               err.name="InvalidStructure"
               err.type="QualityControl"
@@ -35,12 +35,17 @@ module.exports=function(filePath){
               rowsHashes.push(hash)
               matrix.seqLookup[seq] ? matrix.seqLookup[seq].push(row) : matrix.seqLookup[seq]=[row] 
               matrix.hashLookup[hash] ? matrix.hashLookup[hash].push(row) : matrix.hashLookup[hash]=[row] 
+            }else if(rowLength>0 && isLastLine(index,rows)){          
+              //This is the last row just ignore it
             }else{
               let err=new Error(`The row line:${index+1} has an invalid number of columns`)
               err.name="InvalidStructure"
               err.type="QualityControl"
               err.msg=err.message
               rej(err)
+            }
+            function isLastLine(index,rows){
+              return index==rows.length-1
             }          
           }
         })
