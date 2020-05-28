@@ -1,10 +1,12 @@
-.sidePanel{   
+.sidePanel{
     position:relative;
-    color: #ffffff; 
+    color: #393838;
     border-right: 20px solid rgba(128, 128, 128, 0.4);
     box-shadow: 2px 0px 0px rgba(0, 0, 0, 0.68);
     min-height:1000px;
-    background-color: green;
+    background-color: #6c757d; /*cinza*/
+    /*background-color: #b6cc81; */
+    font-family: scriptin;
 }
 .sidePanel .content{
   padding-left:15px; 

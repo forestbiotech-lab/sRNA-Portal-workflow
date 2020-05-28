@@ -1,12 +1,33 @@
+@font-face {
+  font-family: saucer;
+  src: url('/fonts/SaucerBB.ttf');
+}
+@font-face {
+  font-family: scriptin;
+  src: url('/fonts/SCRIPTIN.ttf');
+}
+@font-face {
+  font-family: scripalt;
+  src: url('/fonts/SCRIPALT.ttf');
+}
+@font-face {
+  font-family: zerohour;
+  src: url('/fonts/zero hour.ttf');
+}
+@font-face {
+  font-family: test;
+  src: url('/fonts/spraypaint.ttf');
+}
 body {
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
     margin: 0px;
 }
+
 .header{
     position:relative;
-    background-color: #ff9800;
-    box-shadow: 0px 2px 5px rgba(0,0,0,0.26);
-    height:100px;
+    background-color: #99B92A;/* verde*/
+    /*background-color: #646263;*/
+    height:120px;
 }
 .header .tiny-logo-header{
 	position: absolute;
@@ -19,12 +40,26 @@ body {
     bottom: 15px;
 }
 a{
-  color: #ffffff;
+  color:#FFFFFF;
+  /*color: #705353;*/
+  /*font-family: saucer;*/
+  font-family: test;
 }
+.header p{
+  position: absolute;
+  bottom: 0px;
+  font-size: xxx-large;
+  padding-left: 20px;
+}
+.header img{
+  /*display: none;*/
+  padding: 10px
+}
+
 body .menu{
 	position: relative;
 	height: 50px;
-	background-color: #EEEEEE;
+	background-color: #f7f7f7;
 	/*border-bottom: 1px solid #e5e5e5;*/
 	border-top: 2px solid #aea4a4;
 	border-bottom: 2px solid #aea4a4;
@@ -34,10 +69,11 @@ body .menu{
 body .menu a.menuItem1{
 	padding: 5px;
 	font-weight: bold;
-	/* color: #8c8787; */
+	color: #FFFFFF;
 	float: right;
 	padding-left: 10px;
 	padding-right: 10px;
+  background-color: #99B92A;
 }
 body .menu a.menuItem1.hover{
     padding: 6px;
@@ -124,4 +160,14 @@ table .expand-row{
 }
 .modal#login-modal{
   color:black;
+}
+
+
+
+/* Bootstrap overide */
+.btn.btn-success{
+  background-color: #99B92A;
+}
+.badge.badge-success{
+ background-color: #99B92A; 
 }
