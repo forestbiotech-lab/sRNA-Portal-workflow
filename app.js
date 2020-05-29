@@ -10,7 +10,8 @@ websocket=new Websocket()
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-var api = require('./routes/api');
+var db = require('./routes/db');
+var docker = require('./routes/docker');
 var other = require('./routes/other');
 var viewers = require('./routes/viewers');
 var stats = require('./routes/stats');
@@ -42,12 +43,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
-app.use('/db/api/v1',api);
+app.use('/db/api/v1',db);
+app.use('/vm/api/v1',docker);
 app.use('/viewers',viewers);
 app.use('/stats',stats);
 app.use('/de',de);
 app.use('/forms',forms);
 app.use('/', other);
+
 
 
 // catch 404 and forward to error handler
