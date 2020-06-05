@@ -5,19 +5,22 @@ html
     <!-- Global site tag (gtag.js) - Google Analytics -->
     script(async,src="https://www.googletagmanager.com/gtag/js?id=UA-116969748-1")
     title="sRNA Plant Portal"
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/fonts.css')
     link(rel='stylesheet', href='/stylesheets/footer.css')
+    link(rel='stylesheet', href='/stylesheets/frontpage.css')
+    link(rel='stylesheet', href='/stylesheets/glyphicon.css')
     link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css' integrity='sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh' crossorigin='anonymous')
+    link(rel='stylesheet', href='/stylesheets/style.css')
   body
     .header
       a(target="blank_",href="/")
-        img(style="margin-left:30px;height:100px",src="/images/logo.png")    
+        img(style="margin-left:30px;height:100px",src="/images/logo4.png")    
       a(target="blank_",href="https://biodata.pt/about_elixirpt")
         img.tiny-logo-header(src="/images/elixir-logo-transparent-ultrasmall.png")
 
     .menu
-      button.menuItem1.login-btn.btn.btn-dark(data-toggle="modal" data-target="#login-modal") login
-      a.menuItem1.login-btn.btn.btn-dark.d-none(href="/logout",role="button") logout
+      button.menuItem1.login-btn.btn.btn-success(data-toggle="modal" data-target="#login-modal") login
+      a.menuItem1.login-btn.btn.btn-success.d-none(href="/logout",role="button") logout
     .container-fluid(style="margin:0px;padding:0px;")
       .row.content-md-left(style="margin:0px")
         .mainPanel(style="width:100%")
@@ -43,6 +46,7 @@ html
               input#exampleCheck1.form-check-input(type='checkbox')
               label.form-check-label(for='exampleCheck1',title="I do absolutly nothing!") Check me out (I thought you might like to play with me.)
             input.btn.btn-primary(role="button",type='submit',value="Login")
+            a.btn.btn-success(type="button") Register
             button.btn.btn-secondary(type='button', data-dismiss='modal') Close
     .footer
       include includes/footer.pug

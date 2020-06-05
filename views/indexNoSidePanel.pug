@@ -1,9 +1,37 @@
 extends layoutNoSidePanel
 
 block content
-  //h1= title
-  
-  img.logo(style="width:30%",src="/images/under-construction.png")
+  .row.summary-title
+    .media.col-md-12.bg-light.rounded
+      .align-self-center.mr-3
+        span.mr-3.glyphicon.glyphicon-alert
+      .media-body
+        h3.mt-0 Welcome to the Plant small RNA portal. 
+        p To submit data please login
+  .container
+    .row
+      .col-sm
+      .col-sm
+        .square-link-button.rounded-lg.border.border-secondary(style="background-image:url(/images/button_backgrounds/twitter-jankolario-lRoX0shwjUQ-unsplash-low-res.jpg);",alt="Photo by Twitter: @jankolario on Unsplash")      
+        a.credits(href='https://unsplash.com/photos/lRoX0shwjUQ', target='_blank', rel='noopener noreferrer', title='Download free do whatever you want high-resolution photos from jankolario on Unsplash')
+          span(style='display:inline-block;padding:2px 3px')
+            svg(xmlns='http://www.w3.org/2000/svg', style='height:12px;width:auto;position:relative;vertical-align:middle;top:-2px;fill:white', viewBox='0 0 32 32')
+              title unsplash-logo
+              path(d='M10 9V0h12v9H10zm12 5h10v18H0V14h10v9h12v-9z')
+          span(style='display:inline-block;padding:2px 3px') jankolario
+        a.text-holder(href="/db")
+          h2.text-center Database            
+      .col-sm
+        .square-link-button.rounded.border.border-secondary(style="background-image:url(/images/button_backgrounds/casey-horner-4rDCa5hBlCs-unsplash-low-res.jpg);width: 300px;height: 300px;background-position: center;background-size: cover;",alt="Photo by Casey Horner on Unsplash")
+        a.credits(href='https://unsplash.com/photos/4rDCa5hBlCs', target='_blank', rel='noopener noreferrer', title='Download free do whatever you want high-resolution photos from Casey Horner')
+          span(style='display:inline-block;padding:2px 3px')
+            svg(xmlns='http://www.w3.org/2000/svg', style='height:12px;width:auto;position:relative;vertical-align:middle;top:-2px;fill:white', viewBox='0 0 32 32')
+              title unsplash-logo
+              path(d='M10 9V0h12v9H10zm12 5h10v18H0V14h10v9h12v-9z')
+          span(style='display:inline-block;padding:2px 3px') Casey Horner            
+        a.text-holder(href="/stats/organism")
+          h2.text-center Species List            
+      .col-sm
   br
   br
 
