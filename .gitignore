@@ -1,6 +1,7 @@
 # Environment variables
 .env
 .config_res.js
+.config_auth.js
 .config_db.js
 .keys
 
