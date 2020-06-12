@@ -17,6 +17,7 @@ var viewers = require('./routes/viewers');
 var stats = require('./routes/stats');
 var de = require('./routes/differential_expression')
 var forms = require('./routes/forms')
+var auth = require('./routes/auth')
 
 
 // redirect stdout / stderr
@@ -49,6 +50,7 @@ app.use('/viewers',viewers);
 app.use('/stats',stats);
 app.use('/de',de);
 app.use('/forms',forms);
+app.use('/auth', auth);
 app.use('/', other);
 
 
