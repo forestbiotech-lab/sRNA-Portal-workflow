@@ -4,10 +4,8 @@ var router = express.Router();
 
 
 /* GET sequences search */
-router.get('/sequence', function(req, res, next) {
-  var errMsg="API Router /sequence get - "
-  var call=sequenceSearch
-  resolveCall(call,req,res,errMsg)  
+router.get('/register', function(req, res, next) {
+  res.render('auth/register', {})  
 });
 
 
