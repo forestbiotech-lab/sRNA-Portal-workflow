@@ -1,0 +1,23 @@
+extends ../layout
+
+block content
+  link(rel='stylesheet', href='/stylesheets/thirdparty/password-strength-meter/password.min.css')
+  script(src='/javascripts/auth.js',defer)
+  if error  
+    .alert.alert-danger(role='alert')=error.message
+  form(action="/auth/login",method="post")
+    .form-group
+      label(for='login-email') Email address
+      input#login-email.form-control(name="email",type='email', aria-describedby='emailHelp')
+      small#emailHelp.form-text.text-muted We'll never share your email with anyone else.
+    .form-group
+      label(for='login-password') Password (Not implemented!)
+      input#login-password.form-control(name="password",type='password')
+    .form-group.form-check
+      input#exampleCheck1.form-check-input(type='checkbox')
+      label.form-check-label(for='exampleCheck1',title="I do absolutly nothing!") Check me out (I thought you might like to play with me.)
+    input.btn.btn-primary(role="button",type='submit',value="Login")
+    a.btn.btn-success(type="button",href="/auth/register") Register
+    button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+    
+    

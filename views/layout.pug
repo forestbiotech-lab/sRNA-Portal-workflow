@@ -23,7 +23,10 @@ html
         .progress(style="margin-left:5px; width:100px;height:16px;margin-top:4px;")
           .progress-bar(role="progressbar",aria-valuenow="0",aria-valuemin="0",aria-valuemax="100")
       button.menuItem1.login-btn.btn.btn-dark.d-none(data-toggle="modal" data-target="#login-modal") login
-      a.menuItem1.login-btn.btn.btn-secondary(role="button",href="/logout") logout
+      a.menuItem.menuItem-right.menuItem1.login-btn.btn.btn-secondary(role="button",href="/auth/logout") logout
+      a.menuItem.menuItem-right.btn.btn-success(href="/auth/profile")
+        span.glyphicon.glyphicon-user
+        | &nbsp;Profile
     .container-fluid(style="margin:0px;padding:0px;")
       .row.content-md-left(style="margin:0px")
         .sidePanel(style="width:20%;")

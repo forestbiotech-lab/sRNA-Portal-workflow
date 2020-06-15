@@ -3,20 +3,19 @@ $(document).ready(function(){
 
 var pathname=document.location.pathname
 var paths=pathname.split("/").splice(1)
+  scriptName=[]
 
-  scriptName=[
-    'helpers',
-    'ajax',  //load matrix. route:/de and one function for assay 
-    'parser',
-    'tableFunctions'
-  ]
-  if(paths[1]=="register"){
+  if(paths[1]=="list"){
      scriptName=[
-     '/../javascripts/thirdparty/password-strength-meter/password.min.js',
-     'register'
+     'userManagement'
     ]
   }
-
+  if(paths[1]=="register"){
+     scriptName=[
+      '/../javascripts/thirdparty/password-strength-meter/password.min.js',
+      'register'
+    ]
+  }
 
 
   scriptTarget = $('script#actions')[0];

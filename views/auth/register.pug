@@ -1,16 +1,34 @@
-extends layout
+extends ../layout
 
 block content
-  form
+  link(rel='stylesheet', href='/stylesheets/thirdparty/password-strength-meter/password.min.css')
+  script(src='/javascripts/auth.js',defer)
+  if error  
+    .alert.alert-danger(role='alert')=error.message
+  form(method="post",action="/auth/register")
     .form-group
-      label(for='exampleInputEmail1') Email address
-      input#exampleInputEmail1.form-control(type='email', aria-describedby='emailHelp')
-      small#emailHelp.form-text.text-muted We'll never share your email with anyone else.
+      label(for='inputFirstName') First Name
+      input#inputFirstName.form-control(name="firstName",type='text')
     .form-group
-      label(for='exampleInputPassword1') Password
-      input#exampleInputPassword1.form-control(type='password')
+      label(for='inputLastName') Last Name
+      input#inputLastaName.form-control(name="lastName",type='text')
+    .form-group
+      label(for='inputOrcid') Orcid
+      input#inputOrcid.form-control(name="orcid",type='text')
+    .form-group
+      label(for='inputEmail') Email address
+      input#inputEmail.form-control(type='email',name="email", aria-describedby='emailHelp')
+      small#emailHelp.form-text.text-muted This will be your login email!
+    .form-group
+      label(for='inputPassword') Password
+      input#inputPassword.form-control(type='password',name="password")
+    .form-group
+      label(for='inputPasswordRepeat') Retype Password
+      input#inputPasswordRepeat.form-control(type='password')
     .form-group.form-check
-      input#exampleCheck1.form-check-input(type='checkbox')
-      label.form-check-label(for='exampleCheck1') Check me out
-    button.btn.btn-primary(type='submit') Submit
-  
+      input#checkTermsOfService.form-check-input(type='checkbox')
+      label.form-check-label(for='exampleCheck1') I agree to the 
+        a(href="/privacypolicy",target="_blank") terms of service
+    button.btn.btn-primary(type='submit') Register
+    
+    

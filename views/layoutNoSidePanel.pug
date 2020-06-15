@@ -34,7 +34,7 @@ html
           button.close(type='button', data-dismiss='modal', aria-label='Close')
             span(aria-hidden='true') ×
         .modal-body
-          form(action="/login",method="post")
+          form(action="/auth/login",method="post")
             .form-group
               label(for='login-email') Email address
               input#login-email.form-control(name="email",type='email', aria-describedby='emailHelp')
@@ -46,7 +46,7 @@ html
               input#exampleCheck1.form-check-input(type='checkbox')
               label.form-check-label(for='exampleCheck1',title="I do absolutly nothing!") Check me out (I thought you might like to play with me.)
             input.btn.btn-primary(role="button",type='submit',value="Login")
-            a.btn.btn-success(type="button") Register
+            a.btn.btn-success(type="button",href="/auth/register") Register
             button.btn.btn-secondary(type='button', data-dismiss='modal') Close
     .footer
       include includes/footer.pug

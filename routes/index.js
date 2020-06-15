@@ -35,22 +35,6 @@ function fullAccess(req,res){
 }
 
 
-router.post('/login',function(req,res){
-  let email=req.body.email
-  let password=req.body.password
-  var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
-  let person_id=1
-  cookies.set( "person_id", person_id ).set( "person_id", person_id, { signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
-  res.redirect('/de')
-})
-router.get('/logout',function(req,res){
-  var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
-  cookies.set( "person_id",{expires: Date.now()}).set( "person_id", "",{ signed: true, maxAge: 0 } ); //sec * min * hour * day * month  
-  res.redirect('/')
-})
-
-
-
 /* GET home page. */
 router.get('/', function(req, res, next) {
   var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;

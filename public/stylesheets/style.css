@@ -40,13 +40,23 @@ body .menu{
 	padding: 5px;
 	/* float: right; */
 }
+body .menuItem{
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+body .menuItem-right{
+  color: white;
+  float:right;
+}
+body .menuItem-left{
+  float: left;
+
+}
 body .menu a.menuItem1{
 	padding: 5px;
 	font-weight: bold;
 	color: #FFFFFF;
-	float: right;
-	padding-left: 10px;
-	padding-right: 10px;
   /*background-color: #99B92A;*/
 }
 body .menu a.menuItem1.hover{

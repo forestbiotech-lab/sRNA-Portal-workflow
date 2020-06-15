@@ -1,9 +1,5 @@
 $(document).ready(function(){
-
-
-
-
-  $('#inputPassword').password({
+  $('#inputPassword').password({ //https://www.npmjs.com/package/password-strength-meter
     enterPass: 'Type your password',
     shortPass: 'The password is too short',
     containsField: 'The password contains your username',
@@ -14,7 +10,7 @@ $(document).ready(function(){
       67: 'Medium; try using special characters',
       94: 'Strong password',
     },
-    showPercent: false,
+    showPercent: true,
     showText: true, // shows the text tips
     animate: true, // whether or not to animate the progress bar on input blur/focus
     animateSpeed: 'fast', // the above animation speed
@@ -28,5 +24,14 @@ $(document).ready(function(){
       blue: 10,
     } // set custom rgb color ranges for colorbar.
   });
+
+  //Todo
+  //check of both passwords are identical
+
+  //validate orcid 
+  //https://github.com/altmetric/identifiers-orcid
+
+  //TODO
+  //all filled?
 
 })
