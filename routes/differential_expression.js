@@ -18,24 +18,17 @@ var formFromTable=require('./../components/forms/formFromTable')
 var upload_data=require('./../components/forms/upload_data')
 var wsClient=require('.././components/websockets/wsClient').Client
 var countAssociatedTables=require('./../components/forms/countAssociatedTables')
+var exportFile=require('./../components/miRNADB/exportFile')
 const uploadDir=path.join(__dirname, '../uploads');
 const destinationFolderRawReads = "raw_reads"
 const destinationFolderTargets = "targets"
-const crypto=require('crypto')
 var Cookies = require('cookies');
 var Keygrip = require("keygrip");
 const keylist = require('./../.config_res').cookie.keylist
 var keys = new Keygrip(keylist,'sha256','hex')
 var calculateCPM=require('./../components/miRNADB/transactions/calculateCPM')
-//////// Functions
-function genHash(){
-  let rand=(Math.random()*10000).toString()
-  let hash=crypto.createHash('sha256')
-  hash.update(rand)
-  return hash.digest('hex')
-}
-/////////
-
+const Auth =  require('node_auth_module')
+const authModule=new Auth(".config_auth.js")
 //This should not have logic.
 //Paths
 //Errors
@@ -44,11 +37,44 @@ function genHash(){
 //Multiple Promises or single
 
 
-router.get('/',function(req,res){
+async function authenticate(req,res,next){
   var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
-  let personId=cookies.get('person_id',{signed:true})
-  if(personId === undefined ){
+  let sessionId=cookies.get('session-id')
+  let userId=cookies.get('user-id',{signed:true})
+  let accessToken=cookies.get('accessToken',{signed:true})
+  let validate=await authModule.session.validateSession(sessionId,accessToken)
+  if(validate instanceof Error) {
+    res.redirect("/")
+  }else if(validate==true){
+    next()
+  }else{
+    res.redirect("/")
+  }
+}
+
+router.get('/a/:study',function(req,res){
+  require('.././components/docker/bioconductor/')("opt").then(stream=>{
+    var svg = '';
+    stream.on('data',function(data){
+      svg += data.toString('utf8');
+    });
+    stream.on('end',function(){
+      //console.log('final output ' + string);
+      res.render('svg',{svg})
+    });
+
+  })
+})
+
+router.get('/',authenticate,async function(req,res){
+  var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
+  let userId=cookies.get('user-id',{signed:true})
+  let personId=null
+  if(userId === undefined ){
     res.redirect('/')
+  }else{
+    let user=await authModule.auth.getUserMetadata(parseInt(userId))
+    personId=user.person
   }
   let tablename="Person";
   let associatedTable="Study"
@@ -97,13 +123,8 @@ router.post('/uploaded-file',function(req,res){
 router.post('/uploadMatrix',function(req,res){
   rawReadsFilePath=path.join(uploadDir, `/${req.body.studyId}/${destinationFolderRawReads}/${req.body.rawReadsfilename}`)
   let dataset=Object.assign({rawReadsFilePath},req.body)
-  let hash=genHash().toString()
   let ws=new wsClient()
-  let protocol={
-    type:"RawReads",
-    hash   
-  }
-  ws.connect(protocol,res)
+  ws.connect("rawreads",res)
   rawReadsSaveController.saveRawReads(dataset,ws).then(data=>{
     ws.close()
   },rej=>{
@@ -133,13 +154,8 @@ router.get('/assays/:study/matrix',function(req,res){
 router.post('/assays/:study/CPM',async function(req,res){
   let study_id=req.params.study
   let assay_ids=req.body.assayIds
-  let hash=genHash().toString()
   let ws=new wsClient()
-  let protocol={
-    type:"RawReads",
-    hash   
-  }
-  ws.connect(protocol,res)
+  ws.connect("CPM",res)
   await ws.isConnected()
   calculateCPM.main(assay_ids,ws).then(function(data){
     data instanceof Error ? console.log(data) : console.log(data)

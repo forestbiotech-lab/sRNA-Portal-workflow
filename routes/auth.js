@@ -77,10 +77,14 @@ router.post('/login',function(req,res){
         let country=cityCountry.coutry
         let platform=req.headers['user-agent']
         let session=await authModule.session.saveSession(id,ipv4,ipv6,platform,valid,city,country)
+        let personInfo=await authModule.auth.getUserInfo(id)
         let accessToken=session.accessToken
+        let sessionId=session.id
         var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
-        cookies.set( "accessToken", accessToken ).set( "accessToken", accessToken, { signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
-        res.render('differential_expression',{})
+        cookies.set("user-id",id).set("user-id",id,{ signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
+        cookies.set("session-id",sessionId).set("session-id",sessionId, { signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
+        cookies.set( "accessToken",accessToken).set( "accessToken", accessToken, { signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
+        res.render('differential_expression',{personInfo,numOfStudies:0})
       }catch(error){
         res.render('auth/login',{error}) 
       }
