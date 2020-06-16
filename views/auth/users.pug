@@ -3,7 +3,6 @@ extends ../layout
 block content
   link(rel='stylesheet', href='/stylesheets/thirdparty/password-strength-meter/password.min.css')
   script(src='/javascripts/auth.js',defer)
-  p FU
   table.table
     thead
       th Email 
@@ -19,10 +18,16 @@ block content
           td=user.lastName
           td
             .custom-control.custom-switch.active-switch
-              input.custom-control-input(type="checkbox",id="active"+index,value=user.ban)
+              if user.active==true
+                input.custom-control-input(type="checkbox",id="active"+index,checked)
+              else
+                input.custom-control-input(type="checkbox",id="active"+index)  
               label.custom-control-label(for="active"+index) active
           td
             .custom-control.custom-switch.ban-switch
-              input.custom-control-input(type="checkbox",id="ban"+index,value=user.ban)
+              if user.banned==true
+                input.custom-control-input(type="checkbox",id="ban"+index,checked)
+              else
+                input.custom-control-input(type="checkbox",id="ban"+index)
               label.custom-control-label(for="ban"+index) banned
     

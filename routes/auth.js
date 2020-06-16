@@ -8,10 +8,24 @@ var keylist=require('./../.config_res').cookie.keylist
 var keys = new Keygrip(keylist,'sha256','hex')
 var token=require('./../.config_res').cookie.seed
 
+
+//This is a function that must be packaged elsewhere afterwards
+function getCityAndCountry(ipv4){
+  return new Promise((res,rej)=>{
+    res({
+      city:null,
+      country:null
+    })
+  })
+}
+
+///
+
 /* GET sequences search */
 router.get('/register', function(req, res, next) {
   res.render('auth/register', {})  
 });
+
 router.post('/register', async function(req, res, next) {
   let firstName=req.body.firstName
   let lastName=req.body.lastName
@@ -47,17 +61,31 @@ router.post('/login',function(req,res){
   let email=req.body.email
   let password=req.body.password
   authModule.auth.validateLogin(email,password,callback)
-  function callback(error,id){
+  async function callback(error,id){
     if(error){
       res.render('auth/login',{error}) 
     }else{
-      res.redirect('/de')
+      try{
+        let ipv4=null
+        let ipv6 = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        if (ipv6.substr(0, 7) == "::ffff:") {
+          ipv4 = ipv6.substr(7)
+        }
+        let valid=1
+        let cityCountry=await getCityAndCountry(ipv4)
+        let city=cityCountry.city
+        let country=cityCountry.coutry
+        let platform=req.headers['user-agent']
+        let session=await authModule.session.saveSession(id,ipv4,ipv6,platform,valid,city,country)
+        let accessToken=session.accessToken
+        var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
+        cookies.set( "accessToken", accessToken ).set( "accessToken", accessToken, { signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
+        res.render('differential_expression',{})
+      }catch(error){
+        res.render('auth/login',{error}) 
+      }
     }
   }
-//  var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
-//  let person_id=1
-//  cookies.set( "person_id", person_id ).set( "person_id", person_id, { signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
-
 })
 router.get('/logout',function(req,res){
   var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
@@ -68,19 +96,19 @@ router.post('/active',function(req,res){
   let newState=req.body.newState
   let userId=req.body.userId
   if(newState==true){ 
-    authModule.auth.activateUser()
+    authModule.auth.activateUser(userId)
   }else{
-    authModule.auth.inactivateUser()
+    authModule.auth.inactivateUser(userId)
   }
 })
 router.post('/ban',async function(req,res){
   let newState=req.body.newState
   let userId=req.body.userId
   if(newState==true){ 
-    let result=await authModule.auth.banUser()
+    let result=await authModule.auth.banUser(userId)
     res.json(result)
   }else{
-    let result=await authModule.auth.unbanUser()
+    let result=await authModule.auth.unbanUser(userId)
     res.json(result)
   }
 })

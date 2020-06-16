@@ -1,22 +1,20 @@
 $(document).ready(function(){
 
-  function toggleBan(newState,userId){
+  function toggleElement(newState,userId,url,self){
     $.ajax({
-      url:"/auth/ban",
+      url,
+      method:"POST",
       data:{
         newState,
         userId
       },
       success:function(data,textStatus,jqXHR){
-
+        console.log("ok")
       },
       fail:function(jqXHR,textStatus,error){
-
+        toggleState(self,newState)
       }
     })
-  }
-  function toggleActive(newstate){
-
   }
   function getSessions(){
 
@@ -26,14 +24,24 @@ $(document).ready(function(){
     let self=$(this)
     let row=self.closest('tr')
     let userId=row.attr("user-id")
-    let newState=self.find('input').val()
-    toggleActive(newState,userId)
+    let input=self.find('input')
+    let newState=input.val()
+    toggleElement(newState,userId,"/auth/active",input)
   })
   $("td .ban-switch").on("change",function(){
     let self=$(this)
     let row=self.closest('tr')
     let userId=row.attr("user-id")
-    let newState=self.find('input').val()
-    toggleBan(newState,userId)
+    let input=self.find('input')
+    let newState=input.prop("checked")
+    toggleElement(newState,userId,"/auth/ban",input)
   })
+  function toggleState(self,currentState){
+    if(currentState==true){
+      self.prop('checked',false)
+    }else{
+      self.prop('checked',true)
+    }
+  }
+
 })
