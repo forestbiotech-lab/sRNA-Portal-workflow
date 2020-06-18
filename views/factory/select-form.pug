@@ -2,7 +2,7 @@ form.basic-form.select-form(id=name,method="POST",action="/forms/save/singletabl
   .form-group
     label(for="id") Enties from !{name}
     select.form-control(table=name,id="id",name="id",)
-        option(id="-1") Select a study
+        option(id="-1") Select a #{name}
         each entry in entries
             option(name=entry['id'],value=entry['id'],id=entry['id'])=entry['text']
   
