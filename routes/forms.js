@@ -5,7 +5,15 @@ var saveSingleTableDynamic=require('./../components/forms/saveSingleTableDynamic
 var formElementSelect=require('./../components/forms/formElementSelect')
 var tableFromTable=require('./../components/forms/tableFromTable')
 var countAssociatedTables=require('./../components/forms/countAssociatedTables')
+var Cookies = require('cookies');
+var Keygrip = require("keygrip");
+const keylist=require('./../.config_res').cookie.keylist
+const keys = new Keygrip(keylist,'sha256','hex')
+const token=require('./../.config_res').cookie.seed
+const Auth = require('node_auth_module')
+const authModule = new Auth(".config_auth.js")
 
+const limitedAccessTables=["Study"]
 //Security issues? this might allow rendering pages that it shouldn't allow.
 router.get('/factory/:template', function(req, res, next){
   res.render('factory/'+req.params.template);
@@ -39,8 +47,17 @@ router.post('/factory/select/basic/:table', function(req, res, next){
     res.render('error',error)
   })
 })
-router.get('/factory/table/basic/:table', function(req, res, next){
-  let options={tablename:req.params.table,attributes:req.body.attributes}
+router.get('/factory/table/basic/:table', async function(req, res, next){
+  let tablename=req.params.table
+  let attributes=req.body.attributes || {}
+  if(limitedAccessTables.includes(tablename)){
+    var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
+    let userId=cookies.get('user-id',{signed:true})
+    let person=await authModule.auth.getUserInfo(parseInt(userId))
+    let responsible=person.id
+    attributes=Object.assign(attributes,{where:{responsible}})
+  }
+  let options={tablename,attributes}
   tableFromTable(options).then(function(data){
     data instanceof Error? res.render('error',{error:data}) : res.render('factory/tableFromTable',{entries:data,attributes:req.body.attributes,name:req.params.table});
   }).catch(function(error){

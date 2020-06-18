@@ -16,7 +16,11 @@ var paths=pathname.split("/").splice(1)
       'register'
     ]
   }
-
+  if(paths[1]=="profile"){
+    scriptName=[
+      "profile"
+    ]
+  }
 
   scriptTarget = $('script#actions')[0];
   scriptName.forEach(scriptName=>{

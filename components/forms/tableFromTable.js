@@ -10,14 +10,16 @@ module.exports=function(options){
       let result=[] 
       data.forEach(function(row,index){
         let entry={}
-        if(attributes.length==0){
-          Object.keys(row.dataValues).forEach(attr=>{
-            entry[attr]=row.dataValues[attr]
-          })
-        }else{
-          attributes.forEach(function(attr){
-            entry[attr]=row.dataValues[attr]
-          })
+        if(!attributes.extract){
+          if(attributes.extract.length==0){
+            Object.keys(row.dataValues).forEach(attr=>{
+              entry[attr]=row.dataValues[attr]
+            })
+          }else if(attributes.extract instanceof Array){     
+            attributes.extract.forEach(function(attr){
+              entry[attr]=row.dataValues[attr]
+            })
+          }
         }
         result.push(entry)
       })

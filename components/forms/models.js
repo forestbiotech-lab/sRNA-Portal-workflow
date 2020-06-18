@@ -32,7 +32,8 @@ e.updateSingleTableDynamic = function(attributes) {
     })
 }
 e.formSelect = function(attributes) {
-    return db[attributes.tablename].findAll({}).then(function(res) {
+    let where= attributes.attributes.where ? attributes.attributes.where : null
+    return db[attributes.tablename].findAll({where}).then(function(res) {
         return res
     }).catch(function(err) {
         console.log(`formSelect for table [${attributes.tablename}] - Err:${err}`)
