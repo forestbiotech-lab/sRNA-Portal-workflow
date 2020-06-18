@@ -1,6 +1,19 @@
+/**
+@param {object}         content       text and icon
+@param {string/object}  attributes    button class or/ list of attributes
+@param {object}         action        [Optional] Action for button
+**/
 function makeButton(content,classlist,action){
   let button=document.createElement('button')
-  button.className=classlist
+  if (typeof classlist == "string"){ 
+    button.className=classlist 
+  }else if(typeof classlist == "object"){
+    let attributes=classlist
+    Object.keys(attributes).forEach(key=>{
+      let value=attributes[key]
+      button.setAttribute(key,value)
+    })
+  }  
   button.textContent=" "+content.text
   if(content.icon){
     let span=document.createElement('span')
@@ -16,7 +29,7 @@ function makeInput(attributes,classList){
   let input=document.createElement('input')
   attributes
 }
-function mkel(name,attributes){
+function mkel(name,attributes,append){
   let el=document.createElement(name)
   if(attributes){
     Object.keys(attributes).forEach(key=>{
@@ -24,12 +37,23 @@ function mkel(name,attributes){
       el.setAttribute(key,value)
     })
   }
-  return el
+  if(append){
+    append.append(el)
+    return el  
+  }else{
+    return el  
+  }
 }
+/**
+@param {object}       attribtues  Tr attributes
+@param {array}        contents    Cell contents
+@param {array/object} metadata    cell attributes
+@param {boolean}      header      optional, idicates wheather this row is a header or not.
+**/
 function makeRow(attributes,contents,metadata,header){
   let tr=mkel('tr',attributes)
   if(contents instanceof Array){
-    contents.forEach(content=>{
+    contents.forEach((content,index)=>{
       if(metadata instanceof Array && metadata.length != contents.length ) metadata={}
       let cell=mkel((header?"th":"td"),(metadata instanceof Array ? metadata[index] : metadata))
       cell.append(content)
