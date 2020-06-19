@@ -1,11 +1,10 @@
 var WebSocketClient = require('websocket').client;
 var models=require('./../forms/models')
 var fs = require('fs')
-
+var utils=require('./../miRNADB/helpers/utils')
 const PORT= require('./../../.config_res').websocket.port
 const DOMAIN = require('./../../.config_res').host.domain
 const HOST= process.env.mode=="PRODUCTION" ? DOMAIN : "localhost";
-
 class Client{
     constructor(){
         let client = new WebSocketClient();
@@ -14,7 +13,7 @@ class Client{
         this.origin={}
         this.options={}
         let _this=this
-        
+        this.utils=utils
         if(process.env.mode=="PRODUCTION"){
           this.extraRequestOptions={
             key:fs.readFileSync(`/etc/letsencrypt/live/${DOMAIN}/privkey.pem`,'ascii'),
@@ -66,9 +65,10 @@ class Client{
             connected(self,res)
         })
     }
-    connect(protocol,routerResult){
+    connect(protocolType,routerResult){
         let client=this.client
         let self=this
+        let protocol=this.generateProtocol(protocolType)
         this.protocol=this.lowerCaseProtocol(protocol) 
         this.addProtocolToDB(protocol,routerResult).then(protocol=>{
             let connectionProtocol= process.env.mode=="PRODUCTION" ? "wss" : "ws"
@@ -77,16 +77,60 @@ class Client{
         })
 
     }
+    generateProtocol(type){
+      let hash=this.utils.genHash().toString('utf8') 
+      return {
+            hash,   
+            type
+        }
+    }
     lowerCaseProtocol(protocol){
         Object.keys(protocol).forEach(key=>{
             protocol[key]=protocol[key].toLowerCase()
         })
         return protocol
     }
-    sendMsg(msg){
+    sendManifest(readableBuffer){
+        let bufferList=readableBuffer.head
+        let manifest=[]
+        manifest.push({
+            base64Slice:bufferList.data.base64Slice(),
+            length:bufferList.data.byteLength
+        })
+        while(bufferList.next!=null){
+            manifest.push({
+                base64Slice:bufferList.next.data.base64Slice(),
+                length:bufferList.next.data.byteLength
+            })
+            bufferList=bufferList.next
+        }
+        this.sendMsg(JSON.stringify({manifest}))
+    }
+
+    sendMsg(message){
       if(this.connection)
         if(this.connection.connected){
-          this.connection.sendUTF(msg)
+            if (message.type === 'utf8') {
+                //console.log('Received Message: ' + message.utf8Data);
+                this.connection.sendUTF(message.utf8Data);
+            }
+            else if (message.readable) {
+                if(message.readable){
+                    if(message.readableBuffer){
+                        let connection=this.connection
+                        let rb=message.readableBuffer.head 
+                        this.sendManifest(message.readableBuffer)    
+                        this.connection.sendBytes(rb.data)
+                        while(rb.next!=null){
+                            connection.sendBytes(rb.next.data)
+                            rb=rb.next
+                        }
+                    }
+                }
+                //console.log('Received Binary Message of ' + message.binaryData.length + ' bytes');
+            } else{
+                this.connection.sendUTF(message);
+            }
         }else{
           console.log("Please connect first")
       }else{

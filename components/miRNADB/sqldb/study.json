@@ -1,0 +1,10 @@
+{
+  "id": "This is the database identifier for this study",
+  "title": "The title that will be displayed for this study",
+  "responsible":"The id of the person responsible for this study",
+  "description": "A breif description of the study",
+  "releaseDate": "The date when the study can be converted to public",
+  "objective": "List of goals that were under evaluation. Example: Testing salt stress.",
+  "active": "Is the study still ongoing?",
+  "public": "Can this study be viewed publicly currently?"
+}

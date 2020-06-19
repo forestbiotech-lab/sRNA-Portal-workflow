@@ -1,0 +1,165 @@
+#!/usr/bin/env Rscript
+library("optparse")
+ 
+option_list = list(
+  make_option(c("-a", "--address"), type="character", default='192.168.1.7', 
+              help="host address", metavar="character"),
+  make_option(c("-p", "--port"), type="character", default=3000, 
+              help="port", metavar="character"),
+  make_option(c("-s", "--study"), type="character", default=NULL, 
+              help="study name", metavar="character"),
+  make_option(c("-c", "--contrasts"), type="character", default=NULL, 
+              help="Contrasts vector", metavar="character"),
+  make_option(c("-o", "--out"), type="character", default="out.txt", 
+              help="output file name [default= %default]", metavar="character")
+); 
+ 
+opt_parser = OptionParser(option_list=option_list);
+opt = parse_args(opt_parser);
+
+study=opt$study
+contrasts=opt$contrasts
+address=opt$address
+port=opt$port
+
+#study=1;address="192.168.1.7";port=3000
+
+#Matrix of design
+download.file(paste(address,':',port,'/db/api/v1/assays/',study,'/design/study_design.tsv',sep=""),'study_design.tsv')
+sRNA.design=read.table("study_design.tsv",sep="\t",header=TRUE,row.names=1)
+
+download.file(paste(address,':',port,'/db/api/v1/assaydata/',study,'/raw_reads.tsv',sep=""),'raw_reads.tsv')
+sRNA.matrix=read.table("raw_reads.tsv",sep="\t",header=TRUE,row.names=1)
+
+#Contrasts adds factors and modalities
+download.file(paste(address,':',port,'/db/api/v1/assays/',study,'/design/study_design.tsv',sep=""),'study_design.tsv')
+sRNA.design=read.table("study_design.tsv",sep="\t",header=TRUE,row.names=1)
+
+
+factors=row.names(sRNA.design)[sRNA.design$type=="Factor"]
+for (factor in factors){
+  if( exists("sRNA.factor") ){
+    sRNA.factor=rbind(sRNA.factor,rep("",ncol(sRNA.design)-2))
+    rownames(sRNA.factor)[nrow(sRNA.factor)]=factor
+  }else{
+    sRNA.factor=rbind(rep("",ncol(sRNA.design)-2))
+    colnames(sRNA.factor)=colnames(sRNA.design[,-c(1,2)])
+    rownames(sRNA.factor)=factor
+  }
+  subMatrixFactor=sRNA.design[sRNA.design$factor==factor,]
+  for(i in which(subMatrixFactor$type=="Modality")){
+    sRNA.factor[factor,as.vector(subMatrixFactor[i,]==1)[-c(1,2)]]=rownames(subMatrixFactor)[i]  
+  }
+}
+#Get selection either by name or by index
+factor=as.character(sRNA.factor["Tissue",])
+modalities=as.character(sRNA.factor[1,])
+#Outputs
+download.file(paste('192.168.1.7:3000/db/api/v1/assays/',study,'/matrix/outputs.tsv',sep=""),'outputs.tsv')
+
+
+#Test if all value are present else caculate based on available
+sRNA.counts=read.table("outputs.tsv",sep="\t",header=TRUE)
+
+
+sRNA.data=rbind(factors=factor,modalities=as.character(modalities),sRNA.matrix[,-1])
+##Removes
+colnames(sRNA.data)=as.character(lapply(as.list(strsplit(colnames(sRNA.data),".",TRUE)),"[",1))
+sRNA.cpm=t(apply(sRNA.data[-c(1,2),],1,function(x) (as.numeric(x)/as.numeric(sRNA.counts))*1000000))
+sRNA.raw=t(apply(sRNA.data[-c(1,2),],1,function(x) (as.numeric(x))))
+colnames(sRNA.raw)=colnames(sRNA.data)
+colnames(sRNA.cpm)=colnames(sRNA.data) #error
+sRNA.cons=grep("mir",sRNA.matrix[,1])
+sRNA.cons.cpm=sRNA.cpm[sRNA.cons,]
+
+
+#PCA
+library("ggfortify")
+#library("svglite")
+title="PCA_Log_Color-factor_shape-modalites"
+filetype=".svg"
+pca=autoplot(prcomp(t(log(sRNA.matrix[,-1]+0.000001))), data=t(sRNA.data),color="factors",shape="modalities",label=FALSE,label.size=3,title=title)
+ggsave(file=paste(title,filetype,sep=""), plot=pca, width=10, height=8)
+
+
+#Heatmap
+library(pheatmap)
+library(RColorBrewer)
+library(viridis)
+
+mat_col=data.frame(factor)
+mat_colors=list(Factors=factor)
+rownames(mat_col)=colnames(sRNA.factor)
+file="Heatmap-log.svg"
+heatmap=pheatmap(log(sRNA.cons.cpm+1),color=inferno(10),show_rownames=FALSE,annotation_col=mat_col)
+ggsave(file=file, plot=heatmap, width=10, height=8)
+#mat_col=data.frame(modalities)
+#rownames(mat_col)=colnames(sRNA.data)
+#svg("Heatmap-log-noXylem.svg");pheatmap(log(sRNA.cons.cpm[,-c(7,8,9)]+1),color=inferno(10),show_rownames=FALSE,annotation_col=mat_col[-c(7,8,9)]);dev.off();
+
+
+
+#DE
+library(edgeR)
+# 
+
+###########!!!!!!!!#######################################
+#sRNA.targets=data.frame(t(sRNA.data[c(1,2),]))
+#sRNA.groups=factor(paste(sRNA.targets$factors,sRNA.targets$modalities,sep="."))
+###########!!!!!!!!#######################################
+contrast=1  ##Remove
+sRNA.groups=factor(t(sRNA.factor[contrast,]))
+
+#cbind(sRNA.targets,Groups=sRNA.groups)
+y=DGEList(counts=sRNA.raw,group=sRNA.groups,lib.size=(as.numeric(sRNA.counts)))
+design<-model.matrix(~0+group, data=y$samples) #0+ means no intercept
+#normalizes for RNA composition by finding a set of scaling factors for the library sizes that minimize the log-fold changes between the samples for most genes.
+y <- calcNormFactors(y)
+y <- estimateDisp(y,design, robust=TRUE)
+#Common dispersion is only applicable with a single factor design TagWiseDisp only estiamated with the common dispersion is estimated
+#y <- estimateCommonDisp(y,design)
+fit<- glmQLFit(y,design,robust=TRUE)
+ 
+png("plotMDS.png")
+######### Need some action to be taken the thing is hardcoded!
+plotMDS(y,labels=factor)  
+dev.off()
+
+
+ 
+y <- estimateDisp(y, design, robust=TRUE)
+png("plotBCV.png")
+plotBCV(y)
+dev.off()
+# 
+BCV=sqrt(y$common.dispersion)
+# 
+
+png("plotQLDisp.png")
+plotQLDisp(fit)
+dev.off()
+ 
+ 
+###!!  contrast vector depends on number of modalities##
+#######DE for a contrast
+qlf.XilemavsPhellogen <- glmQLFTest(fit, contrast=c(-1,1))  
+conditionTopTags=topTags(qlf.XilemavsPhellogen,n=20)
+write.table(conditionTopTags,file="topTags.tsv",sep='\t')
+
+
+
+#####################################!!!!!!!!!!!!!!!!! ATTENTION!!!!!!!!!!!!!!!!!!
+XilVsPhell.de=topTags(qlf.XilemavsPhellogen,n=33709)$table  ##The number here is hardcoded!
+rNames=rownames(XilVsPhell.de)
+XilVsPhell.all=cbind(names=sRNA.matrix[rNames,1],sRNA.cpm[rNames,],XilVsPhell.de)
+
+
+write.table(XilVsPhell.all,file="Xilema vs Phellogen.tsv",sep='\t')
+# 
+sRNA.summary=summary(decideTests(qlf.XilemavsPhellogen))
+write.table(sRNA.summary,file="summary.tsv",sep='\t')
+
+png("plotMD.png")
+plotMD(qlf.XilemavsPhellogen)
+abline(h=c(-1, 1), col="blue")
+dev.off()

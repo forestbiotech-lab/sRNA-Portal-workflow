@@ -3,19 +3,39 @@ extends ../layout
 block content
   link(rel='stylesheet', href='/stylesheets/thirdparty/password-strength-meter/password.min.css')
   script(src='/javascripts/auth.js',defer)
-  h1 Profile
-  p configuration page where you can set personal actions
-
-  h3 Studies privacy
-  p not available
-  h3 Authorizations
-  p not available
-  h3 Active sessions
-  p not available
-  h3 Applications with access to you account
-  p not available
+  h1 Personal profile
+  h5 This is your configuration page where you can view persmissions and set personal configurations.
+  .card
+    .card-body
+      p first name: 
+        span.badge.badge-success #{personInfo.firstName}
+      p last name: 
+        span.badge.badge-success #{personInfo.lastName}
   button.btn.btn-secondary change name
   button.btn.btn-secondary change orcid
   button.btn.btn-secondary change password
+  h3 Studies privacy&nbsp;
+    button.btn.btn-success.btn-sm(type='button', data-toggle='collapse', data-target='#studies', aria-expanded='false', aria-controls='studies')
+      span.glyphicon.glyphicon-menu-down
+  .collapse(id="studies")
+    .card.card-body
+      p.text-center not available
+  h3 Authorizations&nbsp;
+    button.btn.btn-success.btn-sm(type='button', data-toggle='collapse', data-target='#authorizations', aria-expanded='false', aria-controls='authorizations')
+      span.glyphicon.glyphicon-menu-down
+  .collapse(id="authorizations")
+    .card.card-body
+      p.text-center not available
+  h3 Active sessions&nbsp;
+    button.btn.btn-success.btn-sm.active-sessions(type='button', data-toggle='collapse', data-target='#active-sessions', aria-expanded='false', aria-controls='active-sessions')
+      span.glyphicon.glyphicon-menu-down
+  .collapse(id="active-sessions")
+    .card.card-body
+  h3 Applications with access to you account&nbsp;
+    button.btn.btn-success.btn-sm(type='button', data-toggle='collapse', data-target='#apps', aria-expanded='false', aria-controls='apps')
+      span.glyphicon.glyphicon-menu-down
+  .collapse(id="apps")
+    .card.card-body
+      p.text-center not available  
 
     

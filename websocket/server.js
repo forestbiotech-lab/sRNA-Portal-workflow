@@ -149,7 +149,7 @@ class websocketServer{
                     })
                 }
                 console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
-            });
+            });          
             connection.on('message', function(message) {
                 that.sendMessageToProtocol(message,authProtocol)    
             });      

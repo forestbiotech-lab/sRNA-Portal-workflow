@@ -4,7 +4,7 @@ The plant sRNA portal is an online resource integrating a workflow for identifyi
 Check out more information on this <a href="https://srna-portal.biodata.pt/"/>here</a>
 
 ## Run docker with edgeR
-[see instruction](/components/docker/bioconductor)
+[see instructions](/components/docker/bioconductor)
 
 ## Run miRPursuit
 

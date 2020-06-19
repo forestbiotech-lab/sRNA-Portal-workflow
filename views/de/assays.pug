@@ -1,6 +1,7 @@
 extends ../layout
 
 block content
+  link(rel='stylesheet', href='/stylesheets/assays.css')
   script(id="database",src="/javascripts/de.js",defer)
   .card-block
     .container-fluid
@@ -54,9 +55,84 @@ block content
                   th Modality
               tbody
             button.btn.btn-secondary.generate-contrasts Generate Contrasts
-            
-            
-
+          .card.differential-expression.d-none
+            .card-header
+              h5.card-title Differential Expression
+            .card-body
+              .container-fluid
+                .de-status.rounded(style="background-color:#FFd97D")
+                  .row
+                    .col-2
+                      span.badge.badge-dark
+                        h2 Status:
+                    .col-1
+                      .spinner-border.text-primary(role='status',style="padding:20px;color: #FF9B85;")
+                        span.sr-only(text='loading...')
+                    .col
+                      span.badge.badge-warning
+                        h2.status-text Finished building image!
+                .de
+                  .row.includes-graph.preliminary
+                    .col-md-6.fullscreen-able(style="border:1px solid black")
+                      .file-container.de-pca(filename="PCA_Log_Color-factor_shape-modalites.svg")
+                        p.bg-light(style="position:relative;top:0px;left:0px;padding:7px;") PCA 
+                    .col-md-6.fullscreen-able(style="border:1px solid black")
+                      .file-container.de-mds(filename="plotMDS.png")
+                        p.bg-light(style="position:relative;top:0px,left:0px;padding:7px;") MDS  
+                  .row.includes-graph.preliminary
+                    .col-md-6.fullscreen-able(style="border:1px solid black")
+                      .de-bcv.file-container(filename="plotBCV.png")
+                        p.bg-light(style="position:relative;top:0px;left:0px;padding:7px;") Biological Coefficient of variation (BCV)
+                    .col-md-6.fullscreen-able(style="border:1px solid black")
+                      .de-qld.file-container(filename="plotQLDisp.png")
+                        p.bg-light(style="position:relative;top:0px,left:0px;padding:7px;") Quasi-likelihood (QL) dispersion  
+                .row.summary-title
+                  .media.col-md-12.bg-light.rounded
+                    .align-self-center.mr-3
+                      span.glyphicon.glyphicon-equalizer
+                    .media-body
+                      h3.mt-0 Summary Contrast - 
+                .row.includes-graph
+                  .col-md-6
+                    table.table.summary-de
+                      thead
+                        tr
+                          th state
+                          th number
+                      tbody
+                        tr.down
+                          th Down
+                          td.value xxxxxx
+                        tr.notsig
+                          th Not Significant
+                          td.value xxxxxx
+                        tr.up
+                          th Up
+                          td.value xxxxxx
+                  .col-md-6.fullscreen-able(style="border:1px solid black")
+                    .de-plotMD.file-container(filename="plotMD.png")
+                      p.bg-light(style="position:relative;top:0px,left:0px;padding:7px;") Dispersion
+                .row.top-de-title
+                  .media.col-md-12.bg-success.rounded
+                    .align-self-center.mr-3
+                      span.glyphicon.glyphicon-tasks   
+                    .media-body
+                      h4.mt-0 Top DE
+                .row                  
+                  .col-md-12
+                    table.table.top-tags
+                      thead
+                        th Sequence
+                        th logFC
+                        th logCPM
+                        th F
+                        th PValue
+                        th FDR
+                      tbody
+                .row.includes-graph
+                  .col-md-6.fullscreen-able(style="border:1px solid black")
+                    .file-container.de-heatmap(filename="Heatmap-log.svg")
+                      p.bg-light(style="position:relative;top:0px;left:0px;padding:7px;") Heatmap Conserved
     .row
       .col-lg-12    
         .card.assay-list

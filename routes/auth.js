@@ -18,8 +18,21 @@ function getCityAndCountry(ipv4){
     })
   })
 }
-
 ///
+async function authenticate(req,res,next){
+  var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
+  let sessionId=cookies.get('session-id')
+  let accessToken=cookies.get('accessToken',{signed:true})
+  let validate=await authModule.session.validateSession(sessionId,accessToken)
+  if(validate instanceof Error) {
+    res.redirect("/")
+  }else if(validate==true){
+    next()
+  }else{
+    res.redirect("/")
+  }
+}
+
 
 /* GET sequences search */
 router.get('/register', function(req, res, next) {
@@ -48,9 +61,28 @@ router.get('/list/users', function(req, res, next) {
     res.render('error',error)
   })  
 });
-
-router.get('/profile',function(req,res,next){
-  res.render('auth/profile',{})
+router.post('/list/sessions',authenticate,async function(req,res){
+  var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
+  let userId=cookies.get('user-id',{signed:true})
+  try{
+    let sessions=await authModule.session.listSessions(userId)
+    res.json(sessions)
+  }catch(error){
+    res.status(400).json(error)
+  }
+})
+router.get('/profile',async function(req,res,next){
+  var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
+  let userId=cookies.get('user-id',{signed:true})
+  let personId=null
+  if(userId === undefined ){
+    res.redirect('/')
+  }else{
+    let user=await authModule.auth.getUserMetadata(parseInt(userId))
+    personId=user.person
+  }
+  let personInfo=await authModule.auth.getUserInfo(parseInt(userId))
+  res.render('auth/profile',{personInfo});
 })
 
 router.get('/login',function(req,res,next){

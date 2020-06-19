@@ -349,7 +349,18 @@ $('document').ready(function() {
           }
         )
         self.closest('.card-body').after(designCard)
-        designCard=self.closest('.card-body').next('.card-body.design-matrix')          
+        let designFooter=mkel('div', {
+          class: "card-footer calculate-de"
+          }
+        )
+        let buttonGenerateDE=makeButton(
+          {text:"calculate differential expression",icon:"equalizer"},
+          "btn btn-success calculate-de",
+          {evt:"click",action:function(){}}
+        )
+        designFooter.append(buttonGenerateDE)
+        self.closest('.card-body').next().after(designFooter)
+        designCard=self.closest('.card-body').next('.card-body.design-matrix')
       }
       return designCard
     }

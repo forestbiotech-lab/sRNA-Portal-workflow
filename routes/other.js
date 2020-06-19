@@ -26,6 +26,21 @@ function fullAccess(req,res){
 
 }
 
+
+
+router.get('/:webworker', function(req,res){
+  if(isWebworker(res.param.webworker)){
+    res.location('index',{title: "Other"})
+  }else{
+    res.render('index',{title: "Other"})
+  }
+  function isWebworker(path){
+    //example path: a1048279-2f57-46ee-b9dc-64e56c24f6db
+    let pathParts=path.split("-")
+    return path.length==36 && pathParts.length==5 && pathParts[0]==8 && pathParts[4]==12 
+  }
+})
+
 router.get('/*', function(req,res){
   if (!fullAccess(req,res)) return null;
   res.render('index',{title: "Other"})

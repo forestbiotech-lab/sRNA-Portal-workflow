@@ -10,6 +10,7 @@ block content
       th Last name
       th Active
       th Banned
+      th Sessions
     tbody
       each user, index in entries
         tr(user-id=user.userId,person-id=user.personId)
@@ -30,4 +31,14 @@ block content
               else
                 input.custom-control-input(type="checkbox",id="ban"+index)
               label.custom-control-label(for="ban"+index) banned
+          td
+            button.get-sessions.btn.btn-sm.btn-secondary(type='button', data-toggle='collapse', data-target='#session-collapse'+index, aria-expanded='false', aria-controls='session-collapse'+index)
+              span.glyphicon.glyphicon-list-alt 
+              | &nbsp;Sessions
+                      
+          tr
+            td(colspan=6).collapse(id="session-collapse"+index)
+              .card.card-body
+
+
     
