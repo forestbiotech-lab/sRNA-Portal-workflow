@@ -8,7 +8,8 @@ var paths=pathname.split("/").splice(1)
     'helpers',
     'ajax',  //load matrix. route:/de and one function for assay 
     'parser',
-    'tableFunctions'
+    'tableFunctions',
+    'deviationsFromDefault'
   ]
 
   if(paths[1]=="uploaded-file"){
@@ -23,6 +24,10 @@ var paths=pathname.split("/").splice(1)
      scriptName=[
       'helpers',
       'assay',
+      'edgeR',
+      //'../thirdparty/js-untar/untar-worker',
+      //'../thirdparty/js-untar/ProgressivePromise',
+      '../thirdparty/js-untar/untar'
     ]
   }
   if(paths[1]=="assaydata"){

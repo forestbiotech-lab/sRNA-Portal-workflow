@@ -9,8 +9,8 @@ block content
         .col-lg-12
           .card
             .card-body
-              h4.card-title.personal-stats Welcome to your personal area 
-                span.badge.badge-success !{name}
+              h4.card-title.personal-info Welcome to your personal area 
+                span.badge.badge-success.person-name(person-id=personInfo.id) !{name}
             .card-body 
               p You are currently responsible for 
                 span.badge.badge-success(title="click to show studies") !{numOfStudies} studies 

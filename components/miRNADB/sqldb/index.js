@@ -22,7 +22,7 @@ var db = {
 
 //Get all file names in this directory that start with a capital letter and have a Java script extension.
 //This may be bad for performance 
-var tables=glob.sync(__dirname+'/'+'!([a-z]*.js|*.[^j][^s]*|.gitignore)')
+var tables=glob.sync(__dirname+'/'+'!([a-z]*.js|*.[^j][^s]*|*.json|.gitignore)')
 //Table / attribute association
 for( index in tables){
   var table=path.basename(tables[index],'.js');

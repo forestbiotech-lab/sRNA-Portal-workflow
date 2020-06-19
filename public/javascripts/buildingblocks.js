@@ -25,9 +25,16 @@ function makeButton(content,classlist,action){
   }
   return button
 }
-function makeInput(attributes,classList){
+function makeInput(attributes){
   let input=document.createElement('input')
-  attributes
+  input.setAttribute("class", "form-control")
+  if(attributes){
+    Object.keys(attributes).forEach(key=>{
+      let value=attributes[key]
+      input.setAttribute(key,value)
+    })
+  }
+  return input
 }
 function mkel(name,attributes,append){
   let el=document.createElement(name)

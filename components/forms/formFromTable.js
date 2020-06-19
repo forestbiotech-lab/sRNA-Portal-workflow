@@ -1,5 +1,7 @@
 var db=require('./../miRNADB/sqldb')
 var models=require('./models')
+var glob=require('glob')
+var fs=require('fs')
 
 let inputType={
   INTEGER:"number",
@@ -12,18 +14,31 @@ let inputType={
 }
 
 
-
+function searchForTableMetadata(table){
+  table=table.toLowerCase()
+  let tableMetadata=glob.sync(`${__dirname}/../miRNADB/sqldb/${table}.json`)
+  if(tableMetadata.length==1){
+    let metadata=fs.readFileSync(tableMetadata[0],"utf8")
+    return JSON.parse(metadata)
+  }else{
+    return null
+  }
+}
 
 
 function ts(table){
   let tableStructure=[]
+  let tableMetadata=searchForTableMetadata(table)
   if (db[table]==undefined) throw new Error(`This table [${table}] does not exist!`);
+  //if(tableMetadata!=null) 
   var associations=db[table].associations
   var tableAttributes=db[table].tableAttributes
   Object.keys( tableAttributes ).forEach(function(attribute){
     fk=isAttrAFK(attribute,associations)
     let type= fk.targetKey==null ? tableAttributes[attribute].type.key : "FK"
-    tableStructure.push({name:attribute, type:inputType[type], fk })
+    let metadata=null
+    if(tableMetadata) if(tableMetadata[attribute]) metadata=tableMetadata[attribute]
+    tableStructure.push({name:attribute, type:inputType[type], fk, metadata })
   })
   return tableStructure
 }

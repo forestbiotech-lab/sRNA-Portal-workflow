@@ -263,6 +263,7 @@ $(document).ready(function(){
         let options=selectTarget.find('option') //Makes no sense but was unable to parse the jquery Object incomingHTML
         selectTarget.html(options)
         selectTarget.find(`option[id|=${selectedID}]`).prop('selected','true')
+        $('body').trigger('loadedSelect')
       },
       error:function(qXHR,textStatus,err){
         console.error(err)
