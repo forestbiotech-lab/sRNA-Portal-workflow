@@ -2,7 +2,7 @@ $(document).ready(function(){
 
   function toggleElement(newState,userId,url,self){
     $.ajax({
-      url,
+      url:url,
       method:"POST",
       data:{
         newState,
@@ -73,7 +73,7 @@ function makeButton(content,classlist,action){
     let row=self.closest('tr')
     let userId=row.attr("user-id")
     let input=self.find('input')
-    let newState=input.val()
+    let newState=input.prop("checked")
     toggleElement(newState,userId,"/auth/active",input)
   })
   $("td .ban-switch").on("change",function(){

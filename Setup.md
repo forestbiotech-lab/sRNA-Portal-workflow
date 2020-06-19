@@ -73,7 +73,10 @@ sudo chsh ${USERNAME} -s /usr/bin/zsh
 	create USER 'webapp'@'localhost' IDENTIFIED WITH mysql_native_password BY 'randompassword'; GRANT ALL PRIVILEGES ON `sRNAPlantPortal`.* TO 'webapp'@'localhost'; FLUSH PRIVILEGES;
 	sudo mysql -u root -D ${db} -p <SQL/LATEST_dump.sql
 
-	##Fix auth method
+  REVOKE ALL privileges ON `sRNAPlantPortal`.`User` FROM `webapp`; 
+	REVOKE ALL privileges ON `sRNAPlantPortal`.`Access` FROM `webapp`; 
+
+  ##Fix auth method
 	ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password'
 ```
 

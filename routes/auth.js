@@ -131,7 +131,7 @@ router.get('/logout',function(req,res){
 router.post('/active',function(req,res){
   let newState=req.body.newState
   let userId=req.body.userId
-  if(newState==true){ 
+  if(newState=="true"){ 
     authModule.auth.activateUser(userId)
   }else{
     authModule.auth.inactivateUser(userId)
@@ -140,7 +140,7 @@ router.post('/active',function(req,res){
 router.post('/ban',async function(req,res){
   let newState=req.body.newState
   let userId=req.body.userId
-  if(newState==true){ 
+  if(newState=="true"){ 
     let result=await authModule.auth.banUser(userId)
     res.json(result)
   }else{
