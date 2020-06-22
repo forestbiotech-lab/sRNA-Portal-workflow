@@ -19,14 +19,17 @@ html
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
     .header
-      a(target="blank_",href="/")
+      a(href="/")
         img(style="margin-left:30px;height:100px",src="/images/logo4.png")    
       a(target="blank_",href="https://biodata.pt/about_elixirpt")
         img.tiny-logo-header(src="/images/elixir-logo-transparent-ultrasmall.png")
 
     .menu
-      button.menuItem1.login-btn.btn.btn-success(data-toggle="modal" data-target="#login-modal") login
-      a.menuItem1.login-btn.btn.btn-success.d-none(href="/logout",role="button") logout
+      button.menu-item.menu-item1.login-btn.btn.btn-success(data-toggle="modal" data-target="#login-modal") login
+      a.menu-item.menu-item-right.menu-item1.logout-btn.btn.btn-success(href="/auth/logout",role="button") logout
+      a.menu-item.menu-item-right.profile-btn.btn.btn-success(href="/auth/profile")
+        span.glyphicon.glyphicon-user
+        | &nbsp;Profile
     .container-fluid(style="margin:0px;padding:0px;")
       .row.content-md-left(style="margin:0px")
         .mainPanel(style="width:100%")
@@ -57,5 +60,6 @@ html
     .footer
       include includes/footer.pug
     include includes/thirdpartyScripts.pug  
+    script(src="/javascripts/auth/login.js")  
     script(src="/javascripts/goAnalytics.js")
     script(src="/javascripts/bootstrap3-typeahead.min.js")

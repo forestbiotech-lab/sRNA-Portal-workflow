@@ -23,16 +23,35 @@ async function authenticate(req,res,next){
   var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
   let sessionId=cookies.get('session-id')
   let accessToken=cookies.get('accessToken',{signed:true})
-  let validate=await authModule.session.validateSession(sessionId,accessToken)
-  if(validate instanceof Error) {
-    res.redirect("/")
-  }else if(validate==true){
-    next()
-  }else{
+  try{    
+    let validate=await authModule.session.validateSession(sessionId,accessToken)
+    if(validate instanceof Error) {
+      res.redirect("/")
+    }else if(validate==true){
+      next()
+    }else{
+      res.redirect("/")
+    }
+  }catch(err){
     res.redirect("/")
   }
 }
 
+router.get('/loggedin',authenticate, async function(req,res){
+  var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
+  let sessionId=cookies.get('session-id')
+  let accessToken=cookies.get('accessToken',{signed:true})
+  try{    
+    let validate=await authModule.session.validateSession(sessionId,accessToken)
+    if (validate==true){
+     res.json({logged:true})
+    }else{
+      throw Error("invalid")
+    }
+  }catch(err){
+    res.json({logged:false})
+  }  
+})
 
 /* GET sequences search */
 router.get('/register', function(req, res, next) {
@@ -71,7 +90,7 @@ router.post('/list/sessions',authenticate,async function(req,res){
     res.status(400).json(error)
   }
 })
-router.get('/profile',async function(req,res,next){
+router.get('/profile',authenticate,async function(req,res,next){
   var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
   let userId=cookies.get('user-id',{signed:true})
   let personId=null
@@ -125,7 +144,9 @@ router.post('/login',function(req,res){
 })
 router.get('/logout',function(req,res){
   var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
-  cookies.set( "person_id",{expires: Date.now()}).set( "person_id", "",{ signed: true, maxAge: 0 } ); //sec * min * hour * day * month  
+  cookies.set( "user-id",{expires: Date.now()}).set( "user-id", "",{ signed: true, maxAge: 0 } ); //sec * min * hour * day * month  
+  cookies.set( "session-id",{expires: Date.now()}).set( "session-id", "",{ signed: true, maxAge: 0 } ); //sec * min * hour * day * month  
+  cookies.set( "accessToken",{expires: Date.now()}).set( "accessToken", "",{ signed: true, maxAge: 0 } ); //sec * min * hour * day * month  
   res.redirect('/')
 })
 router.post('/active',function(req,res){

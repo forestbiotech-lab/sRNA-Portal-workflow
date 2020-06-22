@@ -40,32 +40,33 @@ body .menu{
 	padding: 5px;
 	/* float: right; */
 }
-body .menuItem{
+body .menu-item{
   padding: 5px;
   padding-left: 10px;
   padding-right: 10px;
 }
-body .menuItem-right{
+body .menu-item-right{
   color: white;
   float:right;
 }
-body .menuItem-left{
+body .menu.item-left{
   float: left;
-
 }
+
+/* Remove?*/
 body .menu a.menuItem1{
 	padding: 5px;
 	font-weight: bold;
 	color: #FFFFFF;
   /*background-color: #99B92A;*/
 }
-body .menu a.menuItem1.hover{
+body .menu a.menu-item1.hover{
     padding: 6px;
     font-weight: bold;
     color: white;
     background-color: #FE9050;
 }
-body .menu button.menuItem1{
+body .menu button.menu-item1{
   padding: 5px;
   font-weight: bold;
   /* color: #8c8787; */
@@ -73,12 +74,14 @@ body .menu button.menuItem1{
   padding-left: 10px;
   padding-right: 10px;
 }
-body .menu button.menuItem1.hover{
+body .menu button.menu-item1.hover{
     padding: 6px;
     font-weight: bold;
     color: white;
     background-color: #FE9050;
 }
+/* end remove*/
+
 .menu .miRPursuit-bar{
   color:white;
   position:absolute;
