@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-  scriptName=[
+  let scriptName=[
     'loaders',
     'setters',
     'getters',
@@ -9,6 +9,14 @@ $(document).ready(function(){
     'sequence-viewer',
   ]
 
+  var pathname=document.location.pathname
+  var paths=pathname.split("/").splice(1)
+
+  if(paths[1]=="organism"){
+     scriptName=[
+      'stats'
+    ]
+  }
 
   scriptTarget = $('script#actions')[0];
   for (s in scriptName){

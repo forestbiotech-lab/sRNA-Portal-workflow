@@ -6,7 +6,7 @@
     min-height:1000px;
     background-color: #6c757d; /*cinza*/
     /*background-color: #b6cc81; */
-    font-family: scriptin;
+    /* font-family: scriptin; */
 }
 .sidePanel .content{
   padding-left:15px; 
@@ -20,7 +20,7 @@
     text-decoration: underline;
 }
 .sidePanel .database .filters .form-group.form-check{
-    background-color: #24a724f0;
+    background-color: #b5b2b2;
     border-radius: 10px;
 }
 .sidePanel a{

@@ -1,13 +1,20 @@
 extends layout
 
 block content
-  table.table.table-bordered
+  script(src='/javascripts/database.js',defer)
+  - var exclude=["id"]
+  table.table.table-bordered.tablesorter(hasResizable)
     thead
       each values,header in result.data[0]
-        td=header
+        if !exclude.includes(header)
+          th=header
     tbody
       each row in result.data
         tr
-          each value in row
-            td=value
-
+          each value,index in row
+            if !exclude.includes(index)
+              if(index=="ncbi_taxon_id")
+                td
+                  a(target="blank_",href="https://ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id="+value)=value
+              else
+                td=value

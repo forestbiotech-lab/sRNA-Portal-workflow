@@ -2,7 +2,7 @@
 
 function getTemplate(template,cb){
  $.get({
-  url: "/factory/"+template,
+  url: "/forms/factory/"+template,
   success: cb,
   dataType:"html"
  }) 
