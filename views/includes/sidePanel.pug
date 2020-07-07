@@ -28,8 +28,8 @@ img.expandPanel(src="/images/open.png")
   if listMiRPursuitLogFiles
     h3 MiRPursuit log files
     each log in listMiRPursuitLogFiles
-      a(href=log.url)
-        |log.file  
+      a(href=log.url)=log.file  
+      br
   .modal#login-modal(tabindex='-1', role='dialog')
     .modal-dialog(role='document')
       .modal-content
