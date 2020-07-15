@@ -25,6 +25,11 @@ img.expandPanel(src="/images/open.png")
   p 
   a(style="color:white;",href="https://github.com/forestbiotech-lab/sRNA-Portal-workflow/blob/master/sRNAportal.pdf") Learn about sRNA Plant Portal
   p
+  if listMiRPursuitLogFiles
+    h3 MiRPursuit log files
+    each log in listMiRPursuitLogFiles
+      a(href=log.url)=log.file  
+      br
   .modal#login-modal(tabindex='-1', role='dialog')
     .modal-dialog(role='document')
       .modal-content

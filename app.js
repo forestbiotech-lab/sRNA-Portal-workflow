@@ -18,6 +18,7 @@ var stats = require('./routes/stats');
 var de = require('./routes/differential_expression')
 var forms = require('./routes/forms')
 var auth = require('./routes/auth')
+var miRPursuit = require('./routes/mirpursuit')
 
 
 // redirect stdout / stderr
@@ -51,6 +52,7 @@ app.use('/stats',stats);
 app.use('/de',de);
 app.use('/forms',forms);
 app.use('/auth', auth);
+app.use('/miRPursuit', miRPursuit);
 app.use('/', other);
 
 
