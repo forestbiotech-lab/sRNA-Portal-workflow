@@ -20,13 +20,59 @@ block content
       span.glyphicon.glyphicon-menu-down
   .collapse(id="studies")
     .card.card-body
-      p.text-center not available
+      table.table
+        thead
+          th Id
+          th Title
+          th Public
+          th publish
+        tbody
+          tr
+            td 1
+            td Uncovering defense marker for C.arabica defense against H.vastarix
+            td
+              input.form-control-inline(type="checkbox")
+            td
+              
+          tr
+            td 2
+            td Trait selection for flooing in rice
+            td
+              input.form-control-inline(type="checkbox")
+            td
+             button.btn.btn-secondary Make public
+
+
   h3 Authorizations&nbsp;
     button.btn.btn-success.btn-sm(type='button', data-toggle='collapse', data-target='#authorizations', aria-expanded='false', aria-controls='authorizations')
       span.glyphicon.glyphicon-menu-down
   .collapse(id="authorizations")
     .card.card-body
-      p.text-center not available
+      table.table
+        thead
+          th Id
+          th Title
+          th Active API keys
+          th Generate key
+        tbody
+          tr
+            td 1
+            td Uncovering defense marker for C.arabica defense against H.vastarix
+            td
+              button.btn.btn-primary
+                span.glyphicon.glyphicon-tag
+                span.badge.bagde-primary 2
+            td
+              button.btn.btn-secondary Generate API key
+          tr
+            td 2
+            td Trait selection for flooing in rice
+            td
+              button.btn.btn-primary
+                span.glyphicon.glyphicon-tag
+                span.badge.bagde-primary 0
+            td
+             button.btn.btn-secondary Generate API key
   h3 Active sessions&nbsp;
     button.btn.btn-success.btn-sm.active-sessions(type='button', data-toggle='collapse', data-target='#active-sessions', aria-expanded='false', aria-controls='active-sessions')
       span.glyphicon.glyphicon-menu-down
