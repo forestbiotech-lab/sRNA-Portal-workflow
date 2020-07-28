@@ -42,13 +42,17 @@ async function authenticate(req,res,next){
   let sessionId=cookies.get('session-id')
   let userId=cookies.get('user-id',{signed:true})
   let accessToken=cookies.get('accessToken',{signed:true})
-  let validate=await authModule.session.validateSession(sessionId,accessToken)
-  if(validate instanceof Error) {
-    res.redirect("/")
-  }else if(validate==true){
-    next()
-  }else{
-    res.redirect("/")
+  try{    
+    let validate=await authModule.session.validateSession(sessionId,accessToken)
+    if(validate instanceof Error) {
+      res.redirect("/")
+    }else if(validate==true){
+      next()
+    }else{
+      res.redirect("/")
+    }
+  }catch(err){
+    res.redirect("/")    
   }
 }
 

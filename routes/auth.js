@@ -6,8 +6,8 @@ var Cookies = require('cookies');
 var Keygrip = require("keygrip");
 var keylist=require('./../.config_res').cookie.keylist
 var keys = new Keygrip(keylist,'sha256','hex')
-var token=require('./../.config_res').cookie.seed
-
+const token=require('./../.config_res').cookie.seed
+const CLIENT_ID=require('./../.config_res').google.client_id
 
 //This is a function that must be packaged elsewhere afterwards
 function getCityAndCountry(ipv4){
@@ -111,7 +111,7 @@ router.get('/login',function(req,res,next){
 router.post('/login',function(req,res){
   let email=req.body.email
   let password=req.body.password
-  authModule.auth.validateLogin(email,password,callback)
+  authModule.auth.validateLogin(email,password,callback)  //TODO change to loginValidUser and remove callback
   async function callback(error,id){
     if(error){
       res.render('auth/login',{error}) 
@@ -169,5 +169,78 @@ router.post('/ban',async function(req,res){
     res.json(result)
   }
 })
+
+router.post('/login/verify/google-token',function(req,res){
+  const {OAuth2Client} = require('google-auth-library');
+  const client = new OAuth2Client(CLIENT_ID);
+  async function verify() {
+    const ticket = await client.verifyIdToken({
+      idToken: req.body.id_token,
+      audience: CLIENT_ID
+    });
+    const payload = ticket.getPayload();
+    const userid = payload['sub'];
+
+    var email=payload.email
+    loginEmail(email)
+    async function loginEmail(email){
+      let userId=await authModule.auth.getIdFromEmail(email)
+      if(userId instanceof Error){
+        //TODO 
+        //create new user 
+        //creatingNewUSer
+
+        //The user has been created
+      }else{
+        let error=null
+        try{
+          loginValidUser(error,userId,req,res)
+          //No res and req ???
+        }catch(error){
+          let msg = error.message
+          res.json(msg)
+        }
+      }      
+    }
+    //const active= await tpAuth.lookUpPersonByEmailAuthentication(payload,options,callBack)
+    
+
+    // If request specified a G Suite domain:
+    // const domain = payload['hd'];
+  }
+  verify().catch(console.error);
+})
+
+async function loginValidUser(error,id,req,res){
+  if(error){
+    res.render('auth/login',{error}) 
+  }else{
+    try{
+      let ipv4="127.0.0.1"
+      let ipv6 = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+      if (ipv6.substr(0, 7) == "::ffff:") {
+        ipv4 = ipv6.substr(7)
+      }
+      let valid=1
+      let cityCountry=await getCityAndCountry(ipv4)
+      let city=cityCountry.city
+      let country=cityCountry.coutry
+      let platform=req.headers['user-agent']
+      let session=await authModule.session.saveSession(id,ipv4,ipv6,platform,valid,city,country)
+      let personInfo=await authModule.auth.getUserInfo(id)
+      let accessToken=session.accessToken
+      let sessionId=session.id
+      var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
+      cookies.set("user-id",id).set("user-id",id,{ signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
+      cookies.set("session-id",sessionId).set("session-id",sessionId, { signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
+      cookies.set( "accessToken",accessToken).set( "accessToken", accessToken, { signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
+      res.render('differential_expression',{personInfo,numOfStudies:0})
+    }catch(error){
+      res.render('auth/login',{error}) 
+    }
+  }
+}
+
+
 
 module.exports = router;
