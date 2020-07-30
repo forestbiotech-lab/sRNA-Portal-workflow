@@ -30,9 +30,20 @@ $(document).ready(()=>{
 
 })
 
-function onSignIn(googleUser) {
+function onSignIn(googleUser){
+  gapi.load("auth2",async function(){
+    let google_meta=document.getElementsByTagName('meta')
+    let client_id=google_meta.namedItem('google-signin-client_id').getAttribute('content')
+    let googleAuth=await gapi.auth2.init({client_id})
+    let googleUser=googleAuth.currentUser.get()
+    let ginfo={id_token:googleUser.getAuthResponse().id_token}
+    verifyGoogleUser(ginfo)  
+    loadGooglePic(googleUser)
+  })
+
+
   // Useful data for your client-side scripts:
-  var profile = googleUser.getBasicProfile();
+  //var profile = googleUser.getBasicProfile();
   //Remove this once the necessary data is extracted
   //console.log("ID: " + profile.getId()); // Don't send this directly to your server!
   //console.log('Full Name: ' + profile.getName());
@@ -42,12 +53,20 @@ function onSignIn(googleUser) {
   //console.log("Email: " + profile.getEmail());
 
   // The ID token you need to pass to your backend:
-  var id_token = googleUser.getAuthResponse().id_token;
-  let ginfo={id_token}
-  verifyGoogleUser(ginfo)
+  
 
 }
 
+function loadGooglePic(googleUser){
+  let profile = googleUser.getBasicProfile();
+  let img=document.createElement('img')
+  img.setAttribute('src',profile.getImageUrl())
+  img.setAttribute('height',"25px")
+  img.setAttribute('title',profile.getName())
+  $('span.glyphicon.glyphicon-user').closest('a').prepend(img)
+  $('span.glyphicon.glyphicon-user').hide()
+  
+}
 
 function verifyGoogleUser(ginfo){
   $.ajax({
@@ -60,11 +79,12 @@ function verifyGoogleUser(ginfo){
       alert.getAttribute("role","alert")
       alert.textContent=data
       $('body').prepend(alert)
-      if(data=="Logged in! Reload page!"){
+      if(data=="Logged in! Reloading page!"){
         //document.location.reload()
       }
-
-
+      if(data=="New user create from thirdparty account! Reloading page!"){
+        //document.location="/auth/profile"
+      }
     },
     error:function(jqXHR,textStatus,error){
       console.log(error)

@@ -18,6 +18,9 @@ function getCityAndCountry(ipv4){
     })
   })
 }
+function sendEmailNotificationAboutPassswordChange(email){
+  let bodytext="Your password has been changed by: ${ip} ${country} using the following platform ${platform}" 
+}
 ///
 async function authenticate(req,res,next){
   var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
@@ -142,6 +145,31 @@ router.post('/login',function(req,res){
     }
   }
 })
+router.get('/login/reset/:email/:token',async (req,res)=>{
+  //Procedure for reset deactivate user
+  //User must be authenticated
+  let email=req.params.email
+  let token=req.params.token
+  try{ 
+    let validUrl=await authModule.session.validateConfirmationToken(email,token)
+    if(validUrl===true){
+
+      sendEmailNotificationAboutPassswordChange(req,email)
+      res.render('resetpassword',{email})
+    }else{
+      res.redirect("/")
+    }
+  }catch(error){
+    res.redirect("/")
+
+  }
+
+  //
+})
+router.get('/login/reset',(req,res)=>{
+  //Procedure for reset deactivate user if inactive and confirmationToken is ok
+  authModule.auth
+})
 router.get('/logout',function(req,res){
   var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
   cookies.set( "user-id",{expires: Date.now()}).set( "user-id", "",{ signed: true, maxAge: 0 } ); //sec * min * hour * day * month  
@@ -181,25 +209,29 @@ router.post('/login/verify/google-token',function(req,res){
     const payload = ticket.getPayload();
     const userid = payload['sub'];
 
-    var email=payload.email
-    loginEmail(email)
-    async function loginEmail(email){
-      let userId=await authModule.auth.getIdFromEmail(email)
-      if(userId instanceof Error){
-        //TODO 
-        //create new user 
-        //creatingNewUSer
+    var firstName=payload.given_name
+    var lastName=payload.family_name
+    var email="brunooo@gmail.com"    //payload.email
 
-        //The user has been created
-      }else{
+    loginEmail(firstName,lastName,email)
+    async function loginEmail(firstName,lastName,email){
+      try{
         let error=null
-        try{
-          loginValidUser(error,userId,req,res)
+        let userId=await authModule.auth.getIdFromEmail(email)
+        if(userId instanceof Error){
+          //TODO 
+          //create new user 
+          //creatingNewUSer
+          let userId= await authModule.auth.register(firstName,lastName,email,password=null,thirdparty=true)
+          loginValidUser(error,userId,req,res,thirdparty=true,successMessage="Logged in! Reloading page!")
+          //The user has been created
+        }else{
+          loginValidUser(error,userId,req,res,thirdparty=true,successMessage="Logged in! Reloading page!")
           //No res and req ???
-        }catch(error){
-          let msg = error.message
-          res.json(msg)
         }
+      }catch(error){
+        let msg = error.message
+          res.json(msg)
       }      
     }
     //const active= await tpAuth.lookUpPersonByEmailAuthentication(payload,options,callBack)
@@ -211,9 +243,14 @@ router.post('/login/verify/google-token',function(req,res){
   verify().catch(console.error);
 })
 
-async function loginValidUser(error,id,req,res){
+async function loginValidUser(error,id,req,res,thirdparty,successMessage){
   if(error){
-    res.render('auth/login',{error}) 
+    if(thirdparty){
+      let message=error.message
+      res.json(message)
+    }else{
+      res.render('auth/login',{error}) 
+    }
   }else{
     try{
       let ipv4="127.0.0.1"
@@ -234,9 +271,18 @@ async function loginValidUser(error,id,req,res){
       cookies.set("user-id",id).set("user-id",id,{ signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
       cookies.set("session-id",sessionId).set("session-id",sessionId, { signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
       cookies.set( "accessToken",accessToken).set( "accessToken", accessToken, { signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
-      res.render('differential_expression',{personInfo,numOfStudies:0})
+      if(thirdparty){
+        res.json(successMessage)
+      }else{
+        res.render('differential_expression',{personInfo,numOfStudies:0})
+      }
     }catch(error){
-      res.render('auth/login',{error}) 
+      if(thirdparty){
+        let message=error.message
+        res.json(message)
+      }else{
+        res.render('auth/login',{error}) 
+      }
     }
   }
 }
