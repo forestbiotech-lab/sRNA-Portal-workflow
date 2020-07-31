@@ -18,6 +18,7 @@ var stats = require('./routes/stats');
 var de = require('./routes/differential_expression')
 var forms = require('./routes/forms')
 var auth = require('./routes/auth')
+var study = require('./routes/study')
 var miRPursuit = require('./routes/mirpursuit')
 
 
@@ -45,12 +46,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
-app.use('/db/api/v1',db);
-app.use('/vm/api/v1',docker);
-app.use('/viewers',viewers);
-app.use('/stats',stats);
-app.use('/de',de);
-app.use('/forms',forms);
+app.use('/db/api/v1', db);
+app.use('/vm/api/v1', docker);
+app.use('/viewers', viewers);
+app.use('/stats', stats);
+app.use('/de', de);
+app.use('/forms', forms);
+app.use('/study', study);
 app.use('/auth', auth);
 app.use('/miRPursuit', miRPursuit);
 app.use('/', other);
