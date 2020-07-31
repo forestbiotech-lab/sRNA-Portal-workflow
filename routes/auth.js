@@ -40,6 +40,16 @@ async function authenticate(req,res,next){
   }
 }
 
+async function extractUserFromCookie(req,res){
+  var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
+  let userId=cookies.get('user-id',{signed:true})
+  if(userId === undefined ){
+    throw Error("Undefined user id in cookie!")
+  }else{
+    let user=await authModule.auth.getUserMetadata(parseInt(userId))
+    return user
+  }
+}
 router.get('/loggedin',authenticate, async function(req,res){
   var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
   let sessionId=cookies.get('session-id')
@@ -97,14 +107,18 @@ router.get('/profile',authenticate,async function(req,res,next){
   var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
   let userId=cookies.get('user-id',{signed:true})
   let personId=null
+  let confirmationToken=null
+  let email=null
   if(userId === undefined ){
     res.redirect('/')
   }else{
     let user=await authModule.auth.getUserMetadata(parseInt(userId))
     personId=user.person
+    confirmationToken=user.confirmationToken
+    email=user.email
   }
   let personInfo=await authModule.auth.getUserInfo(parseInt(userId))
-  res.render('auth/profile',{personInfo});
+  res.render('auth/profile',{personInfo,confirmationToken,email});
 })
 
 router.get('/login',function(req,res,next){
@@ -145,31 +159,51 @@ router.post('/login',function(req,res){
     }
   }
 })
+router.get('/login/reset',authenticate,async (req,res)=>{
+  //Procedure for reset deactivate user if inactive and confirmationToken is ok
+  try{
+    let user=await extractUserFromCookie(req,res)
+    let email=user.email
+    res.render('auth/reset_password',{email})
+  }catch(err){
+    res.redirect('/')
+  }
+})
 router.get('/login/reset/:email/:token',async (req,res)=>{
   //Procedure for reset deactivate user
   //User must be authenticated
   let email=req.params.email
   let token=req.params.token
-  try{ 
-    let validUrl=await authModule.session.validateConfirmationToken(email,token)
+  try{
+    let validUrl=await authModule.auth.validateEmailConfirmationToken(email,token)
     if(validUrl===true){
-
-      sendEmailNotificationAboutPassswordChange(req,email)
       res.render('resetpassword',{email})
     }else{
       res.redirect("/")
     }
   }catch(error){
     res.redirect("/")
-
   }
 
   //
 })
-router.get('/login/reset',(req,res)=>{
-  //Procedure for reset deactivate user if inactive and confirmationToken is ok
-  authModule.auth
+router.post('/login/reset',async (req,res)=>{
+  //How do I verify origin of request
+  //Needs confirmation token or validate to allow reset
+  if(req.body.confirmationToken && req.body.email){
+    let validUrl=await authModule.session.validateConfirmationToken(email,token)
+    if(validUrl===true){
+      resetpassword(req,res)
+    }
+  }else{
+    authenticate(req,res,resetpassword)
+  }
+  function resetpassword(req,res){
+      
+  }
+  // 
 })
+
 router.get('/logout',function(req,res){
   var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
   cookies.set( "user-id",{expires: Date.now()}).set( "user-id", "",{ signed: true, maxAge: 0 } ); //sec * min * hour * day * month  

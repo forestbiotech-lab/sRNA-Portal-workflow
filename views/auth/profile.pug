@@ -8,13 +8,23 @@ block content
   a.btn.btn-success(role="button",href="/de") Goto to studies
   .card
     .card-body
-      p first name: 
-        span.badge.badge-success #{personInfo.firstName}
-      p last name: 
-        span.badge.badge-success #{personInfo.lastName}
+      p 
+        span.badge.badge-success First name: 
+        input.form-control(type="text",value=personInfo.firstName,disabled)
+      p
+        span.badge.badge-success Last name: 
+        input.form-control(type="text",value=personInfo.lastName,disabled)
+      p
+        span.badge.badge-success Email: 
+        input.form-control(type="email",value=email,disabled)
+      p
+        span.badge.badge-success Confirmation token
+        input.form-control.confirmationToken(type="text",disabled)
+        input.form-control.hidden-confirmationToken(type="hidden",value=confirmationToken,disabled)  
   button.btn.btn-secondary change name
   button.btn.btn-secondary change orcid
-  button.btn.btn-secondary change password
+  a.btn.btn-secondary(type="button",href=`/auth/login/reset/${email}/${confirmationToken}`) reset password
+  a.btn.btn-secondary(type="button",href="/auth/login/reset") change password
   h3 Studies privacy&nbsp;
     button.btn.btn-success.btn-sm(type='button', data-toggle='collapse', data-target='#studies', aria-expanded='false', aria-controls='studies')
       span.glyphicon.glyphicon-menu-down

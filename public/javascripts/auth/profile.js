@@ -53,5 +53,10 @@ $(document).ready(function(){
       getSessions(self)
     }
   })
-
+  function encodeConfirmationToken(){
+    let confirmationToken=$('input.hidden-confirmationToken').val()
+    let encodedConfirmationToken=encodeURIComponent(confirmationToken)
+    $('input.confirmationToken').val(encodedConfirmationToken)
+  }
+  encodeConfirmationToken()
 })
