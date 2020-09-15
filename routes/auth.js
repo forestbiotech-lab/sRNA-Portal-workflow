@@ -184,8 +184,6 @@ router.get('/login/reset/:email/:token',async (req,res)=>{
   }catch(error){
     res.redirect("/")
   }
-
-  //
 })
 router.post('/login/reset',async (req,res)=>{
   //How do I verify origin of request
@@ -245,7 +243,7 @@ router.post('/login/verify/google-token',function(req,res){
 
     var firstName=payload.given_name
     var lastName=payload.family_name
-    var email="brunooo@gmail.com"    //payload.email
+    var email=payload.email
 
     loginEmail(firstName,lastName,email)
     async function loginEmail(firstName,lastName,email){
