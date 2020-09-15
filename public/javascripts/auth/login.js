@@ -4,6 +4,7 @@ $(document).ready(()=>{
     url:"/auth/loggedin",
     success:function(data,textStatus,jqXHR){
       setupLoginbuttons(data)
+
     },
     fail:function(jqXHR,textStatus,error){
       setupLogin()
@@ -13,6 +14,7 @@ $(document).ready(()=>{
   function setupLoginbuttons(data){
     if(data.logged==true){
       setupLogout()
+      loadGooglePic(null,data.gPicture)
     }else{
       setupLogin()
     }
@@ -57,15 +59,23 @@ function onSignIn(googleUser){
 
 }
 
-function loadGooglePic(googleUser){
-  let profile = googleUser.getBasicProfile();
-  let img=document.createElement('img')
-  img.setAttribute('src',profile.getImageUrl())
-  img.setAttribute('height',"25px")
-  img.setAttribute('title',profile.getName())
-  $('span.glyphicon.glyphicon-user').closest('a').prepend(img)
-  $('span.glyphicon.glyphicon-user').hide()
-  
+function loadGooglePic(googleUser,url){
+  if(url){
+    let img=document.createElement('img')
+    img.setAttribute('src',url)
+    img.setAttribute('height',"25px")
+    //img.setAttribute('title',profile.getName())
+    $('span.glyphicon.glyphicon-user').closest('a').prepend(img)
+    $('span.glyphicon.glyphicon-user').hide()        
+  }else{
+    let profile = googleUser.getBasicProfile();
+    let img=document.createElement('img')
+    img.setAttribute('src',profile.getImageUrl())
+    img.setAttribute('height',"25px")
+    img.setAttribute('title',profile.getName())
+    $('span.glyphicon.glyphicon-user').closest('a').prepend(img)
+    $('span.glyphicon.glyphicon-user').hide()    
+  }
 }
 
 function verifyGoogleUser(ginfo){
@@ -80,10 +90,10 @@ function verifyGoogleUser(ginfo){
       alert.textContent=data
       $('body').prepend(alert)
       if(data=="Logged in! Reloading page!"){
-        //document.location.reload()
+        document.location="/auth/profile"
       }
       if(data=="New user create from thirdparty account! Reloading page!"){
-        //document.location="/auth/profile"
+        document.location="/auth/profile"
       }
     },
     error:function(jqXHR,textStatus,error){

@@ -54,10 +54,11 @@ router.get('/loggedin',authenticate, async function(req,res){
   var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
   let sessionId=cookies.get('session-id')
   let accessToken=cookies.get('accessToken',{signed:true})
+  let gPicture=cookies.get('gPicture',{signed:true})
   try{    
     let validate=await authModule.session.validateSession(sessionId,accessToken)
     if (validate==true){
-     res.json({logged:true})
+     res.json({logged:true,gPicture})
     }else{
       throw Error("invalid")
     }
@@ -244,6 +245,7 @@ router.post('/login/verify/google-token',function(req,res){
     var firstName=payload.given_name
     var lastName=payload.family_name
     var email=payload.email
+    var gPicture=payload.picture
 
     loginEmail(firstName,lastName,email)
     async function loginEmail(firstName,lastName,email){
@@ -255,10 +257,10 @@ router.post('/login/verify/google-token',function(req,res){
           //create new user 
           //creatingNewUSer
           let userId= await authModule.auth.register(firstName,lastName,email,password=null,thirdparty=true)
-          loginValidUser(error,userId,req,res,thirdparty=true,successMessage="Logged in! Reloading page!")
+          loginValidUser(error,userId,req,res,thirdparty=true,successMessage="Logged in! Reloading page!",gPicture)
           //The user has been created
         }else{
-          loginValidUser(error,userId,req,res,thirdparty=true,successMessage="Logged in! Reloading page!")
+          loginValidUser(error,userId,req,res,thirdparty=true,successMessage="Logged in! Reloading page!",gPicture)
           //No res and req ???
         }
       }catch(error){
@@ -275,7 +277,7 @@ router.post('/login/verify/google-token',function(req,res){
   verify().catch(console.error);
 })
 
-async function loginValidUser(error,id,req,res,thirdparty,successMessage){
+async function loginValidUser(error,id,req,res,thirdparty,successMessage,gPicture){
   if(error){
     if(thirdparty){
       let message=error.message
@@ -302,10 +304,12 @@ async function loginValidUser(error,id,req,res,thirdparty,successMessage){
       var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
       cookies.set("user-id",id).set("user-id",id,{ signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
       cookies.set("session-id",sessionId).set("session-id",sessionId, { signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
-      cookies.set( "accessToken",accessToken).set( "accessToken", accessToken, { signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
+      cookies.set( "accessToken",accessToken).set( "accessToken", accessToken, { signed: true, maxAge: (1000 * 60 * 24 ) } ); //sec * min * hour * day * month  
+      cookies.set( "gPicture",gPicture).set( "gPicture", gPicture, { signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
       if(thirdparty){
         res.json(successMessage)
       }else{
+        //This isn't a good because unless if it comes from here you redirect to the correct url not sure on the correct landing page after this login.
         res.render('differential_expression',{personInfo,numOfStudies:0})
       }
     }catch(error){
