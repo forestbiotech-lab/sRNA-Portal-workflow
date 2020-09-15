@@ -257,7 +257,7 @@ router.post('/login/verify/google-token',function(req,res){
           //create new user 
           //creatingNewUSer
           let userId= await authModule.auth.register(firstName,lastName,email,password=null,thirdparty=true)
-          loginValidUser(error,userId,req,res,thirdparty=true,successMessage="Logged in! Reloading page!",gPicture)
+          loginValidUser(error,userId,req,res,thirdparty=true,successMessage="New user create from thirdparty account! Reloading page!",gPicture)
           //The user has been created
         }else{
           loginValidUser(error,userId,req,res,thirdparty=true,successMessage="Logged in! Reloading page!",gPicture)
