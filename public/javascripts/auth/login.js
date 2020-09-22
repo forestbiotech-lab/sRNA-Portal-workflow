@@ -68,6 +68,7 @@ async function onSignIn(googleUser){
   }
   async function getGoogleUser(){
     let uri=document.location.origin=="http://localhost:3000"? 'single_host_origin' : document.location.host
+    uri='single_host_origin'
     GoogleAuth=await gapi.auth2.init({client_id:getClient_id_from_DOM(),cookie_policy:uri})
     if(!GoogleAuth.isSignedIn.get()){
       console.log("Sign in!")
