@@ -5,13 +5,13 @@ html
     <!-- Global site tag (gtag.js) - Google Analytics -->
     script(async,src="https://www.googletagmanager.com/gtag/js?id=UA-116969748-1")
     title="sRNA Plant Portal"
-    <meta name="google-site-verification" content="uGXz2DRW1SUD8840jAOrmBaVIK9G2HO4OeWZ7VpbBao" />
-    meta(name='google-signin-client_id', content='537685580734-9jm5esl8c7g1pgm6c3helqdpc8ibhakg.apps.googleusercontent.com')
+    meta(name="google-site-verification", content="uGXz2DRW1SUD8840jAOrmBaVIK9G2HO4OeWZ7VpbBao")
+    meta(name='google-signin-client_id', content='379853658866-r31skptbhf4jc8uqtrokkjveqbtu53g4.apps.googleusercontent.com')
+
     link(rel="apple-touch-icon",sizes="180x180",href="/images/favicon/apple-touch-icon.png")
     link(rel="icon",type="image/png" sizes="32x32",href="/images/favicon/favicon-32x32.png")
     link(rel="icon",type="image/png" sizes="16x16",href="/images/favicon/favicon-16x16.png")
     link(rel="manifest",href="/images/favicon/site.webmanifest")
-
 
     link(rel='stylesheet', href='/stylesheets/fonts.css')
     link(rel='stylesheet', href='/stylesheets/footer.css')
@@ -57,11 +57,13 @@ html
               input#exampleCheck1.form-check-input(type='checkbox')
               label.form-check-label(for='exampleCheck1',title="I do absolutly nothing!") Check me out (I thought you might like to play with me.)
             input.btn.btn-primary(role="button",type='submit',value="Login")
+            button.btn.btn-secondary(type='button',onclick="onSignIn()") Login with Google
             a.btn.btn-success(type="button",href="/auth/register") Register
             button.btn.btn-secondary(type='button', data-dismiss='modal') Close
     .footer
       include includes/footer.pug
     include includes/thirdpartyScripts.pug  
     script(src="/javascripts/auth/login.js")  
+    script(src='https://apis.google.com/js/platform.js?onload=init', async='', defer='')
     script(src="/javascripts/goAnalytics.js")
     script(src="/javascripts/bootstrap3-typeahead.min.js")

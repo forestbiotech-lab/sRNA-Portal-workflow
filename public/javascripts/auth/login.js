@@ -32,31 +32,91 @@ $(document).ready(()=>{
 
 })
 
-function onSignIn(googleUser){
-  gapi.load("auth2",async function(){
+function init() {
+  gapi.load('auth2', function() {
+    /* Ready. Make a call to gapi.auth2.init or some other API */
+  });
+}
+
+
+async function onSignIn(googleUser){
+  let attempt=0
+  const maxTries=3
+  if(googleUser==null){
+    if(gapi.auth2){
+      try{
+        googleUser=await getGoogleUser()
+        login(googleUser)
+      }catch(err){
+        loadGoogleAuth()
+       }
+    }else{
+      loadGoogleAuth()
+    }
+  }else{
+    try{
+      login(googleUser)  
+    }catch(err){
+      loadGoogleAuth()
+    }
+  }
+  function loadGoogleAuth(){
+    gapi.load("auth2",async function(){
+      let googleUser=await getGoogleUser()
+      login(googleUser)
+    })
+  }
+  async function getGoogleUser(){
+    let host=document.location.host=="localhost:3000"? 'single_host_origin' : document.location.host
+    GoogleAuth=await gapi.auth2.init({client_id:getClient_id_from_DOM(),cookie_policy:host})
+    if(!GoogleAuth.isSignedIn.get()){
+      console.log("Sign in!")
+      return await signUser(GoogleAuth)
+    }else{
+      googleUser=await GoogleAuth.currentUser.get()
+      return googleUser
+    }
+  }
+  function get_id_token(googleUser){
+    try{
+      id_token=googleUser.getAuthResponse().id_token
+      if(id_token==null){
+        throw new Error(`Null id token from GoogleUser! Try a new request!`)  
+      }else{
+        return id_token
+      }
+    }catch(err){
+      throw new Error(`Unable to get id token from GoogleUser!\n Error: ${err}`)
+    }
+  }
+  function login(GoogleUser){
+    try{
+      let ginfo={id_token:get_id_token(GoogleUser)}
+      verifyGoogleUser(ginfo)
+      loadGooglePic(googleUser)
+    }catch(err){
+      retry()
+    }
+  }
+  async function signUser(GoogleAuth){
+    try{
+      return await GoogleAuth.signIn()
+    }catch(err){
+      retry()
+    }
+  }
+  function retry(){
+    attempt++
+    if(attempt<maxTries){
+      loadGoogleAuth()
+    }else{
+      console.log("Unable to use google OAuth2!")
+    }
+  }
+  function getClient_id_from_DOM(){
     let google_meta=document.getElementsByTagName('meta')
-    let client_id=google_meta.namedItem('google-signin-client_id').getAttribute('content')
-    let googleAuth=await gapi.auth2.init({client_id})
-    let googleUser=googleAuth.currentUser.get()
-    let ginfo={id_token:googleUser.getAuthResponse().id_token}
-    verifyGoogleUser(ginfo)  
-    loadGooglePic(googleUser)
-  })
-
-
-  // Useful data for your client-side scripts:
-  //var profile = googleUser.getBasicProfile();
-  //Remove this once the necessary data is extracted
-  //console.log("ID: " + profile.getId()); // Don't send this directly to your server!
-  //console.log('Full Name: ' + profile.getName());
-  //console.log('Given Name: ' + profile.getGivenName());
-  //console.log('Family Name: ' + profile.getFamilyName());
-  //console.log("Image URL: " + profile.getImageUrl());
-  //console.log("Email: " + profile.getEmail());
-
-  // The ID token you need to pass to your backend:
-  
-
+    return google_meta.namedItem('google-signin-client_id').getAttribute('content')
+  }  
 }
 
 function loadGooglePic(googleUser,url){
