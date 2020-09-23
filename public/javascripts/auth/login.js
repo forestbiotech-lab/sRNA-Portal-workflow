@@ -75,7 +75,6 @@ async function onSignIn(googleUser){
     //cookie_policy=document.location.origin=="http://localhost:3000"? 'single_host_origin' : document.location.host
     GoogleAuth=await gapi.auth2.init({client_id:getClient_id_from_DOM(),cookie_policy})
     if(!GoogleAuth.isSignedIn.get()){
-      console.log("Sign in!")
       return await signUser(GoogleAuth)
     }else{
       googleUser=await GoogleAuth.currentUser.get()
@@ -115,7 +114,7 @@ async function onSignIn(googleUser){
     if(attempt<maxTries){
       loadGoogleAuth()
     }else{
-      console.log("Unable to use google OAuth2!")
+      displayToast("Login error","Unable to use google to sign in!",4000)
     }
   }
 }
@@ -129,7 +128,6 @@ function loadGooglePic(googleUser,url){
     let img=document.createElement('img')
     img.setAttribute('src',url)
     img.setAttribute('height',"25px")
-    //img.setAttribute('title',profile.getName())
     $('span.glyphicon.glyphicon-user').closest('a').prepend(img)
     $('span.glyphicon.glyphicon-user').hide()        
   }else{
@@ -164,7 +162,7 @@ function verifyGoogleUser(ginfo){
       }
     },
     error:function(jqXHR,textStatus,error){
-      console.log(error)
+      displayToast("Error","Login failed!",4000)
     }
   })
 }

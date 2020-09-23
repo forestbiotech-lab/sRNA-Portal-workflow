@@ -46,10 +46,8 @@ function mkel(name,attributes,append){
   }
   if(append){
     append.append(el)
-    return el  
-  }else{
-    return el  
   }
+  return el  
 }
 /**
 @param {object}       attribtues  Tr attributes
@@ -69,6 +67,7 @@ function makeRow(attributes,contents,metadata,header){
   }
   return tr
 }
+
 function makeToast(title,body){
   let toast=mkel('div',{class:"toast",role:"alert","aria-live":"assertive","aria-atomic":"true","data-delay":"20000"})
   let toastHeader=mkel('div',{class:"toast-header"})
@@ -77,7 +76,7 @@ function makeToast(title,body){
   toast.append(toastBody)
 
   let img=mkel('img',{class:"rounded mr-2",src:"...",alt:"..."})
-  let strong=mkel('strong',{class:"mr-auto"})
+  let strong=mkel('strong',{class:"mr-auto pr-4"})
   let small=mkel('small',{class:"text-muted"})
   strong.textContent=title
   small.textContent='just now'
@@ -91,6 +90,91 @@ function makeToast(title,body){
   toastBody.append(body)
   return toast
 }
+
+/**
+*@NAME displayToast 
+* 
+*@PARAM Title: (String) Toast titleText
+*@PARAM Body: (String/HTML) for toast body 
+*@PARAM DisplayTime: (Int) How long the toast is shown
+*@PARAM destinationSelector: (String) JQuery selector string for an existing element
+*                                    or one to be created. 
+**/
+function displayToast(title,body,displayTime,destinationSelector){
+  let toast=makeToast(title,body)
+  destinationSelector=selectDestinationSelector(destinationSelector)
+  let toaster=getToaster(destinationSelector)
+  initializeToaster(toaster,displayTime)  //How to test if necessary?
+  throwToast(toaster,toast)  //Not JS element
+
+  function selectDestinationSelector(destinationSelector){
+    let defaultSelector='.toaster.toaster-default.building-blocks'
+    if(destinationSelector){
+      return destinationSelector
+    }else{
+      return defaultSelector
+    }
+  }
+  function getToaster(destinationSelector){
+    let destinationElement=getDestinationElement(destinationSelector)
+    if(destinationElement.length==0){
+      makeLocation(destinationSelector)
+    }
+    return getDestinationElement(destinationSelector)
+  }
+  function getDestinationElement(destinationSelector){
+    return $(destinationSelector)
+  }
+  function makeLocation(destinationSelector){
+    let attributes=parseJQstring(destinationSelector)
+    attributes['style']="position:fixed;top:0;right:0"
+    mkel('div',attributes,$('body'))
+  }  
+  function initializeToaster(toaster,delay){
+    let animation=true
+    let autohide=false
+    if(!delay) delay=3000
+    toaster.toast(animation,autohide,delay)
+  }
+  function throwToast(toaster,toast){
+    if(toast){
+      toaster.append(toast)
+      toaster.children().last().toast('show')
+      //Update timer on toast
+      //While shown
+      //TODO
+    }
+  }
+  function parseJQstring(destinationSelector){
+    //Element must always be a div
+    let ds=destinationSelector
+    if(ds.split(" ").length>1){
+      ds=ds.split(" ").pop()
+    }
+    let classNames=extractClassNames(ds)
+    let id=extractId(ds)    
+    return {class:classNames,id}
+    function extractId(jqSelector){
+      const re=/#([\w-]+)[\#\.\W$]*/
+      let id=""
+      let match=jqSelector.match(re)  
+      if(match){
+        id=match[1]
+      }
+      return id
+    }
+    function extractClassNames(jqSelector){
+      const re=/\.([\w-]+)[^\w-]*[$]*/
+      let className=""
+      while(jqSelector.match(re)){
+        className+=jqSelector.match(re)[1]+" "
+        jqSelector=jqSelector.replace(/\.[\w-]+([\.\#\W$])+/,"$1")
+      }
+      return className
+    }
+  }
+}
+
 function makeSelect(attributes,options){
   let select=mkel('select',attributes)
   options.forEach(option=>{
