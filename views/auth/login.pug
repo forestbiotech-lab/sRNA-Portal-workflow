@@ -2,7 +2,6 @@ extends ../layout
 
 block content
   link(rel='stylesheet', href='/stylesheets/thirdparty/password-strength-meter/password.min.css')
-  script(src='https://apis.google.com/js/platform.js', async='', defer='')  
   script(src='/javascripts/auth.js',defer)
   if error  
     .alert.alert-danger(role='alert')=error.message
@@ -20,6 +19,5 @@ block content
     input.btn.btn-primary(role="button",type='submit',value="Login")
     a.btn.btn-success(type="button",href="/auth/register") Register
     button.btn.btn-secondary(type='button', data-dismiss='modal') Close
-    button.btn.btn-lg-btn-primary(onclick="signOut();") google Sign out
     .g-signin2(onclick="onSignIn()",data-theme='dark')
     

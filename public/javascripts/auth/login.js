@@ -31,10 +31,15 @@ $(document).ready(()=>{
   }
 
 })
+//Not sure what to place here yet! But this way it is consistent amoung calls
+const cookie_policy='single_host_origin'
 
-function init() {
+function init(callback) {
   gapi.load('auth2', function() {
     /* Ready. Make a call to gapi.auth2.init or some other API */
+    if(callback){
+      callback()
+    }
   });
 }
 
@@ -67,9 +72,8 @@ async function onSignIn(googleUser){
     })
   }
   async function getGoogleUser(){
-    let uri=document.location.origin=="http://localhost:3000"? 'single_host_origin' : document.location.host
-    uri='single_host_origin'
-    GoogleAuth=await gapi.auth2.init({client_id:getClient_id_from_DOM(),cookie_policy:uri})
+    //cookie_policy=document.location.origin=="http://localhost:3000"? 'single_host_origin' : document.location.host
+    GoogleAuth=await gapi.auth2.init({client_id:getClient_id_from_DOM(),cookie_policy})
     if(!GoogleAuth.isSignedIn.get()){
       console.log("Sign in!")
       return await signUser(GoogleAuth)
@@ -114,11 +118,11 @@ async function onSignIn(googleUser){
       console.log("Unable to use google OAuth2!")
     }
   }
-  function getClient_id_from_DOM(){
-    let google_meta=document.getElementsByTagName('meta')
-    return google_meta.namedItem('google-signin-client_id').getAttribute('content')
-  }  
 }
+function getClient_id_from_DOM(){
+  let google_meta=document.getElementsByTagName('meta')
+  return google_meta.namedItem('google-signin-client_id').getAttribute('content')
+}  
 
 function loadGooglePic(googleUser,url){
   if(url){
@@ -129,13 +133,15 @@ function loadGooglePic(googleUser,url){
     $('span.glyphicon.glyphicon-user').closest('a').prepend(img)
     $('span.glyphicon.glyphicon-user').hide()        
   }else{
-    let profile = googleUser.getBasicProfile();
-    let img=document.createElement('img')
-    img.setAttribute('src',profile.getImageUrl())
-    img.setAttribute('height',"25px")
-    img.setAttribute('title',profile.getName())
-    $('span.glyphicon.glyphicon-user').closest('a').prepend(img)
-    $('span.glyphicon.glyphicon-user').hide()    
+    if(googleUser){
+      let profile = googleUser.getBasicProfile();
+      let img=document.createElement('img')
+      img.setAttribute('src',profile.getImageUrl())
+      img.setAttribute('height',"25px")
+      img.setAttribute('title',profile.getName())
+      $('span.glyphicon.glyphicon-user').closest('a').prepend(img)
+      $('span.glyphicon.glyphicon-user').hide()    
+    }
   }
 }
 
@@ -164,8 +170,19 @@ function verifyGoogleUser(ginfo){
 }
 
 function signOut() {
-  var auth2 = gapi.auth2.getAuthInstance();
-  auth2.signOut().then(function () {
-    console.log('User signed out.');
-  });
+  try{
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+      document.location="/auth/logout"
+    });
+  }catch(err){
+    init(async function(){
+      GoogleAuth=await gapi.auth2.init({client_id:getClient_id_from_DOM(),cookie_policy})
+      GoogleAuth.signOut().then(function () {
+        console.log('User signed out.');
+        document.location="/auth/logout"
+      });
+    })
+  } 
 }

@@ -28,7 +28,7 @@ html
 
     .menu
       button.menu-item.menu-item1.login-btn.btn.btn-success(data-toggle="modal" data-target="#login-modal") login
-      a.menu-item.menu-item-right.menu-item1.logout-btn.btn.btn-success(href="/auth/logout",role="button") logout
+      button.menu-item.menu-item-right.menu-item1.logout-btn.btn.btn-success(onclick="signOut();") logout
       a.menu-item.menu-item-right.profile-btn.btn.btn-success(href="/auth/profile")
         span.glyphicon.glyphicon-user
         | &nbsp;Profile
@@ -57,7 +57,7 @@ html
               input#exampleCheck1.form-check-input(type='checkbox')
               label.form-check-label(for='exampleCheck1',title="I do absolutly nothing!") Check me out (I thought you might like to play with me.)
             input.btn.btn-primary(role="button",type='submit',value="Login")
-            button.btn.btn-secondary(type='button',onclick="onSignIn()") Login with Google
+            button.btn.g-signin2(onclick="onSignIn()",data-theme='dark')
             a.btn.btn-success(type="button",href="/auth/register") Register
             button.btn.btn-secondary(type='button', data-dismiss='modal') Close
     .footer

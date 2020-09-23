@@ -28,7 +28,7 @@ html
         .progress(style="margin-left:5px; width:100px;height:16px;margin-top:4px;")
           .progress-bar(role="progressbar",aria-valuenow="0",aria-valuemin="0",aria-valuemax="100")
       button.menu-item.menu-item1.login-btn.btn.btn-dark.d-none(data-toggle="modal" data-target="#login-modal") login
-      a.menu-item.menu-item-right.menu-item1.logout-btn.btn.btn-secondary(role="button",href="/auth/logout") logout
+      button.menu-item.menu-item-right.menu-item1.logout-btn.btn.btn-secondary(onclick="signOut();") logout
       a.menu-item.menu-item-right.profile-btn.btn.btn-success(href="/auth/profile")
         span.glyphicon.glyphicon-user
         | &nbsp;Profile
@@ -43,7 +43,8 @@ html
       include includes/footer.pug
 
     include includes/thirdpartyScripts.pug
-    script(src="/javascripts/auth/login.js")  
+    script(src="/javascripts/auth/login.js")
+    script(src='https://apis.google.com/js/platform.js', async='', defer='')  
     script(id="actions",src="/javascripts/actions.js")
     script(src="/javascripts/buildingblocks.js")
     script(src="/javascripts/goAnalytics.js")        
