@@ -179,10 +179,14 @@ function signOut() {
   }catch(err){
     init(async function(){
       GoogleAuth=await gapi.auth2.init({client_id:getClient_id_from_DOM(),cookie_policy})
-      GoogleAuth.signOut().then(function () {
-        console.log('User signed out.');
+      if(GoogleAuth.isSignedIn.get()){
+        GoogleAuth.signOut().then(function () {
+          console.log('User signed out.');
+          document.location="/auth/logout"
+        });        
+      }else{
         document.location="/auth/logout"
-      });
+      }
     })
   } 
 }
