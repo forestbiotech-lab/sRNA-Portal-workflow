@@ -31,6 +31,9 @@ $(document).ready(()=>{
   }
 
 })
+/*
+*  Check: https://developers.google.com/identity/sign-in/web/reference for help.
+*/
 //Not sure what to place here yet! But this way it is consistent amoung calls
 const cookie_policy='single_host_origin'
 
