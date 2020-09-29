@@ -5,13 +5,13 @@ var transactionModels=require('./../transactions/models')
 const fs = require('fs')
 const MINSIZE=2
 const PREVIEW_LINES=10
-const MAX_TRANSACTIONS=4
-
+const MAX_TRANSACTIONS=2
+var TARGETS;
 module.exports={getPreview,loadTargets}
 
 
 
-function loadTargets(targetsFile,genome_id,study_id){
+function loadTargets(targetsFile,genome_id,study_id,ws){
   return new Promise((res,rej)=>{  
     fs.readFile(targetsFile,'utf8', (err, data) => {
       if (err) rej(err);
@@ -20,26 +20,28 @@ function loadTargets(targetsFile,genome_id,study_id){
       let fieldOfPromises=[]
       let results=[]
       let index=lines.length
+      TARGETS=index
       let date=new Date()
-      res(insertControl(fieldOfPromises, results, lines, targetsFile, genome_id, study_id, index, date))
+      res(insertControl(fieldOfPromises, results, lines, targetsFile, genome_id, study_id, index, date,ws))
   	}) 
   })
 }
 
 
-function insertControl(fieldOfPromises,results,lines,targetsFile,genome_id,study_id,index, date){
+function insertControl(fieldOfPromises,results,lines,targetsFile,genome_id,study_id,index, date,ws){
   while(fieldOfPromises.length<MAX_TRANSACTIONS && lines.length >0){
     line=lines.pop()
     line=line.split("\t")
     if(line.length>MINSIZE) fieldOfPromises.push(insertLine(targetsFile,line,genome_id,study_id,index, date))
     index--
+    ws.sendMsg(JSON.stringify({msg:{percentageComplete:(100*(TARGETS-index)/TARGETS)}}))
   }
   if(fieldOfPromises.length>0){
     return Promise.all(fieldOfPromises).then(transactions=>{
       results.push(transactions)
       fieldOfPromises=[]
       console.log(index)
-      return insertControl(fieldOfPromises, results, lines, targetsFile, genome_id, study_id,index,date)
+      return insertControl(fieldOfPromises, results, lines, targetsFile, genome_id, study_id,index,date,ws)
     })
   }else{
     return results.flat() 
@@ -53,31 +55,29 @@ function insertLine(filename,line,genome_id,study_id,index,date){
     source:'psRNAtarget',
     type:'miRNA_target',
     start:line[6],
-    end:line[7]
+    end:line[7],
+    strand:'+'
   }
   transcript_attributes={
     accession:line[1],
     version:1
   }
-  sequence=line[0].split('-')[0]
+  sequence=line[8].replace(/[^ATGCU]*/g,"")
   target_attributes={
     study_id,
     date,
     type:line[10],
-    target_description:line[11].trim(),
+    target_description:line[12].trim(),
     expectation:line[2],
     UPE:line[3],
   }
   lineNum=index
 
+  return db.sequelize.transaction().then(function(t){
+	// chain all your queries here. make sure you return them.
+	//miRNA_Acc.	Target_Acc.	Expectation	UPE	miRNA_start	miRNA_end	Target_start	Target_end	miRNA_aligned_fragment	Target_aligned_fragment	Inhibition	Target_Desc.
 
-	return db.sequelize.transaction().then(function(t){
-	  // chain all your queries here. make sure you return them.
-	  //miRNA_Acc.	Target_Acc.	Expectation	UPE	miRNA_start	miRNA_end	Target_start	Target_end	miRNA_aligned_fragment	Target_aligned_fragment	Inhibition	Target_Desc.
-
-    //find sequence
-    sequence=line[0].split('-')[0]
-
+    
     function searchSequenceId(sequence,transaction){
       let attributes={
         tablename:"Mature_miRNA_sequence",
@@ -119,6 +119,8 @@ function insertLine(filename,line,genome_id,study_id,index,date){
       }
       return transactionModels.saveSingleTableDynamic(attributes).then(model=>{
         return extractId(model)
+      }).catch(function(error){
+        console.log(error)
       })
     }
     function createTranscript(feature_id,transcript_attributes,transaction){
@@ -129,6 +131,8 @@ function insertLine(filename,line,genome_id,study_id,index,date){
       }
       return transactionModels.saveSingleTableDynamic(attributes).then(model=>{
         return extractId(model)
+      }).catch(function(err){
+        console.log(err)
       })      
     }
 

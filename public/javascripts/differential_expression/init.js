@@ -40,6 +40,7 @@ var paths=pathname.split("/").splice(1)
   }
   if(paths[1]=="targets"){
      scriptName=[
+      'helpers',
       'saveTargetToDB',
       'tableFunctions',
       'tableAssociation'

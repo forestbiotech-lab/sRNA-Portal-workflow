@@ -196,7 +196,8 @@ $(document).ready(function(){
     }
    })
 
-  $('button.test').click(function(){
+  //$('button.test').click(function(){
+  $('.save-targets button.save-targets').click(function(){
     let data={
       target_filename:$('.card-body.target_filename input').val()
     }
@@ -205,7 +206,13 @@ $(document).ready(function(){
       method:"POST",
       data:data,
       success:function(data,textStatus,jqXHR){
+        const HOSTNAME=document.location.hostname
+        const CONNECTIONPROTOCOL = HOSTNAME=="localhost" ? "ws" : "wss"
+        const PORT=8080
+        startWebSocket(`${CONNECTIONPROTOCOL}://${HOSTNAME}:${PORT}`,data,processEvt)
+        
 
+        /*
         let table=document.createElement('table')
         data.failure.lines.forEach(line=>{        
           let tr=document.createElement('tr')
@@ -220,11 +227,31 @@ $(document).ready(function(){
         })
         $('.card-body.result').append(table) 
         $('.card-body.result').append(`Success:${data.success}`) 
+        */
       },
       error:function(jqXHR,textStatus,err){
         $('.card-body.result').text(`${textStatus}:${err}`) 
       }
     })
+    function processEvt(msg){
+      // calculate the percentage of upload completed
+      let receivedMsg=JSON.parse(msg)
+      if(receivedMsg.msg){
+        percentComplete = parseInt(receivedMsg.msg.percentageComplete);        
+        
+        // update the Bootstrap progress bar with the new percentage
+        $('.save-targets .progress-bar').text(percentComplete + '%');
+        $('.save-targets .progress-bar').width(percentComplete + '%');
+      }
+     
+      
+      //$('.save-target .badge#uploadErrors').text(receivedMsg.errors)
+      //$('.save-target .badge#uploadSuccesses').text(receivedMsg.successes)
+      /*if(percentComplete==100){
+        $('.card.upload-table .card-body .view-assays').removeClass('d-none')
+      }*/
+  }
+
   })
 
 

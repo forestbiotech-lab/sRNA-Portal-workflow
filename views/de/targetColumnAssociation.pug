@@ -4,6 +4,24 @@ block content
   script(id="database",src="/javascripts/de.js",defer)
   .container-fluid
     .row.alerts
+    .row.navagation-buttons
+      .col-lg-12
+        .card
+          .card-body
+            ul.nav.justify-content-center
+              li.nav-item
+                a.btn.btn-light.nav-link(href='/de') Main
+              li.nav-item
+                a.btn.btn-light.nav-link(href=`/de/assaydata/${study_id}`) AssayData Matrix
+              li.nav-item
+                a.btn.btn-light.nav-link(href='/de/targets/new') Add Targets
+  .d-flex.flex-row.justify-content-center.save-targets
+    .p-4.flex-fill
+      .progress
+        .progress-bar(role='progressbar', aria-valuenow='0', aria-valuemin='0', aria-valuemax='100')
+    .pr-4.pt-3
+        button.btn.btn-success.save-targets Save targets
+  .container-fluid        
     .row.associationRow
       .col-lg-6
         .card 
@@ -36,7 +54,7 @@ block content
           .card-footer
             button.btn.btn-primary.save save
           .card-footer.test
-            button.btn.btn-primary.test test button!
+            button.btn.btn-primary.test Save Targets!
           .card-body.result(style="overflow-x:scroll;")
       .col-lg-6
         each table in tables  

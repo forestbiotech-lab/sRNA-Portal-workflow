@@ -208,7 +208,7 @@ router.post('/targets/upload/:studyid', function(req, res){
      })
 });
 
-router.post('/targets/columnAssociation',(req,res)=>{
+router.post('/targets/columnAssociation', (req,res)=>{
   //dynamic
   let reqData=req.body
   let lineNumber=reqData.lineNumber
@@ -231,6 +231,9 @@ router.post('/targets/columnAssociation',(req,res)=>{
     if (tableStructure instanceof Error) res.render('error',"Unable to get tableStructure") 
     tableData[table]=tableStructure
   })
+
+
+  
 
   targetsProfile.listProfiles(type).then(profiles=>{
     var accessions="Accession_Search"
@@ -263,7 +266,7 @@ router.post('/targets/profile/set/:type/:profile',(req,res)=>{
   })
 })
 
-router.post('/targets/load/db/',(req,res)=>{
+router.post('/targets/load/db/',async(req,res)=>{
   let target_filename=req.body.target_filename
 
   // - must be passed by body -
@@ -271,9 +274,15 @@ router.post('/targets/load/db/',(req,res)=>{
   let study_id=1
   // --------------------------
 
+  let ws=new wsClient()
+  ws.connect("TARGET",res)
+  await ws.isConnected()
+     
   let file=path.join(uploadDir,`${study_id}/${destinationFolderTargets}/${target_filename}`)
-  targetInserts=targetsFileActions.loadTargets(file,genome_id,study_id).then(getPromises=>{
-    Promise.all(getPromises).then(result=>{
+  targetInserts=targetsFileActions.loadTargets(file,genome_id,study_id,ws).then(getPromises=>{
+    Promise.all(getPromises).then(data=>{
+      data instanceof Error ? console.log(data) : console.log(data)
+      /**
       if (result instanceof Error ){res.status(500).json(result)}else{
         success=0
         failure={num:0,lines:[]}
@@ -287,10 +296,11 @@ router.post('/targets/load/db/',(req,res)=>{
           }
         })
         res.json({success,failure})
-      }
-    }).catch(err=>{
-    	res.status(500).json(err)
-    })
+      }    **/
+    }).catch(function(error){
+      console.log(error)
+    })  
+
   })
 })
 
