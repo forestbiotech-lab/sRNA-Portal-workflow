@@ -215,8 +215,10 @@ $(document).ready(function(){
     }
    })
 
+  //Wrong script change this function to saveTargetToDB
   //$('button.test').click(function(){
   $('.save-targets button.save-targets').click(function(){
+    let studyId=$(this).attr('study-id')
     function getTranscriptXref(){
       xref=$('input.xref-input').val()
       if(xref){
@@ -227,7 +229,8 @@ $(document).ready(function(){
     }
     let data={
       target_filename:$('.card-body.target_filename input').val(),
-      transcript_xref:getTranscriptXref()
+      transcript_xref:getTranscriptXref(),
+      studyId
     }
     $.ajax({
       url:"/de/targets/load/db/",

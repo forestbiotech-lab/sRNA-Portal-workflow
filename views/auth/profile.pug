@@ -6,6 +6,8 @@ block content
   h1 Personal profile
   h5 This is your configuration page where you can view persmissions and set personal configurations.
   a.btn.btn-success(role="button",href="/de") Goto to studies
+  if admin
+    a.btn.btn-success(role="button",href="/auth/list/users") List users
   .card
     .card-body
       p 

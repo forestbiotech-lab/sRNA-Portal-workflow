@@ -116,9 +116,9 @@ $(document).ready(function(){
     alert.insertAdjacentText('afterBegin',"This study has ")
     alert.insertAdjacentText('beforeEnd'," assays ")
     alert.append(uploadData)
-    if(span.textContent>1){
+    if(span.textContent>0){
       let assays=makeLinkButton('View Assays',`/de/assays/${tableId}`,"btn btn-primary assays")
-      let targets=makeLinkButton('View Targets',`/de/targets/new`,"btn btn-primary targets")
+      let targets=makeLinkButton('Add Targets',`/de/targets/add/${tableId}`,"btn btn-primary targets")
       alert.append(assays)
       alert.append(targets)
     }

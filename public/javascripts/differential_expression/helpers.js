@@ -79,8 +79,15 @@ function makeTableFromNestedArrayMatrix(matrix,customHeaders){ //rename to makeT
 	  customHeaders.forEach(function(key){
 	  	let cell=line[key]
 	  	let td=document.createElement('td')
-	  	td.textContent=cell
-	  	tr.append(td)
+	  	//xref Exception
+	  	if(key=="target_accession" && line.xref){
+          let link=mkel('a',{href:`${line.xref}${cell}`},td)
+          link.textContent=cell
+          tr.append(td)
+	  	}else{
+	      td.textContent=cell
+    	  tr.append(td)		
+	  	}
 	  })
 	  tbody.append(tr)
 	})

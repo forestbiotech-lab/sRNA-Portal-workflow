@@ -200,8 +200,8 @@ router.post('/count/assaydata/',function(req,res){
 
 })
 
-router.get('/targets/new',function(req,res){
-  res.render('de/targets')
+router.get('/targets/add/:study',function(req,res){
+  res.render('de/targets',{study_id:req.params.study})
 })
 
 router.post('/targets/upload/:studyid', function(req, res){

@@ -324,9 +324,14 @@ $(document).ready(function(){
       }
       if(chosenListElement instanceof Object){
         Object.keys(chosenListElement).forEach(function(col){
-          let subCell=document.createElement('td')
-          subCell.textContent=chosenListElement[col]
-          rowElement.append(subCell)
+          let subCell=mkel('td',rowElement)
+          let columnText=chosenListElement[col]
+          if(col=="target_accession" && chosenListElement.xref){
+            let accessionLink=mkel('a',{href:`${chosenListElement.xref}${columnText}`},subCell)
+            accessionLink.textContent=columnText
+          }else{
+            subCell.textContent=columnText
+          }
         })
       }else{
         //TODO estimate space to fill with blank

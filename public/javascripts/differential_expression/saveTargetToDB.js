@@ -10,7 +10,7 @@ $(document).ready(function(){
 
   $('#upload-files-upload').on('change', function(){
     var files = $(this).get(0).files;
-    let studyId=1
+    let studyId=$(this).attr('study-id')
     if (files.length == 1){
       // One or more files selected, process the file upload
 

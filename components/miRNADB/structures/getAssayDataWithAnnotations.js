@@ -36,7 +36,8 @@ module.exports={
 					target_accession:{_table:"Transcript",_attribute:"accession"},
 					target_description:"",
 					type:"",
-					expectation:""
+					expectation:"",
+					xref:{_table:"Transcript",_attribute:"xref"}
 				}
 			}]
 		}

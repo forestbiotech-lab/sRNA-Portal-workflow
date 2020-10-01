@@ -92,6 +92,7 @@ router.post('/register', async function(req, res, next) {
 });
 
 router.get('/list/users', function(req, res, next) {
+  //Add condition to limit this to a specific scope. admin
   authModule.auth.listUsers().then(data=>{
     data instanceof Error? res.render('error',{error:data}) : res.render('auth/users', {entries:data});
   }).catch(function(error){
@@ -123,7 +124,10 @@ router.get('/profile',authenticate,async function(req,res,next){
     email=user.email
   }
   let personInfo=await authModule.auth.getUserInfo(parseInt(userId))
-  res.render('auth/profile',{personInfo,confirmationToken,email});
+  //Hardcoded admin
+  let admin=false
+  if(email=="brunovasquescosta@gmail.com") admin=true
+  res.render('auth/profile',{personInfo,confirmationToken,email,admin});
 })
 
 router.get('/login',function(req,res,next){
