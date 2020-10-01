@@ -32,7 +32,7 @@ function insertControl(fieldOfPromises,results,lines,targetsFile,genome_id,study
   while(fieldOfPromises.length<MAX_TRANSACTIONS && lines.length >0){
     line=lines.pop()
     line=line.split("\t")
-    if(line.length>MINSIZE) fieldOfPromises.push(insertLine(targetsFile,line,genome_id,study_id,transcript_xref, index, date))
+    if(line.length>MINSIZE) fieldOfPromises.push(insertLine(targetsFile,line,genome_id,study_id,transcript_xref, index, date,ws))
     index--
     ws.sendMsg(JSON.stringify({msg:{percentageComplete:(100*(TARGETS-index)/TARGETS)}}))
   }
@@ -49,7 +49,7 @@ function insertControl(fieldOfPromises,results,lines,targetsFile,genome_id,study
 }
 
 
-function insertLine(filename,line,genome_id,study_id,transcript_xref, index,date){
+function insertLine(filename,line,genome_id,study_id,transcript_xref, index,date,ws){
   feature_attributes={
     name:line[1],
     source:'psRNAtarget',
@@ -122,6 +122,7 @@ function insertLine(filename,line,genome_id,study_id,transcript_xref, index,date
         return extractId(model)
       }).catch(function(error){
         console.log(error)
+        ws.sendMsg(JSON.stringify({error:error.message}))
       })
     }
     function createTranscript(feature_id,transcript_attributes,transaction){
@@ -134,6 +135,7 @@ function insertLine(filename,line,genome_id,study_id,transcript_xref, index,date
         return extractId(model)
       }).catch(function(err){
         console.log(err)
+        ws.sendMsg(JSON.stringify({error:err.message}))
       })      
     }
 
