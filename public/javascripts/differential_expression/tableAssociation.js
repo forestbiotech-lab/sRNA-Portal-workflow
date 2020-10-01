@@ -273,6 +273,8 @@ $(document).ready(function(){
         // update the Bootstrap progress bar with the new percentage
         $('.save-targets .progress-bar').text(percentComplete + '%');
         $('.save-targets .progress-bar').width(percentComplete + '%');
+      }else if(receivedMsg.error){
+        displayToast("Error",`Problem inserting target: ${receivedMsg.error}`,4000)
       }
      
       

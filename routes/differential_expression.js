@@ -290,6 +290,11 @@ router.post('/targets/load/db/',async(req,res)=>{
   targetInserts=targetsFileActions.loadTargets(file,genome_id,study_id,transcript_xref,ws).then(getPromises=>{
     Promise.all(getPromises).then(data=>{
       data instanceof Error ? console.log(data) : console.log(data)
+      data.forEach(entry=>{
+        if(entry instanceof Error){
+          ws.sendMsg(JSON.stringify({error:entry.message}))
+        }
+      })
       /**
       if (result instanceof Error ){res.status(500).json(result)}else{
         success=0
