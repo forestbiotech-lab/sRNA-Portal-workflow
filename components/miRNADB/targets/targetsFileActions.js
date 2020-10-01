@@ -11,7 +11,7 @@ module.exports={getPreview,loadTargets}
 
 
 
-function loadTargets(targetsFile,genome_id,study_id,ws){
+function loadTargets(targetsFile,genome_id,study_id,transcript_xref,ws){
   return new Promise((res,rej)=>{  
     fs.readFile(targetsFile,'utf8', (err, data) => {
       if (err) rej(err);
@@ -22,17 +22,17 @@ function loadTargets(targetsFile,genome_id,study_id,ws){
       let index=lines.length
       TARGETS=index
       let date=new Date()
-      res(insertControl(fieldOfPromises, results, lines, targetsFile, genome_id, study_id, index, date,ws))
+      res(insertControl(fieldOfPromises, results, lines, targetsFile, genome_id, study_id,transcript_xref, index, date,ws))
   	}) 
   })
 }
 
 
-function insertControl(fieldOfPromises,results,lines,targetsFile,genome_id,study_id,index, date,ws){
+function insertControl(fieldOfPromises,results,lines,targetsFile,genome_id,study_id,transcript_xref, index, date,ws){
   while(fieldOfPromises.length<MAX_TRANSACTIONS && lines.length >0){
     line=lines.pop()
     line=line.split("\t")
-    if(line.length>MINSIZE) fieldOfPromises.push(insertLine(targetsFile,line,genome_id,study_id,index, date))
+    if(line.length>MINSIZE) fieldOfPromises.push(insertLine(targetsFile,line,genome_id,study_id,transcript_xref, index, date))
     index--
     ws.sendMsg(JSON.stringify({msg:{percentageComplete:(100*(TARGETS-index)/TARGETS)}}))
   }
@@ -41,7 +41,7 @@ function insertControl(fieldOfPromises,results,lines,targetsFile,genome_id,study
       results.push(transactions)
       fieldOfPromises=[]
       console.log(index)
-      return insertControl(fieldOfPromises, results, lines, targetsFile, genome_id, study_id,index,date,ws)
+      return insertControl(fieldOfPromises, results, lines, targetsFile, genome_id, study_id,transcript_xref, index,date,ws)
     })
   }else{
     return results.flat() 
@@ -49,7 +49,7 @@ function insertControl(fieldOfPromises,results,lines,targetsFile,genome_id,study
 }
 
 
-function insertLine(filename,line,genome_id,study_id,index,date){
+function insertLine(filename,line,genome_id,study_id,transcript_xref, index,date){
   feature_attributes={
     name:line[1],
     source:'psRNAtarget',
@@ -60,6 +60,7 @@ function insertLine(filename,line,genome_id,study_id,index,date){
   }
   transcript_attributes={
     accession:line[1],
+    xref:transcript_xref,
     version:1
   }
   sequence=line[8].replace(/[^ATGCU]*/g,"")

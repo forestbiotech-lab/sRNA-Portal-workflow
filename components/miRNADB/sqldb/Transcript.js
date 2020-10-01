@@ -16,6 +16,7 @@
     accession: DataTypes.STRING(254),
     version: DataTypes.INTEGER(11),
     feature_id: DataTypes.INTEGER(11),
+    xref: DataTypes.STRING(254),
   }, {
       tableName: 'Transcript',
       timestamps: false,

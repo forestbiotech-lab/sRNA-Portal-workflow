@@ -10,6 +10,9 @@ const token=require('./../.config_res').cookie.seed
 const CLIENT_ID=require('./../.config_res').google.client_id
 const {OAuth2Client} = require('google-auth-library');
 
+
+const LOGINREDIRECT="/auth/profile"
+
 //This is a function that must be packaged elsewhere afterwards
 function getCityAndCountry(ipv4){
   return new Promise((res,rej)=>{
@@ -127,6 +130,8 @@ router.get('/login',function(req,res,next){
   res.render('auth/login',{})
 })
 
+
+//Can be subs for login valid user.
 router.post('/login',function(req,res){
   let email=req.body.email
   let password=req.body.password
@@ -155,7 +160,7 @@ router.post('/login',function(req,res){
         cookies.set("session-id",sessionId).set("session-id",sessionId, { signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
         cookies.set( "accessToken",accessToken).set( "accessToken", accessToken, { signed: true, maxAge: (1000 * 60 * 24 ) } ); //sec * min * hour * day * month  
         cookies.set( "gPicture",'').set( "gPicture", '', { signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
-        res.render('differential_expression',{personInfo,numOfStudies:0})
+        res.render('auth/login',{error:{message:"If you are not redirected automatically press the button bellow"},redirect:LOGINREDIRECT})
       }catch(error){
         res.render('auth/login',{error}) 
       }
@@ -311,8 +316,7 @@ async function loginValidUser(error,id,req,res,thirdparty,successMessage,gPictur
       if(thirdparty){
         res.json(successMessage)
       }else{
-        //This isn't a good because unless if it comes from here you redirect to the correct url not sure on the correct landing page after this login.
-        res.render('differential_expression',{personInfo,numOfStudies:0})
+        res.render('auth/login',{error:{message:"If you are not redirected automatically press the button bellow"},redirect:LOGINREDIRECT})
       }
     }catch(error){
       if(thirdparty){

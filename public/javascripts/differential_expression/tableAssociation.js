@@ -77,6 +77,25 @@ $(document).ready(function(){
     })
   })
 
+  $('.add-xref input.xref-input').change(function(){
+    let xref=$(this).val()+"abs"
+    addXref(xref)
+  })
+  $('.add-xref input.xref-input').keyup(function(){
+    let xref=$(this).val()+"abs"
+    addXref(xref)
+  })
+  function addXref(xref){
+    addToBadge(xref)
+    addToTestLink(xref)
+    function addToBadge(xref){
+      $('.add-xref span.badge.xref-preview').text(xref)
+    }
+    function addToTestLink(xref){
+      $('.add-xref a.xref-preview').attr('href',xref)
+    }
+  }
+
   $('button.save').click(function(){
     let datastructure={update:[],create:[],unset:[]}
     $(`.card.fileSelections .card-body li`).each(function(idx){
@@ -198,8 +217,17 @@ $(document).ready(function(){
 
   //$('button.test').click(function(){
   $('.save-targets button.save-targets').click(function(){
+    function getTranscriptXref(){
+      xref=$('input.xref-input').val()
+      if(xref){
+        return xref
+      }else{
+        return ''
+      }
+    }
     let data={
-      target_filename:$('.card-body.target_filename input').val()
+      target_filename:$('.card-body.target_filename input').val(),
+      transcript_xref:getTranscriptXref()
     }
     $.ajax({
       url:"/de/targets/load/db/",

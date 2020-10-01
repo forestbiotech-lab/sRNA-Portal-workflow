@@ -4,7 +4,7 @@ $(document).ready(()=>{
     url:"/auth/loggedin",
     success:function(data,textStatus,jqXHR){
       setupLoginbuttons(data)
-
+      redirect()
     },
     fail:function(jqXHR,textStatus,error){
       setupLogin()
@@ -28,6 +28,12 @@ $(document).ready(()=>{
   function setupLogout(){
     $('.menu .menu-item.login-btn').hide()
     //hide login
+  }
+  function redirect(){
+    let redirect=$('a.redirect')
+    if (redirect.length==1){
+      document.location=redirect.attr('href')
+    }
   }
 
 })

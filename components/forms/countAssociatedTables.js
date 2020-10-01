@@ -5,9 +5,7 @@ module.exports=function(tablename,associatedTable,id){
   let options={
     tablename,
     associatedTable,
-    where:{
-      id
-    }
+    where:id
   }  
   return models[call](options)
 }

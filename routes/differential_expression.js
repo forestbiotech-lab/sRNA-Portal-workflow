@@ -56,6 +56,11 @@ async function authenticate(req,res,next){
   }
 }
 
+//function to load cookie related data.
+function getAuthenticatedData(res){
+  //return object with personId,userId etc.
+}
+
 router.get('/a/:study',function(req,res){
   require('.././components/docker/bioconductor/')("opt").then(stream=>{
     var svg = '';
@@ -84,7 +89,7 @@ router.get('/',authenticate,async function(req,res){
   let associatedTable="Study"
   let attributes={tablename,where:{id:personId}}
   let personInfo=formFromTable.tableEntry(attributes)
-  let studyCount=countAssociatedTables(tablename,associatedTable,personId)
+  let studyCount=countAssociatedTables(tablename,associatedTable,{id:personId})
   Promise.all([personInfo,studyCount]).then(function(data){
     let personInfo=data[0]
     let numOfStudies=data[1]
@@ -209,6 +214,7 @@ router.post('/targets/upload/:studyid', function(req, res){
 });
 
 router.post('/targets/columnAssociation', (req,res)=>{
+  
   //dynamic
   let reqData=req.body
   let lineNumber=reqData.lineNumber
@@ -239,7 +245,7 @@ router.post('/targets/columnAssociation', (req,res)=>{
     var accessions="Accession_Search"
     tables.unshift(accessions)
     tableData[accessions]=[{name:"miRNA",type:"text"},{name:"transcript",type:"text"}]
-    res.render('de/targetColumnAssociation',{tables,tableData,octicons,icon,fileHeaders,profiles,target_filename})
+    res.render('de/targetColumnAssociation',{tables,tableData,octicons,icon,fileHeaders,profiles,target_filename,study_id:studyId})
   }).catch(err=>{
     res.render('error',{message:"Unable to get profiles",error:{status:"The query had issues"},stack:err.stack})
   })
@@ -268,10 +274,12 @@ router.post('/targets/profile/set/:type/:profile',(req,res)=>{
 
 router.post('/targets/load/db/',async(req,res)=>{
   let target_filename=req.body.target_filename
+  let transcript_xref=req.body.transcript_xref
+  let study_id=req.body.studyId
 
   // - must be passed by body -
   let genome_id=3
-  let study_id=1
+  
   // --------------------------
 
   let ws=new wsClient()
@@ -279,7 +287,7 @@ router.post('/targets/load/db/',async(req,res)=>{
   await ws.isConnected()
      
   let file=path.join(uploadDir,`${study_id}/${destinationFolderTargets}/${target_filename}`)
-  targetInserts=targetsFileActions.loadTargets(file,genome_id,study_id,ws).then(getPromises=>{
+  targetInserts=targetsFileActions.loadTargets(file,genome_id,study_id,transcript_xref,ws).then(getPromises=>{
     Promise.all(getPromises).then(data=>{
       data instanceof Error ? console.log(data) : console.log(data)
       /**

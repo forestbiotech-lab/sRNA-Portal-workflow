@@ -14,11 +14,13 @@ fi
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
-backup=${DIR}/../SQL/DB_backup/$(date +"%y-%m-%d-%H:%M:%S")-${database}_dump.sql
+backupStructure=${DIR}/../SQL/DB_backup/$(date +"%y-%m-%d-%H:%M:%S")-${database}_structure-dump.sql
+backupData=${DIR}/../SQL/DB_backup/$(date +"%y-%m-%d-%H:%M:%S")-${database}_data-dump.sql
 
-mysqldump -u ${user} --add-drop-table ${database} -p > $backup
+mysqldump -u ${user} --add-drop-table --no-data=TRUE ${database} -p > $backupStructure
+mysqldump -u ${user} --no-create-info ${database} -p > $backupData
 
-cp $backup ${DIR}/../SQL/LATEST_dump.sql
+cp $backupData ${DIR}/../SQL/LATEST_dump.sql
 
 echo "Database $database backed up successfully."
 

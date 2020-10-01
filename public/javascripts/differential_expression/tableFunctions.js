@@ -106,7 +106,7 @@ $(document).ready(function(){
     panel.className="card-body"
     alert.className="alert alert-primary"
     span.className="badge badge-secondary"
-    span.textContent=await countAssociatedTables("Study","Assay",tableId)
+    span.textContent=await countAssociatedTables("Assay","Study",{study:tableId})
 
     let uploadData=makeButton('Upload Data',"btn btn-primary assays",event="click",action=uploadDataAction,)
     let editStudy=makeButton('Edit Study',"btn btn-primary editStudy",event="click",action=openEditStudyPanel)
