@@ -1,0 +1,23 @@
+extends layout
+block content
+  script(id="metadata",src="/javascripts/metadata.js",defer)  
+  .container-fluid
+    .card
+      .card-header
+        h3.card-title Sequence overview
+      .card-body  
+        .d-flex.flex-row
+          .span.badge.badge-success Sequence:
+        .d-flex.flex-row      
+          input.form-control.sequence(type="text",sequence-id=sequenceId)
+    .d-flex.flex-row
+      .card.flex-fill
+        .card-header
+          h5.card-title Associated studies
+        .card-body
+          table.table.associated-studies
+            thead
+              tr 
+                th id
+                th title
+                th assays

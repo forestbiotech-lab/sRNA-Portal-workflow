@@ -5,6 +5,7 @@ var saveSingleTableDynamic=require('./../components/forms/saveSingleTableDynamic
 var formElementSelect=require('./../components/forms/formElementSelect')
 var tableFromTable=require('./../components/forms/tableFromTable')
 var countAssociatedTables=require('./../components/forms/countAssociatedTables')
+const tailorMultiTableLookup=require('./../components/forms/tailorMultiTableLookup')
 var Cookies = require('cookies');
 var Keygrip = require("keygrip");
 const keylist=require('./../.config_res').cookie.keylist
@@ -38,6 +39,24 @@ router.get('/factory/fromTable/byId/:table/:id',function(req,res){
   }).catch(function(error){
     res.render('error',error)
   })
+})
+router.post('/factory/tailored-query/',(req,res)=>{
+  try{
+    let sourceTable=req.body.sourceTable
+    let tableConnections=req.body.tableConnections
+    let callOutputStructure=req.body.callOutputStructure
+    tailorMultiTableLookup(sourceTable,tableConnections,callOutputStructure).then(data=>{
+      res.json(data)
+    }).catch(err=>{
+      let message=err.message
+      res.writeHead( 500, message, {'content-type' : 'text/plain'});
+      res.end(message);
+    })
+  }catch(err){
+    let message=err.message
+    res.writeHead( 500, message, {'content-type' : 'text/plain'});
+    res.end(message);
+  }
 })
 router.post('/factory/select/basic/:table', function(req, res, next){
   let options={tablename:req.params.table,attributes:req.body.attributes}

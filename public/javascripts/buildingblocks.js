@@ -51,7 +51,7 @@ function mkel(name,attributes,append){
 }
 /**
 @param {object}       attribtues  Tr attributes
-@param {array}        contents    Cell contents
+@param {array/object} contents    Cell contents in the object order
 @param {array/object} metadata    cell attributes
 @param {boolean}      header      optional, idicates wheather this row is a header or not.
 **/
@@ -64,6 +64,12 @@ function makeRow(attributes,contents,metadata,header){
       cell.append(content)
       tr.append(cell)
     }) 
+  }else if(contents instanceof Object){
+    contentArray=[]
+    Object.keys(contents).forEach(key=>{
+      contentArray.push(contents[key])
+    })
+    return makeRow(attributes,contentArray,metadata,header)
   }
   return tr
 }

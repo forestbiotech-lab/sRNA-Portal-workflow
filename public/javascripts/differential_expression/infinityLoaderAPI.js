@@ -293,7 +293,12 @@ $(document).ready(function(){
           }else if(dataPoint.value==null){
               cell.textContent="N.D." 
           }else{
-              cell.textContent=dataPoint.value  
+              if(header.value=="Sequence"){
+                let a=mkel('a',{href:`/metadata/sequence/overview/${dataPoint.metadata["sequence-id"]}`,target:"_blank"},cell)
+                a.textContent=dataPoint.value
+              }else{
+                cell.textContent=dataPoint.value  
+              }
           }
           Object.keys(dataPoint.metadata).forEach(key=>{
             let value=dataPoint.metadata[key] 

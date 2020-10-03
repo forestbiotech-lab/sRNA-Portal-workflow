@@ -19,6 +19,7 @@ var de = require('./routes/differential_expression')
 var forms = require('./routes/forms')
 var auth = require('./routes/auth')
 var miRPursuit = require('./routes/mirpursuit')
+var metadata = require('./routes/metadata')
 
 
 // redirect stdout / stderr
@@ -44,6 +45,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use('/', index);
+app.use('/metadata', metadata);
 app.use('/users', users);
 app.use('/db/api/v1',db);
 app.use('/vm/api/v1',docker);
