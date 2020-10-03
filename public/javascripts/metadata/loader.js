@@ -55,19 +55,22 @@ $(document).ready(function(){
       id:"",
       sequence:"",
       accession:{_table:'Mature_miRNA',_attribute:"accession"},
-      Study:{
-        _table:['Mature_miRNA','Annotation','Assay_datum',"Assay"],
-        id:{_table:"Study",_attribute:"id"},
-        title:{_table:"Study",_attribute:"title"},
-        Assays:[{
-          _table:"Assay",
-          _model:{
+      Study:[{
+        _table:"Mature_miRNA",
+        _model:{
+          _table:['Mature_miRNA','Annotation','Assay_datum',"Assay"],
+          id:{_table:"Study",_attribute:"id"},
+          title:{_table:"Study",_attribute:"title"},
+          Assays:[{
             _table:"Assay",
-            "id":"",
-            "name":""
-          }
-        }]
-      }
+            _model:{
+              _table:"Assay",
+              "id":"",
+              "name":""
+            }
+          }]
+        }
+      }]
     }
     let tableConnections={
       "Mature_miRNA":{
@@ -96,18 +99,20 @@ $(document).ready(function(){
         **/
       
     function makeStudiesTable(data){
-      data.data.forEach((row,index)=>{
-        let associatedStudiesTable=$('table.associated-studies')
-        let study=Object.assign({},row.Study)
-        let assayTable=makeAssayTable(study.Assays,index)
-        associatedStudiesTable.after(assayTable)
+      data.data[0].Study.forEach((row,index)=>{
+        if(typeof row.id != "object"){
+          let associatedStudiesTable=$('table.associated-studies')
+          let study=Object.assign({},row)
+          let assayTable=makeAssayTable(study.Assays,index)
+          associatedStudiesTable.after(assayTable)
         
-        study.Assays=makeButton(
-          {text:study.Assays.length},
-          {class:"btn btn-success","study-row":index},
-          {evt:"click",callback:makeAssayTableModal}
-        )
-        associatedStudiesTable.append(makeRow(trAttributes={},study,metadata={},header=false))          
+          study.Assays=makeButton(
+            {text:study.Assays.length},
+            {class:"btn btn-success","study-row":index},
+            {evt:"click",callback:makeAssayTableModal}
+          )
+          associatedStudiesTable.append(makeRow(trAttributes={},study,metadata={},header=false))          
+        }  
       })
       function makeAssayTable(assays,index){  
         let table=mkel("table",{class:"table assay-table d-none","study-row":index})
