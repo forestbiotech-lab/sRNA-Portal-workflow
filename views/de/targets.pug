@@ -55,8 +55,9 @@ block content
       .row
         .col-lg-12
           .card.upload 
-            .card-body
+            .card-header
               h5.card-title Targets file
+            .card-body
               .row
                 .form-group.col-lg-2
                   label.sr-only(for="type-of-targets") Upload file
@@ -72,7 +73,7 @@ block content
                   .progress(style="position:relative;bottom:-12px;")
                     .progress-bar(role="progressbar",aria-valuenow="0",aria-valuemin="0",aria-valuemax="100")
                 .col-lg-2
-                  button.btn.btn-primary.upload-targets(type="button") Upload targets  
+                  button.btn.btn-success.upload-targets(type="button") Upload targets  
             .card-footer
               .row
                 .form-group.col-lg-12
@@ -92,3 +93,36 @@ block content
                 input.col-lg-1.col-md-2#line-selector(name="lineNumber",type="number",increment=1,min=0,value="0",style="width:70px")
                 input.col-lg-4.btn.d-none.btn-primary.select-header(type="submit",value="use default header") 
             .card-body(style="overflow-x:scroll;")
+      .row.append-info
+        .col-12
+          .card
+            .card-header
+              h5.card-title
+                | Add missing information to targets
+            .card-body
+              p In this section you can add missing data to the current targets associated to this study. 
+              .d-flex.flex-column
+                .dynamic-value
+                  .card.bg-light
+                    .card-header
+                      h5 Dynamic Value
+                    .card-body
+                      p Here you can upload a file, with an unique key to identify the row that is being updated plus serveral colums for the attributes you wish to change. 
+                      .form-group
+                        label.sr-only(for="augment-file") Upload file
+                        input(hidden,type="file",id="augment-file",placeholder="tsv file",required="",autofocus="",autocomplete="off",name="uploads[]", accept="mime/*,.tsv",study-id=study_id)
+                      button.btn.btn-success.btn-block.upload-targets(type="button") upload file
+                .p2.fixed-value
+                  .card.bg-light
+                    .card-header
+                      h5 Fixed Value
+                    .card-body
+                      p Here you can add a fixed value to a target attribute
+                      .d-flex.flex-row
+                        select.custom-select
+                          option Table
+                        select.custom-select
+                          option Attribute
+                          option !!Pick Table First!!
+                        input.form-control(type="text",placeholder="value to add to all targets")
+                      button.btn.btn-success.btn-block.submit-fixed-value Submit Fixed Value

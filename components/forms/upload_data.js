@@ -75,7 +75,7 @@ function uploadFile(req,uploadDir,destination){
 }
 
 
-function uploadTargets(req,uploadDir,destination){
+function uploadFileGetPreview(req,uploadDir,destination){
   return new Promise((res,rej)=>{
       // create an incoming form object
     var form = new formidable.IncomingForm();
@@ -145,4 +145,4 @@ function uploadTargets(req,uploadDir,destination){
   })
 }
 
-module.exports={uploadFile,uploadTargets}
+module.exports={uploadFile,uploadFileGetPreview}

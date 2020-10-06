@@ -206,12 +206,20 @@ router.get('/targets/add/:study',function(req,res){
 
 router.post('/targets/upload/:studyid', function(req, res){
      //////////////////////////
-     upload_data.uploadTargets(req,uploadDir,destinationFolderTargets).then(result=>{
+     upload_data.uploadFileGetPreview(req,uploadDir,destinationFolderTargets).then(result=>{
       result instanceof Error ? res.status(400).json(result) : res.json(result)
      }).catch(err=>{
       res.status('500').json('err')
      })
 });
+router.post('/targets/augment-info/upload/:studyid', function(req, res){
+   upload_data.uploadFileGetPreview(req,uploadDir,destinationFolderTargets).then(result=>{
+    result instanceof Error ? res.status(400).json(result) : res.json(result)
+   }).catch(err=>{
+    res.status('500').json('err')
+   })
+});
+
 
 router.post('/targets/columnAssociation', (req,res)=>{
   

@@ -76,6 +76,74 @@ $(document).ready(function(){
       });
     }
   });
+  $('input#augment-file').on('change', function(){
+    var files = $(this).get(0).files;
+    let studyId=$(this).attr('study-id')
+    if (files.length == 1){
+      // One or more files selected, process the file upload
+
+      // create a FormData object which will be sent as the data payload in the
+      // AJAX request
+      var formData = new FormData();
+
+      // loop through all the selected files
+      formData.append('uploads[]', files[0], files[0].name);
+      
+      $.ajax({
+        url: `/de/targets/upload/${studyId}`,
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(data,textStatus,jqXHR){
+          if(success) success(data)
+        },
+        fail: function(jqXHR,textStatus,err){
+          displayToast("Error",err,4000)
+        },
+        xhr: function() {
+          return progress()
+        }
+      });
+      function progress(){
+        // create an XMLHttpRequest
+        var xhr = new XMLHttpRequest();
+
+        // listen to the 'progress' event
+        xhr.upload.addEventListener('progress', function(evt) {
+          if (evt.lengthComputable) {
+            // calculate the percentage of upload completed
+            var percentComplete = evt.loaded / evt.total;
+            percentComplete = parseInt(percentComplete * 100);
+            // update the Bootstrap progress bar with the new percentage
+            $('.progress-bar').text(percentComplete + '%');
+            $('.progress-bar').width(percentComplete + '%');
+            // once the upload reaches 100%, set the progress bar text to done
+            if (percentComplete === 100) {
+              $('.progress-bar').html('Done');
+            }
+          }
+        }, false);
+        return xhr;
+      }
+    }
+    function success(){
+      filename=data.file.name
+      hash=data.file.hash
+      setHeaderSelectMode(data.filePreview)
+      if(filename=="UnsupportedFile"){
+        alert("Unsupported file type! Try again")
+        $('.progress-bar').text('0%');
+        $('.progress-bar').width('0%');
+      }else{
+        $('.card.upload .card-footer input#file').val(filename)  
+        $('.row.preview-header .card-header input#filename').val(filename)  
+        $('.row.preview-header .card-header input#hash').val(hash)
+        $('.row.preview-header .card-header input.select-header').removeClass('d-none')
+      }
+    }
+  })
+
   function previewHeader(line,cellType,newTable,split){
     cellType=cellType || 'td'
     newTable=newTable || false
