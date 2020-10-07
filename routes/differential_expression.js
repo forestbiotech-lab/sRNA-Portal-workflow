@@ -18,6 +18,7 @@ var formFromTable=require('./../components/forms/formFromTable')
 var upload_data=require('./../components/forms/upload_data')
 var wsClient=require('.././components/websockets/wsClient').Client
 var countAssociatedTables=require('./../components/forms/countAssociatedTables')
+var augmentTable=require('./../components/miRNADB/transactions/augmentTable')
 var exportFile=require('./../components/miRNADB/exportFile')
 const uploadDir=path.join(__dirname, '../uploads');
 const destinationFolderRawReads = "raw_reads"
@@ -220,6 +221,38 @@ router.post('/targets/augment-info/upload/:studyid', function(req, res){
    })
 });
 
+router.post('/targets/augment-info/update',async function(req,res){
+  let fileName=req.body.fileName
+  let studyId=req.body.studyId
+  let filePath=path.join(uploadDir,studyId,destinationFolderTargets,fileName)  
+  let ws=new wsClient()
+  let key={
+    table:"Transcript",
+    attribute:"accession",
+    column:0
+  }
+  let updateValues=[{
+    table:"Target",
+    attribute:"description",
+    column:"2"}]
+  let insertAttributes={
+    key,
+    updateValues,
+    studyId,
+  }
+
+  ws.connect("augment_table",res)
+  await ws.isConnected()
+
+  augmentTable(filePath,insertAttributes,ws).then(result=>{
+    ws.sendMsg('Success: Finished transactions!')
+  }).catch(err=>{
+    let msg=err.message
+    ws.sendMsg(`Error: ${err}`)
+    ws.close()
+  })
+    
+})
 
 router.post('/targets/columnAssociation', (req,res)=>{
   
