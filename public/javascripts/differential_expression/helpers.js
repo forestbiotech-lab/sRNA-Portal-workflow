@@ -97,6 +97,13 @@ function makeTableFromNestedArrayMatrix(matrix,customHeaders){ //rename to makeT
 }
 
 function startWebSocket(address,protocol,callBack){
+  if(typeof protocol=="object" && callBack==null){
+    callBack=protocol
+    const HOSTNAME=document.location.hostname
+    const CONNECTIONPROTOCOL = HOSTNAME=="localhost" ? "ws" : "wss"
+    const PORT=8080    
+    address=`${CONNECTIONPROTOCOL}://${HOSTNAME}:${PORT}`
+  }
   var ws = new WebSocket(address,protocol);
   ws.onopen = function () {
       console.log('socket connection opened properly');
