@@ -7,7 +7,9 @@ block content
   h5 This is your configuration page where you can view persmissions and set personal configurations.
   a.btn.btn-success(role="button",href="/de") Goto to studies
   if admin
-    a.btn.btn-success(role="button",href="/auth/list/users") List users
+    a.btn.btn-success(role="button",href="/auth/list/users") 
+      span.glyphicon.glyphicon-list-alt
+      | &nbsp;List users
   .card
     .card-body
       p 
@@ -27,9 +29,11 @@ block content
   button.btn.btn-secondary change orcid
   a.btn.btn-secondary(type="button",href=`/auth/login/reset/${email}/${confirmationToken}`) reset password
   a.btn.btn-secondary(type="button",href="/auth/login/reset") change password
-  h3 Studies privacy&nbsp;
-    button.btn.btn-success.btn-sm(type='button', data-toggle='collapse', data-target='#studies', aria-expanded='false', aria-controls='studies')
-      span.glyphicon.glyphicon-menu-down
+  .card             
+    .card-header
+      h3 Studies privacy&nbsp;
+        button.btn.btn-success.btn-sm(type='button', data-toggle='collapse', data-target='#studies', aria-expanded='false', aria-controls='studies')
+          span.glyphicon.glyphicon-menu-down
   .collapse(id="studies")
     .card.card-body
       table.table
@@ -54,10 +58,11 @@ block content
             td
              button.btn.btn-secondary Make public
 
-
-  h3 Authorizations&nbsp;
-    button.btn.btn-success.btn-sm(type='button', data-toggle='collapse', data-target='#authorizations', aria-expanded='false', aria-controls='authorizations')
-      span.glyphicon.glyphicon-menu-down
+  .card             
+    .card-header
+      h3.card-title Authorizations&nbsp;
+        button.btn.btn-success.btn-sm(type='button', data-toggle='collapse', data-target='#authorizations', aria-expanded='false', aria-controls='authorizations')
+          span.glyphicon.glyphicon-menu-down
   .collapse(id="authorizations")
     .card.card-body
       table.table
@@ -85,14 +90,18 @@ block content
                 span.badge.bagde-primary 0
             td
              button.btn.btn-secondary Generate API key
-  h3 Active sessions&nbsp;
-    button.btn.btn-success.btn-sm.active-sessions(type='button', data-toggle='collapse', data-target='#active-sessions', aria-expanded='false', aria-controls='active-sessions')
-      span.glyphicon.glyphicon-menu-down
+  .card             
+    .card-header
+      h3 Active sessions&nbsp;
+        button.btn.btn-success.btn-sm.active-sessions(type='button', data-toggle='collapse', data-target='#active-sessions', aria-expanded='false', aria-controls='active-sessions')
+          span.glyphicon.glyphicon-menu-down
   .collapse(id="active-sessions")
     .card.card-body
-  h3 Applications with access to you account&nbsp;
-    button.btn.btn-success.btn-sm(type='button', data-toggle='collapse', data-target='#apps', aria-expanded='false', aria-controls='apps')
-      span.glyphicon.glyphicon-menu-down
+  .card             
+    .card-header
+      h3 Applications with access to you account&nbsp;
+        button.btn.btn-success.btn-sm(type='button', data-toggle='collapse', data-target='#apps', aria-expanded='false', aria-controls='apps')
+          span.glyphicon.glyphicon-menu-down
   .collapse(id="apps")
     .card.card-body
       p.text-center not available  

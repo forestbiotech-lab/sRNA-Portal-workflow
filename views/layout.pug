@@ -27,8 +27,12 @@ html
         span.activity State:
         .progress(style="margin-left:5px; width:100px;height:16px;margin-top:4px;")
           .progress-bar(role="progressbar",aria-valuenow="0",aria-valuemin="0",aria-valuemax="100")
-      button.menu-item.menu-item1.login-btn.btn.btn-dark.d-none(data-toggle="modal" data-target="#login-modal") login
-      button.menu-item.menu-item-right.menu-item1.logout-btn.btn.btn-secondary(onclick="signOut();") logout
+      button.menu-item.menu-item1.login-btn.btn.btn-dark.d-none(data-toggle="modal" data-target="#login-modal") 
+        span.glyphicon.glyphicon-log-in
+        | &nbsp;login
+      button.menu-item.menu-item-right.menu-item1.logout-btn.btn.btn-secondary(onclick="signOut();") 
+        span.glyphicon.glyphicon-log-out
+        | &nbsp;logout
       a.menu-item.menu-item-right.profile-btn.btn.btn-success(href="/auth/profile")
         span.glyphicon.glyphicon-user
         | &nbsp;Profile

@@ -10,7 +10,7 @@ block content
     if redirect
       .pb-4.flex-fill.justify-content-center
         a.btn.btn-success.btn-block.redirect(role="button",href=redirect) redirect
-  form(action="/auth/login",method="post")
+  form#login-form(action="/auth/login",method="post")
     .form-group
       label(for='login-email') Email address
       input#login-email.form-control(name="email",type='email', aria-describedby='emailHelp')
@@ -21,8 +21,11 @@ block content
     .form-group.form-check
       input#exampleCheck1.form-check-input(type='checkbox')
       label.form-check-label(for='exampleCheck1',title="I do absolutly nothing!") Check me out (I thought you might like to play with me.)
-    input.btn.btn-primary(role="button",type='submit',value="Login")
-    a.btn.btn-success(type="button",href="/auth/register") Register
-    button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+    button.btn.btn-success(type='submit',form="login-form")
+      span.glyphicon.glyphicon-log-in
+      | &nbsp;Login  
+    a.btn.btn-success(type="button",href="/auth/register") 
+      span.glyphicon.glyphicon-edit
+      | &nbsp;Register
     .g-signin2(onclick="onSignIn()",data-theme='dark')
     
