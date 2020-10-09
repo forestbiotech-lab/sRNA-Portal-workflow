@@ -13,6 +13,7 @@
         allowNull: false,
         unique: true,
       },
+    orcid: DataTypes.STRING(254),  
     firstName: DataTypes.STRING(254),
     lastName: DataTypes.STRING(254),
   }, {

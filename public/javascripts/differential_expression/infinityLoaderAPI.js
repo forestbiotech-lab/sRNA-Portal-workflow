@@ -66,6 +66,7 @@ $(document).ready(function(){
       header.lastRowTd.attr('colspan',header.columns)
       body.rowsPerIter=rowsPerIter    
       loadRows()
+      jqTable.trigger('loadedAssayData')
     }).catch(function(err){
       console.trace(err)
       alert(err)
@@ -279,20 +280,11 @@ $(document).ready(function(){
           let dataPoint=row[section][header.value]
           let cell=document.createElement('td')
           if(dataPoint.value instanceof Array){
-              let span=document.createElement('span')
-              span.setAttribute('class', "badge badge-success")
-              span.textContent=dataPoint.value.length
-              cell.append(span)
-              cell.setAttribute('title', "click to see list")
-              cell.onclick=function(){
-                let table=makeTableFromNestedArrayMatrix(dataPoint.value)
-                $('.modal-body').empty()
-                $('.modal-body').append(table)
-                $('#exampleModalLong').modal('show')
-              }  
+            that.makeArrayCountButtonToGenerateModal(dataPoint,cell)          
           }else if(dataPoint.value==null){
               cell.textContent="N.D." 
           }else{
+              //Exception for hyperlinking sequence !! TODO remove - front end to choose!! 
               if(header.value=="Sequence"){
                 let a=mkel('a',{href:`/metadata/sequence/overview/${dataPoint.metadata["sequence-id"]}`,target:"_blank"},cell)
                 a.textContent=dataPoint.value
@@ -313,34 +305,57 @@ $(document).ready(function(){
       })
       return rowElement
     }
+    makeArrayCountButtonToGenerateModal(dataPoint,cell){
+      let span=document.createElement('span')
+      span.setAttribute('class', "badge badge-success")
+      span.textContent=dataPoint.value.length
+      cell.append(span)
+      cell.setAttribute('title', "click to see list")
+      cell.onclick=function(){
+        let table=makeTableFromNestedArrayMatrix(dataPoint.value)
+        $('.modal-body').empty()
+        $('.modal-body').append(table)
+        $('#exampleModalLong').modal('show')
+      }  
+    }
     appendListEl(chosenListElement,rowElement,listHeader,section,that){
-      if(listHeader.length==1){
-        listHeader.text(section)
-        if(chosenListElement){
-          let chosenListElementKeys=Object.keys(chosenListElement)
-          chosenListElementKeys.reverse()
-          chosenListElementKeys.forEach(function(col){
-            let header=document.createElement('th')
-            header.textContent=col
-            header.setAttribute('section', section)
-            listHeader.after(header)
-          })          
+      makeListElHeader(listHeader,section,chosenListElement,that)
+      makeListElBody(chosenListElement,rowElement)
+
+      function makeListElHeader(listHeader,section,chosenListElement,that){
+        if(listHeader.length==1){
+          listHeader.text(section)
+          if(chosenListElement){
+            let chosenListElementKeys=Object.keys(chosenListElement)
+            chosenListElementKeys.reverse()
+            chosenListElementKeys.forEach(function(col){
+              if(col!="xref"){//EXCEPTION !!! THIS should be dealt with in a dynamic way    
+                let header=document.createElement('th')
+                header.textContent=col
+                header.setAttribute('section', section)
+                listHeader.after(header)                
+              }
+            })
+            that.jqTable.find(`thead tr:nth(0) th[section|=${section}]`).attr('colspan',chosenListElementKeys.length)          
+          }
         }
       }
-      if(chosenListElement instanceof Object){
-        Object.keys(chosenListElement).forEach(function(col){
-          let subCell=mkel('td',rowElement)
-          let columnText=chosenListElement[col]
-          if(col=="target_accession" && chosenListElement.xref){
-            let accessionLink=mkel('a',{href:`${chosenListElement.xref}${columnText}`},subCell)
-            accessionLink.textContent=columnText
-          }else{
-            subCell.textContent=columnText
-          }
-        })
-      }else{
-        //TODO estimate space to fill with blank
+      function makeListElBody(chosenListElement,rowElement){
+        if(chosenListElement instanceof Object){
+          Object.keys(chosenListElement).forEach(function(col){
+            let subCell=mkel('td',{},rowElement)
+            let columnText=chosenListElement[col]
+            if(col=="target_accession" && chosenListElement.xref){ //Exception !! THIS should be corrected
+              let accessionLink=mkel('a',{href:`${chosenListElement.xref}${columnText}`},subCell)
+              accessionLink.textContent=columnText
+            }else if(col!="xref"){
+              subCell.textContent=columnText
+            }
+          })
+        }else{
+          //TODO estimate space to fill with blank
 
+        }
       }
     }
   }

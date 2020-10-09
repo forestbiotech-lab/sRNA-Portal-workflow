@@ -6,6 +6,7 @@ const fs = require('fs')
 const MINSIZE=2
 const PREVIEW_LINES=10
 const MAX_TRANSACTIONS=2
+const path=require('path')
 var TARGETS;
 module.exports={getPreview,loadTargets}
 
@@ -52,10 +53,11 @@ function insertControl(fieldOfPromises,results,lines,targetsFile,genome_id,study
 function insertLine(filename,line,genome_id,study_id,transcript_xref, index,date,ws){
   feature_attributes={
     name:line[1],
-    source:'psRNAtarget',
+    source:'psRNAtarget: '+path.basename(filename),
     type:'miRNA_target',
     start:line[6],
     end:line[7],
+    genome_id,
     strand:'+'
   }
   transcript_attributes={
@@ -67,8 +69,8 @@ function insertLine(filename,line,genome_id,study_id,transcript_xref, index,date
   target_attributes={
     study_id,
     date,
-    type:line[10],
-    target_description:line[12].trim(),
+    type:line[11],
+    target_description:line[15].trim(),
     expectation:line[2],
     UPE:line[3],
   }
@@ -139,18 +141,6 @@ function insertLine(filename,line,genome_id,study_id,transcript_xref, index,date
       })      
     }
 
-    function newTarget(lineNum,sequence,genome_id,feature_attributes,transcript_attributes,target_attributes,transaction){
-      return createFeature(genome_id,feature_attributes,transaction).then(feature_id=>{
-        return createTranscript(feature_id, transcript_attributes, transaction).then(transcript_id=>{
-          return getMiRNAannotation(sequence, transaction).then(mature_miRNA_id=>{
-            return createTarget(mature_miRNA_id, transcript_id, target_attributes, transaction).then(target_id=>{
-              return {lineNum,created:{target_id,feature_id,transcript_id},referenced:{mature_miRNA_id}}
-            })
-          })
-        })
-      })      
-    }
-
     function createTarget(mature_miRNA_id,transcript_id,target_attributes,transaction){
       let attributes={
         tablename:"Target",
@@ -169,46 +159,70 @@ function insertLine(filename,line,genome_id,study_id,transcript_xref, index,date
     function determineVersion(){
       return 1
     }
-
-    function extractId(model,tablename){
-      id=""
-      if(model instanceof Array ){
-        if (model.length == 0){
-          if(tablename=="Mature_miRNA_sequence"){
-            let sequence_error=new Error(`Sequence "${sequence}" not found! - Rollback has been triggered for this line`)
-            sequence_error.description={target_line:lineNum,target_file:filename}
-            throw sequence_error 
-          }else{
-            id=-1
-          }
-        }else{
-          id=model[0].dataValues.id
-        }
-      }else{
-      	id=model.dataValues.id || new Error('Rollback triggered - Create failed! Or at least produced no id')
-      }
-      return id
+    
+    function newTarget(lineNum,sequence,genome_id,feature_attributes,transcript_attributes,target_attributes,transaction){
+      return createFeature(genome_id,feature_attributes,transaction).then(feature_id=>{
+        return createTranscript(feature_id, transcript_attributes, transaction).then(transcript_id=>{
+          return getMiRNAannotation(sequence, transaction).then(mature_miRNA_id=>{
+            return createTarget(mature_miRNA_id, transcript_id, target_attributes, transaction).then(target_id=>{
+              return {lineNum,created:{target_id,feature_id,transcript_id},referenced:{mature_miRNA_id}}
+            })
+          })
+        })
+      })      
     }
 
-
-
-    return newTarget(lineNum, sequence, genome_id, feature_attributes, transcript_attributes, target_attributes, t).then(function(targetCreation){
-      return t.commit().then(()=>{
-        let status={
-          name:"Success",
-          message:`Line number: ${targetCreation.lineNum} inserted with success!`,
-          created:targetCreation.created,
-          referenced:targetCreation.referenced
-        }
-        return status;
-      })
-    }).catch(function (err) {
-      return t.rollback().then(a=>{
+    try{
+      return newTarget(lineNum, sequence, genome_id, feature_attributes, transcript_attributes, target_attributes, t).then(function(targetCreation){
+        if(targetCreation instanceof Error) throw targetCreation
+        return t.commit().then(()=>{
+          let status={
+            name:"Success",
+            message:`Line number: ${targetCreation.lineNum} inserted with success!`,
+            created:targetCreation.created,
+            referenced:targetCreation.referenced
+          }
+          return status;
+        })
+      }).catch(function (err) {
+        return t.rollback().then(a=>{
+          return err
+        })
+      });
+    }catch(err){
+      return t.rollback().then(()=>{
         return err
       })
-    });
+    }
   })
 }
+
+
+
+
+
+function extractId(model,tablename){
+  id=""
+  if(model instanceof Array ){
+    if (model.length == 0){
+      if(tablename=="Mature_miRNA_sequence"){
+        let sequence_error=new Error(`Sequence "${sequence}" not found! - Rollback has been triggered for this line`)
+        sequence_error.description={target_line:lineNum,target_file:filename}
+        throw sequence_error 
+      }else{
+        id=-1
+      }
+    }else{
+      id=model[0].dataValues.id
+    }
+  }else{
+    id=model.dataValues.id || new Error('Rollback triggered - Create failed! Or at least produced no id')
+  }
+  return id
+}
+
+
+
 
 
 

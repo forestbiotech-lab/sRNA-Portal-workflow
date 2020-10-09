@@ -71,9 +71,8 @@ function insertLine(line, insertAttributes,ws){
   
 
   return db.sequelize.transaction().then(function(t){
-
     try{
-      augmentTargets(keyValue,studyId,updateValue,metadata,t).then(res=>{
+      return augmentTargets(keyValue,studyId,updateValue,metadata,t).then(res=>{
         if(res instanceof Error) throw res 
         return t.commit().then(()=>{
           let status={
@@ -88,11 +87,13 @@ function insertLine(line, insertAttributes,ws){
       }).catch(err=>{
         return t.rollback().then(()=>{
           ws.sendMsg(JSON.stringify({error:`Update Error - Occured when trying to update with line ${metadata.index} for key value ${keyValue}. Error message: ${err.message}`}))            
+          return err
         })  
       })
     }catch(err){
       return t.rollback().then(()=>{
         ws.sendMsg(JSON.stringify({error:`An error was generated while attempting find results for line ${metadata.index}, key value ${keyValue}. Error message: ${err.message}`}))            
+        return err
       })  
     }
   })

@@ -87,10 +87,10 @@ router.get('/',authenticate,async function(req,res){
     personId=user.person
   }
   let tablename="Person";
-  let associatedTable="Study"
+  let associatedTable="Person"
   let attributes={tablename,where:{id:personId}}
   let personInfo=formFromTable.tableEntry(attributes)
-  let studyCount=countAssociatedTables(tablename,associatedTable,{id:personId})
+  let studyCount=countAssociatedTables(tablename="Study",associatedTable,{responsible:personId})
   Promise.all([personInfo,studyCount]).then(function(data){
     let personInfo=data[0]
     let numOfStudies=data[1]
