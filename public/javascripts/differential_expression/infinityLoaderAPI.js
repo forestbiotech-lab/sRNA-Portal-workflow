@@ -336,7 +336,7 @@ $(document).ready(function(){
                 listHeader.after(header)                
               }
             })
-            that.jqTable.find(`thead tr:nth(0) th[section|=${section}]`).attr('colspan',chosenListElementKeys.length)          
+            that.jqTable.find(`thead tr:nth(0) th[section|=${section}]`).attr('colspan',chosenListElementKeys.length) //(key.length + header - exceptions) This is incorrect it doesn't account for the col we removed but since these keys don't includer ${header} it actually is the right number          
           }
         }
       }

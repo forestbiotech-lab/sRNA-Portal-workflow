@@ -1,6 +1,9 @@
 var descriptionExclusions=[
   "unknown",
-  "---NA---"
+  "---NA---",
+  "unnamed protein product",
+  "#NAME?",
+  
 ]
 function processList(list){
   return getLowestScore('expectation',list)

@@ -67,9 +67,11 @@ function makeTableFromNestedArrayMatrix(matrix,customHeaders){ //rename to makeT
 
   function makeHeader(headers,thead){
   	headers.forEach(function(column){
+  	  if(column!="xref"){  //Exception !!!1That should be fixed!!
   		let th=document.createElement('th')
   		th.textContent=column
   		thead.append(th)
+  	  }
   	})
   	return thead
   }
@@ -77,16 +79,18 @@ function makeTableFromNestedArrayMatrix(matrix,customHeaders){ //rename to makeT
 	matrix.forEach(line=>{        
 	  let tr=document.createElement('tr')
 	  customHeaders.forEach(function(key){
-	  	let cell=line[key]
-	  	let td=document.createElement('td')
-	  	//xref Exception
-	  	if(key=="target_accession" && line.xref){
-          let link=mkel('a',{href:`${line.xref}${cell}`},td)
-          link.textContent=cell
-          tr.append(td)
-	  	}else{
-	      td.textContent=cell
-    	  tr.append(td)		
+	  	if(key!="xref"){  //Exception !!!1That should be fixed!!
+			let cell=line[key]
+			let td=document.createElement('td')
+			//xref Exception
+			if(key=="target_accession" && line.xref){
+			  let link=mkel('a',{href:`${line.xref}${cell}`},td)
+			  link.textContent=cell
+			  tr.append(td)
+			}else{
+			  td.textContent=cell
+			  tr.append(td)		
+			}
 	  	}
 	  })
 	  tbody.append(tr)
