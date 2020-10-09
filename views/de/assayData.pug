@@ -52,18 +52,21 @@ block content
                   .custom-control.custom-switch
                     input#customSwitch2.custom-control-input(type='checkbox', disabled='')
                     label.custom-control-label(for='customSwitch2') Disabled switch element
-            .card-body.upload-table(style="overflow-x:scroll;")  
-              table.table.table-striped.upload-table
-                thead
-                  th(id="sequence") Sequence
-                    th(id="assayName") assayName
-                    th(id="raw") raw
-                    th(id="cpm") cpm
-                tbody                
-                  tr#lastRow(filename=uploadedFilename) 
-                    td.blockquote.text-center(colspan=6) 
-                      span(style="background: rgba(0,0,0,0) url(/images/dynamic/loading2.gif) no-repeat center center; background-size:contain") &nbsp&nbsp&nbsp&nbsp
-                      | &nbspLoading missing sequences, please wait ...
+            .card-body.upload-table
+              .wrapperDummy.scroll(style="overflow-x:scroll;")
+                .dummy(style="height:20px;width:2000px")  
+              .wrapperTable(style="overflow-x:scroll;")
+                table.table.table-striped.upload-table
+                  thead
+                    th(id="sequence") Sequence
+                      th(id="assayName") assayName
+                      th(id="raw") raw
+                      th(id="cpm") cpm
+                  tbody                
+                    tr#lastRow(filename=uploadedFilename) 
+                      td.blockquote.text-center(colspan=6) 
+                        span(style="background: rgba(0,0,0,0) url(/images/dynamic/loading2.gif) no-repeat center center; background-size:contain") &nbsp&nbsp&nbsp&nbsp
+                        | &nbspLoading missing sequences, please wait ...
   #exampleModalLong.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLongTitle', aria-hidden='true')
     .modal-dialog.modal-xl(role='document')
       .modal-content

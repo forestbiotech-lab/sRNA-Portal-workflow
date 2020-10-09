@@ -16,5 +16,19 @@ $(document).ready(function(){
       }
     })
   })
-	
+  $('.upload-table .wrapperTable table').bind("loadedAssayData",function(){
+    let wrapperTable=$('.upload-table .wrapperTable')
+    let wrapperDummy=$('.upload-table .wrapperDummy')
+    let table=$('.upload-table .wrapperTable table.table')
+    let dummyScrollDiv=$('.upload-table .wrapperDummy .dummy')
+    dummyScrollDiv.width(table.width())
+    $(function(){
+      wrapperDummy.scroll(function(){
+          wrapperTable.scrollLeft(wrapperDummy.scrollLeft());
+      });
+      wrapperTable.scroll(function(){
+          wrapperDummy.scrollLeft(wrapperTable.scrollLeft());
+      });
+    });
+  })
 })
