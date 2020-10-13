@@ -441,6 +441,10 @@ router.get('/db/name/:name', function(req, res){
 
 })
 
+router.get('/termsofservice',(req,res)=>{
+  res.render('termsofservice',{})
+})
+
 router.get('/privacypolicy',(req,res)=>{
   res.render('privacypolicy',{})
 })

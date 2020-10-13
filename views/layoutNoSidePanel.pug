@@ -41,37 +41,37 @@ html
         .mainPanel(style="width:100%")
           .content      
             block content
-  .modal#login-modal(tabindex='-1', role='dialog')
-    .modal-dialog(role='document')
-      .modal-content
-        .modal-header
-          h5.modal-title Login
-          button.close(type='button', data-dismiss='modal', aria-label='Close')
-            span(aria-hidden='true') ×
-        .modal-body
-          form#login-form(action="/auth/login",method="post")
-            .form-group
-              label(for='login-email') Email address
-              input#login-email.form-control(name="email",type='email', aria-describedby='emailHelp')
-              small#emailHelp.form-text.text-muted We'll never share your email with anyone else.
-            .form-group
-              label(for='login-password') Password (Not implemented!)
-              input#login-password.form-control(name="password",type='password')
-            .form-group.form-check
-              input#exampleCheck1.form-check-input(type='checkbox')
-              label.form-check-label(for='exampleCheck1',title="I do absolutly nothing!") Check me out (I thought you might like to play with me.)
-            button.btn.btn-success(type='submit',form="login-form")
-              span.glyphicon.glyphicon-log-in
-              | &nbsp;Login
-            button.btn.g-signin2(onclick="onSignIn()",data-theme='dark')
-            a.btn.btn-success(type="button",href="/auth/register") 
-              span.glyphicon.glyphicon-edit
-              | &nbsp;Register
-            button.btn.btn-secondary(type='button', data-dismiss='modal') 
-              span.glyphicon.glyphicon-remove
-              | &nbsp;Close
     .footer
       include includes/footer.pug
+    .modal#login-modal(tabindex='-1', role='dialog')
+      .modal-dialog(role='document')
+        .modal-content
+          .modal-header
+            h5.modal-title Login
+            button.close(type='button', data-dismiss='modal', aria-label='Close')
+              span(aria-hidden='true') ×
+          .modal-body
+            form#login-form(action="/auth/login",method="post")
+              .form-group
+                label(for='login-email') Email address
+                input#login-email.form-control(name="email",type='email', aria-describedby='emailHelp')
+                small#emailHelp.form-text.text-muted We'll never share your email with anyone else.
+              .form-group
+                label(for='login-password') Password (Not implemented!)
+                input#login-password.form-control(name="password",type='password')
+              .form-group.form-check
+                input#exampleCheck1.form-check-input(type='checkbox')
+                label.form-check-label(for='exampleCheck1',title="I do absolutly nothing!") Check me out (I thought you might like to play with me.)
+              button.btn.btn-success(type='submit',form="login-form")
+                span.glyphicon.glyphicon-log-in
+                | &nbsp;Login
+              button.btn.g-signin2(onclick="onSignIn()",data-theme='dark')
+              a.btn.btn-success(type="button",href="/auth/register") 
+                span.glyphicon.glyphicon-edit
+                | &nbsp;Register
+              button.btn.btn-secondary(type='button', data-dismiss='modal') 
+                span.glyphicon.glyphicon-remove
+                | &nbsp;Close
     include includes/thirdpartyScripts.pug  
     script(src="/javascripts/auth/login.js")  
     script(src="/javascripts/buildingblocks.js")  

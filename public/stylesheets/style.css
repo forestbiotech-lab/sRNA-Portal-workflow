@@ -158,3 +158,14 @@ table .expand-row{
 .badge.badge-success{
  background-color: #99B92A; 
 }
+
+
+/* Terms of service*/
+.title_one{
+  font-size: xx-large;
+  color:#99B92A;
+}
+.title_two{
+  font-size: x-large;
+  color:#99B92A;
+}

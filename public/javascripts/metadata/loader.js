@@ -96,7 +96,7 @@ $(document).ready(function(){
         @param {array}        contents    Cell contents
         @param {array/object} metadata    cell attributes
         @param {boolean}      header      optional, idicates wheather this row is a header or not.
-        **/
+    **/
       
     function makeStudiesTable(data){
       data.data[0].Study.forEach((row,index)=>{
