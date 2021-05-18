@@ -1,4 +1,4 @@
-The plant sRNA portal provides database of sRNAs annotated by the [miRPursuit](https://github.com/forestbiotech-lab/miRPursuit) pipeline. It is designed to provided a GUI to interacte with results and perfom further research on the results. It comprises several tools to integrate external information, aid the visualization of the results, and predict miRNA targets and functions. 
+The plant sRNA portal provides a database of sRNAs annotated by the [miRPursuit](https://github.com/forestbiotech-lab/miRPursuit) pipeline. It is designed to provide a GUI, to interact with results and perfom further research on the annotated data. It comprises several tools to integrate external information, aid the visualization of the results, and predict miRNA targets and functions. 
 
 The following use cases are available:
 
