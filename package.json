@@ -22,7 +22,7 @@
     "detect-file-type": "^0.2.7",
     "dockerode": "^3.2.0",
     "drawrnajs": "^1.2.6",
-    "express": "^4.16.3",
+    "express": "^4.17.3",
     "formidable": "^1.2.1",
     "g": "^2.0.1",
     "glob": "^7.1.3",
