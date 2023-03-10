@@ -4,7 +4,8 @@
 
 //This is the configuration file that has all the credentials
 var config = require('./../../.config_res');
-var Sequelize = require('sequelize');
+const Sequelize = require('sequelize');
+const Datatypes=require('sequelize/lib/data-types')
 var glob = require('glob');
 var path = require('path');
 //DB credentials
@@ -26,7 +27,7 @@ var tables=glob.sync(__dirname+'/'+'!([a-z]*.js|*.[^j][^s]*|.gitignore)')
 //Table / attribute association
 for( index in tables){
   var table=path.basename(tables[index],'.js');
-  db[table]=db.sequelize.import('./'+table);
+  db[table]=require('./'+table)(db.sequelize,Datatypes);
 }
 
 //Foreign key association
