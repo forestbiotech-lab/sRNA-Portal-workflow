@@ -1,13 +1,15 @@
 var WebSocketServer = require('websocket').server;
 var http = require('http');
-var rootCas=require('ssl-root-cas/latest').create();
+var rootCas=require('ssl-root-cas').create();
 var https = require('https')
 https.globalAgent.options.ca=rootCas;
 var getActiveProtocols= require('./models').getActiveProtocols
 var fs=require('fs')
 
-const PORT= require('./../.config_res').websocket.port
-const DOMAIN = require('./../.config_res').host.domain
+const PORT= require('./.config_res').websocket.port
+const DOMAIN = require('./.config_res').host.domain
+
+if (process.env.mode=="PRODUCTION") process.__defineGetter__('stdout', function() { return fs.createWriteStream('/var/log/sRNA-Websocket-Server.log', {flags:'a'}) })
 
 class websocketServer{
     constructor(){
@@ -15,6 +17,7 @@ class websocketServer{
         this.options={}
         if(process.env.mode=="PRODUCTION"){
             this.options={
+                //TODO in docker how to import these files, must add them to dockerfile
                 key:fs.readFileSync(`/etc/letsencrypt/live/${DOMAIN}/privkey.pem`,'ascii'),
                 cert:fs.readFileSync(`/etc/letsencrypt/live/${DOMAIN}/fullchain.pem`,'ascii')
             }

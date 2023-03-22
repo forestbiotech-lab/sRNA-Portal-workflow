@@ -15,7 +15,9 @@
     certbot renew
 ```
 
-## Add domain and port to config file
+
+
+## Add domain and port to config file copy or link the .config_res.js file from main server
 ``` javascript 
 
 module.exports = {
@@ -49,8 +51,13 @@ module.exports = {
   }
 
 }
-
-
-
 ```
+
+Build image & run docker container
+``` bash
+docker build -t "srna:websocket_server" .
+docker run srna:websocket_server
+``` 
+
+TODO add a way to expose the certificates for production server
 

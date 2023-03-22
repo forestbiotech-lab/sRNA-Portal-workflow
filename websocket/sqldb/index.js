@@ -3,9 +3,9 @@
  */
 
 //This is the configuration file that has all the credentials
-var config = require('./../../.config_res');
+var config = require('./../.config_res');
 const Sequelize = require('sequelize');
-const Datatypes=require('sequelize/lib/data-types')
+const Datatypes=Sequelize.DataTypes
 var glob = require('glob');
 var path = require('path');
 //DB credentials
