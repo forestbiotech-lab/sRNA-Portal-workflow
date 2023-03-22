@@ -17,3 +17,7 @@ Analyse data
 View results
 
 Live Demo at https://srna-portal.biodata.pt/
+
+
+## Updating to SEQUELIZE 6
+Remove imports with a require. (.config_res.js)OperatorAlias from false 0
