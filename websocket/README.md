@@ -56,8 +56,9 @@ module.exports = {
 Build image & run docker container
 ``` bash
 docker build -t "srna:websocket_server" .
-docker run srna:websocket_server
+docker run --network host srna:websocket_server
 ``` 
+Run the host network to access the database directly. Otherwise, connect by IP and set credentials for the docker host ip.
 
 TODO add a way to expose the certificates for production server
 
