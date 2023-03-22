@@ -1,9 +1,8 @@
-extends layout
+extends ../layout
 
 block content
-  script(id="database",src="/javascripts/de.js",defer)
-    - name=`${personInfo.firstName} ${personInfo.lastName}`//"Dr. Unpleasant Guest"
-  .card-block
+  - name=`${personInfo.firstName} ${personInfo.lastName}`//"Dr. Unpleasant Guest"
+  .card-block#app
     .container-fluid
       .row.welcome-panel
         .col-lg-12
@@ -20,6 +19,7 @@ block content
               #table-study.collapse
                 .card.card-body
                   .form-Study
+                    create-study-form
               #accordionStudies.accordion
                 .card
                   #studies.card-header
@@ -28,45 +28,19 @@ block content
                         | View study list
                   #studiesList.collapse(aria-labelledby='studiesList', data-parent='#accordionStudies')
                     .card-body.list-Study
+                      generate-study-list(:rows="rows",:pk="pk",:is-row-selected="isRowSelected" v-on:select-row="selectRow",:selected-row="selectedRow",:selected-p-k="selectedPK")
                     .card-body.info-on-selection
-      .row.file-submission.d-none
-        .col-lg-12
-          .card.upload 
-            .card-body
-              h5.card-title Matrix with raw reads counts for:
-                span.badge.badge-secondary#studyTitle
-              p The uploaded file should be a tab separated value&nbsp;
-                span.badge.badge-secondary .tsv
-                | &nbsp;file. The file should start with the header as the first line, then consecutively a line for each sequence. The first column should contain the sequence, the second its annotation, and the following columns should contain the raw expression in each of the libraries. An assay will be created for each library once the upload process is concluded.  
-              .row
-                .form-group
-                  label.sr-only(for="upload-files-upload") Upload file
-                  input(hidden,type="file",id="upload-files-upload",placeholder="tsv file",required="",autofocus="",autocomplete="off",name="uploads[]", accept="mime/*,.tsv")
-                .col-lg-10
-                  .progress(style="position:relative;bottom:-12px;")
-                    .progress-bar(role="progressbar",aria-valuenow="0",aria-valuemin="0",aria-valuemax="100")
-                .col-lg-2
-                  button.btn.btn-primary.upload-matrix(type="button") Upload matrix  
-            .card-footer
-              .row
-                .form-group.col-lg-12
-                  label(for="file") Uploaded file: 
-                  input.col-lg-10.col-md-8.col-sm-4(type="text",id="file",placeholder="no file",required="",name="file",readonly)
-              .row
-                .col-lg-12
-                  form.view-matrix(action="/de/uploaded-file",method="POST")
-                    input(type="hidden",name="hash",id="hash")
-                    input(type="hidden",name="filename",id="filename")
-                    input(type="hidden",name="studyId",id="studyId")
-                    input(type="hidden",name="studyTitle",id="studyTitle")
-                    input.btn.btn-primary.disabled.btn-block.d-none(type="",role="button",value="View matrix",title="Set the study first to view matrix")
-      .row.metadata-edition.d-none
+                      actions-for-selected-study(v-if="isRowSelected==true" v-on:edit-study="editStudy=true" v-on:upload-data="uploadData=true" :selected-p-k="selectedPK",:num-of-assays="rows[selectedRow].Assays.length")
+      .row.file-submission(v-if="uploadData==true")
+        file-submission(:study-id="rows[selectedRow].id" :study-title="rows[selectedRow].title")
+      .row.metadata-edition(v-if="editStudy==true")
         .col-lg-12
           .card
             .card-body
               h4.study.card-title Edit Study Metadata for:
-                span.badge.badge-secondary#studyTitle
+                span.badge.badge-secondary {{ rows[selectedRow].title }}
                 button.close(type='button', aria-label='Close')
-                  span(aria-hidden='true',onclick="$('.row.metadata-edition').addClass('d-none')") &times;  
+                  span(aria-hidden='true',onclick="$('.row.metadata-edition').addClass('d-none')") &times;
                 .card
                   .form-Study.card-body
+                    edit-metadata(:rows="rows",:selected-row="selectedRow",:edit-study="editStudy" v-on:updated="editStudy=false")

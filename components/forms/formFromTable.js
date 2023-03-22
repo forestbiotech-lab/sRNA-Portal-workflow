@@ -10,7 +10,8 @@ let inputType={
   DATE:"date",
   BOOLEAN:"checkbox",
   TEXT:"text",
-  FK:"select"
+  FK:"select",
+  TINYINT:"checkbox"
 }
 
 

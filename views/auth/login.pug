@@ -2,7 +2,6 @@ extends ../layout
 
 block content
   link(rel='stylesheet', href='/stylesheets/thirdparty/password-strength-meter/password.min.css')
-  script(src='/javascripts/auth.js',defer)
   .d-flex.flex-column.justify-content-center
     if error  
       .pl-2.pr-2.flex-fill
@@ -12,20 +11,38 @@ block content
         a.btn.btn-success.btn-block.redirect(role="button",href=redirect) redirect
   form#login-form(action="/auth/login",method="post")
     .form-group
-      label(for='login-email') Email address
-      input#login-email.form-control(name="email",type='email', aria-describedby='emailHelp')
+      label(for='login-email1') Email address
+      input#login-email1.form-control(name="email",type='email', aria-describedby='emailHelp',autocomplete="username")
       small#emailHelp.form-text.text-muted We'll never share your email with anyone else.
     .form-group
       label(for='login-password') Password
-      input#login-password.form-control(name="password",type='password')
+      input#login-password1.form-control(name="password",type='password',autocomplete="current-password")
     .form-group.form-check
-      input#exampleCheck1.form-check-input(type='checkbox')
-      label.form-check-label(for='exampleCheck1',title="I do absolutly nothing!") Check me out (I thought you might like to play with me.)
+      input#exampleCheck2.form-check-input(type='checkbox')
+      label.form-check-label(for='exampleCheck2',title="I do absolutly nothing!") Check me out (I thought you might like to play with me.)
     button.btn.btn-success(type='submit',form="login-form")
       span.glyphicon.glyphicon-log-in
       | &nbsp;Login  
     a.btn.btn-success(type="button",href="/auth/register") 
       span.glyphicon.glyphicon-edit
       | &nbsp;Register
-    .g-signin2(onclick="onSignIn()",data-theme='dark')
-    
+    //.g-signin2(onclick="onSignIn()",data-theme='dark')
+    //#g_id_onload(
+    //  data-client_id="303843335390-icmdc0irh08d3g02g89rie5qkrs2sao2.apps.googleusercontent.com"
+    //  data-context="signin"
+    //  data-ux_mode="popup"
+    //  data-login_uri="http://localhost:3000/oauth2callback"
+    //  data-auto_select="true"
+    //  data-itp_support="true")
+    //.g_id_signin(
+    //  data-type="standard"
+    //  data-shape="rectangular"
+    //  data-theme="outline"
+    //  data-text="signin."
+    //  data-size="large"
+    //  data-logo_alignment="left")
+
+    #g_id_onload(
+      data-client_id="303843335390-icmdc0irh08d3g02g89rie5qkrs2sao2.apps.googleusercontent.com"
+      )
+    .g_id_signin(data-type="standard")

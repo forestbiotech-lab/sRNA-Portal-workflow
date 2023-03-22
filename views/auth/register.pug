@@ -2,7 +2,6 @@ extends ../layout
 
 block content
   link(rel='stylesheet', href='/stylesheets/thirdparty/password-strength-meter/password.min.css')
-  script(src='/javascripts/auth.js',defer)
   if error  
     .alert.alert-danger(role='alert')=error.message
   form(method="post",action="/auth/register")

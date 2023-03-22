@@ -46,7 +46,12 @@ var paths=pathname.split("/").splice(1)
       'tableAssociation'
     ]
   }
+  if(paths[1]==undefined){
+      if(scriptName){
+          scriptName.unshift('main')  //push to front
 
+      }
+  }
 
 
   scriptTarget = $('script#actions')[0];

@@ -1,0 +1,14 @@
+extends ../layout
+
+block content
+    #app
+        h5 {{ tableName }}
+        table.hover.table
+            tr
+                th(v-for="(value,key) in model[0]") {{ key.substr(0,1).toUpperCase()+key.substr(1) }}
+            tr(v-for="row in model")
+                td(v-for="(value,key) in row")
+                    p(v-if="isFK(key)")
+                        a(:href='"/viewers/view/row/"+associations[key].targetTable+"/"+associations[key].targetKey+"/"+value') {{ value }}
+                    p(v-else) {{ value }}
+

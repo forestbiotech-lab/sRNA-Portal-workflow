@@ -41,11 +41,11 @@ img.expandPanel(src="/images/open.png")
           form(action="/login",method="post")
             .form-group
               label(for='login-email') Email address
-              input#login-email.form-control(name="email",type='email', aria-describedby='emailHelp')
+              input#login-email.form-control(name="email",type='email', aria-describedby='emailHelp',autocomplete="username")
               small#emailHelp.form-text.text-muted We'll never share your email with anyone else.
             .form-group
               label(for='login-password') Password (Not implemented!)
-              input#login-password.form-control(name="password",type='password')
+              input#login-password.form-control(name="password",type='password',autocomplete="current-password")
             .form-group.form-check
               input#exampleCheck1.form-check-input(type='checkbox')
               label.form-check-label(for='exampleCheck1') Check me out (I thought you might like to play with me. I feel loonly)

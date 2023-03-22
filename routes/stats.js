@@ -10,7 +10,7 @@ var statsOrganism= require('./../components/miRNADB/statsOrganism');
 router.get( "/organism" ,function(req,res,next){
   var errMsg="Stats Router /statsGlobal get - "
   var call=statsOrganism
-  resolveCall(call,req,res,errMsg,'stats')  
+  resolveCall(call,req,res,errMsg,'reports/stats')
 })
 
 module.exports = router;

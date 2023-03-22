@@ -5,8 +5,10 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var fs= require('fs');
-var Websocket=require('./websocket/server').websocketServer;
-websocket=new Websocket()
+if(!process.env.websocket=="DISABLE_WEBSOCKET"){
+  var Websocket = require('./websocket/server').websocketServer;
+  websocket = new Websocket()
+}
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -20,6 +22,8 @@ var forms = require('./routes/forms')
 var auth = require('./routes/auth')
 var miRPursuit = require('./routes/mirpursuit')
 var metadata = require('./routes/metadata')
+var admin = require('./routes/admin')
+const localThirdParty = require('./routes/local_third_party')
 
 
 // redirect stdout / stderr
@@ -55,6 +59,8 @@ app.use('/de',de);
 app.use('/forms',forms);
 app.use('/auth', auth);
 app.use('/miRPursuit', miRPursuit);
+app.use('/admin', admin)
+app.use('/local_third_party',localThirdParty)
 app.use('/', other);
 
 

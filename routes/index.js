@@ -12,45 +12,25 @@ var exec = require('child_process').exec;
 var miRPursuitVars= require('./../config/miRPursuit.json');
 var atob=require('atob');
 var btoa=require('btoa');
-var Cookies = require('cookies');
-var Keygrip = require("keygrip");
-var keylist=require('./../.config_res').cookie.keylist
-var keys = new Keygrip(keylist,'sha256','hex')
-var token=require('./../.config_res').cookie.seed
 var nameSearch = require('./../components/miRNADB/nameSearch');
+var fullAccess = require('./../components/auth/fullAccess');
 
 //local only
 process.env.local ? require('./../.env') : ""; 
 //process.env.local ? console.log(process.env): "";
 
-function fullAccess(req,res){
-  var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
-  if (req.cookies.apikey!=token){ 
-    res.render('indexNoSidePanel', { title: 'Under construction!'})
-    return false
-  }else{
-    return true
-  }
-
-}
 
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
-  var query = req.query;
-  if (query.access=="full"){
-    cookies.set( "access", token ).set( "apikey", token, { signed: true, maxAge: (1000 * 60 * 60 * 30 * 12) } );
-    res.render('index', { title: 'Under construction!'});
-  }else{
-    if(fullAccess(req,res)) res.render('index', { title: 'sRNA Plant Portal'}) 
-  }
 
+/* GET home page.
+* */
+router.get('/', fullAccess, function(req, res, next) {
+    //TODO make changes to index. Has no profile
+    res.render('index', { title: 'sRNA Plant Portal'})
 });
 
 /* GET home page. */     
-router.get('/miRPursuit', function(req, res, next) {
-  if (!fullAccess(req,res)) return null;
+router.get('/miRPursuit', fullAccess, function(req, res, next) {
   //exec command and get promise
   function send(command){
     return new Promise(function(resolve, reject){
@@ -391,16 +371,14 @@ router.post('/upload', function(req, res){
 });
 
 router.get('/db', function(req, res){
-  //if (!fullAccess(req,res)) return null;
   res.render('db', { title: 'Express',tableValues:[] });
 })
 
 
 
 //################################# Should be seperated #############################
-var sequenceSearch = require('./../components/miRNADB/sequenceSearch');
-router.get('/db/sequence/:sequence', function(req, res){
-  fullAccess(req,res)
+var sequenceSearch = require('./../components/miRNADB/sequenceSearch2');
+router.get('/db/sequence/:sequence',fullAccess, function(req, res){
   req.query.searchText=req.params.sequence;
   sequenceSearch(req.query)
   .then(function(sequenceSearchRes){
@@ -421,8 +399,7 @@ router.get('/db/sequence/:sequence', function(req, res){
 
 
 
-router.get('/db/name/:name', function(req, res){
-  if (!fullAccess(req,res)) return null;
+router.get('/db/name/:name',fullAccess, function(req, res){
   req.query.searchText=req.params.name;
   nameSearch(req.query)
   .then(function(nameSearchRes){

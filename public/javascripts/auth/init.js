@@ -27,6 +27,12 @@ var paths=pathname.split("/").splice(1)
       "profile"
     ]
   }
+  if(paths[0]==""){
+    scriptName=[
+      "login"
+    ]
+  }
+
 
   scriptTarget = $('script#actions')[0];
   scriptName.forEach(scriptName=>{
@@ -46,9 +52,12 @@ function isName(script){
 }
 
 
+
 });
 
 
-
+function googleCallback(){
+  alert("New login")
+}
 
 

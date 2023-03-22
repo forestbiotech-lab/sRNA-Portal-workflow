@@ -30,7 +30,7 @@ module.exports = function(options){
 
 function callback(res){
   //[The attribute in main table used as uniqueId]
-  var attribute="id"
+  var attribute="ncbi_taxon_id"
     //Metadata
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

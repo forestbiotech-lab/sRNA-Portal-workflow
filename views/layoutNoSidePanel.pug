@@ -27,15 +27,7 @@ html
         img.tiny-logo-header(src="/images/elixir-logo-transparent-ultrasmall.png")
 
     .menu
-      button.menu-item.menu-item1.login-btn.btn.btn-success(data-toggle="modal" data-target="#login-modal") 
-        span.glyphicon.glyphicon-log-in
-        | &nbsp;login
-      button.menu-item.menu-item-right.menu-item1.logout-btn.btn.btn-success(onclick="signOut();") 
-        span.glyphicon.glyphicon-log-out
-        | &nbsp;logout
-      a.menu-item.menu-item-right.profile-btn.btn.btn-success(href="/auth/profile")
-        span.glyphicon.glyphicon-user
-        | &nbsp;Profile
+      include includes/menu
     .container-fluid(style="margin:0px;padding:0px;")
       .row.content-md-left(style="margin:0px")
         .mainPanel(style="width:100%")
@@ -54,27 +46,52 @@ html
             form#login-form(action="/auth/login",method="post")
               .form-group
                 label(for='login-email') Email address
-                input#login-email.form-control(name="email",type='email', aria-describedby='emailHelp')
+                input#login-email.form-control(name="email",type='email', aria-describedby='emailHelp',autocomplete="username")
                 small#emailHelp.form-text.text-muted We'll never share your email with anyone else.
               .form-group
                 label(for='login-password') Password (Not implemented!)
-                input#login-password.form-control(name="password",type='password')
+                input#login-password.form-control(name="password",type='password',autocomplete="current-password")
               .form-group.form-check
                 input#exampleCheck1.form-check-input(type='checkbox')
                 label.form-check-label(for='exampleCheck1',title="I do absolutly nothing!") Check me out (I thought you might like to play with me.)
+              button.btn.g-signin2(onclick="onSignIn()",data-theme='dark')
               button.btn.btn-success(type='submit',form="login-form")
                 span.glyphicon.glyphicon-log-in
                 | &nbsp;Login
-              button.btn.g-signin2(onclick="onSignIn()",data-theme='dark')
+
+
+              //NEW VERSION
+
+
+              //.g_id_signin(data-type="standard"
+              //data-shape="rectangular"
+              //data-theme="outline"
+              //data-text="signin_with."
+              //data-size="large"
+              //data-logo_alignment="left")
+
+              //#g_id_onload(data-client_id="379853658866-r31skptbhf4jc8uqtrokkjveqbtu53g4.apps.googleusercontent.com",data-context="signin",data-login_uri="http://localhost:3000",data-auto_select="true",data-itp_support="true")
+
+              //#g_id_onload(
+              //data-client_id="379853658866-r31skptbhf4jc8uqtrokkjveqbtu53g4.apps.googleusercontent.com"
+              //data-context="signin"
+              //data-ux_mode="redirect"
+              //data-login_uri="http://localhost:3000/oauth2callback"
+              //data-auto_prompt="false")
+
+
+
               a.btn.btn-success(type="button",href="/auth/register") 
                 span.glyphicon.glyphicon-edit
                 | &nbsp;Register
               button.btn.btn-secondary(type='button', data-dismiss='modal') 
                 span.glyphicon.glyphicon-remove
                 | &nbsp;Close
-    include includes/thirdpartyScripts.pug  
-    script(src="/javascripts/auth/login.js")  
-    script(src="/javascripts/buildingblocks.js")  
+    include includes/thirdpartyScripts.pug
+    script#actions(src="/javascripts/buildingblocks.js")
     script(src='https://apis.google.com/js/platform.js?onload=init', async='', defer='')
+
+    //NEW VERSION
     script(src="/javascripts/goAnalytics.js")
     script(src="/javascripts/bootstrap3-typeahead.min.js")
+    script(src="/javascripts/loader.js")

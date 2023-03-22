@@ -1,0 +1,10 @@
+.card-body
+    .alert.alert-primary
+        | This study has&nbsp;
+        //This requires the has many Assays for study
+        span.badge.badge-secondary {{ numOfAssays }}
+        |  assays&nbsp;
+        button.btn.btn-primary.assays(@click="$emit('upload-data')") Upload Data
+        a.btn.btn-primary.assays(v-if="numOfAssays>0" :href='"/de/assays/"+selectedPK') View Assays
+        a.btn.btn-primary.targets(v-if="numOfAssays>0" :href='"/de/targets/add/"+selectedPK') Add Targets
+        button.btn.btn-primary.editStudy(@click="$emit('edit-study')") Edit Study

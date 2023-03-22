@@ -11,7 +11,7 @@ module.exports={
 		"description":"",
 	},
 	"Precursor_Feature":{
-		"_table":["Mature_has_Pre","Pre_miRNA","Pre_has_Feature","Feature"],
+		"_table":["Mature_has_Pre","Pre_miRNA","Feature"],
 		"name":"",
 		"source":"",
 		"type":"",
@@ -23,7 +23,7 @@ module.exports={
 
 	},
 	"Mature_Feature":{
-		"_table":["Mature_has_Pre","Feature"],
+		"_table":["Feature"],
 		"name":"",
 		"source":"",
 		"type":"",

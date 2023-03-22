@@ -16,6 +16,7 @@ html
     link(rel="stylesheet", href="/stylesheets/bootstrap-multiselect.css",type="text/html")
     link(rel='stylesheet', href='/stylesheets/sidePanel.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel="stylesheet" href="/stylesheets/thirdparty/vue-select/3.20.0/vue-select.css")
   body
     .header
       a(href="/")
@@ -47,8 +48,8 @@ html
       include includes/footer.pug
 
     include includes/thirdpartyScripts.pug
-    script(src="/javascripts/auth/login.js")
-    script(src='https://apis.google.com/js/platform.js', async='', defer='')  
+    //script(src="/javascripts/auth/login.js")
+    //script(src='https://apis.google.com/js/platform.js', async='', defer='')
     script(id="actions",src="/javascripts/actions.js")
     script(src="/javascripts/buildingblocks.js")
     script(src="/javascripts/goAnalytics.js")        
@@ -59,3 +60,6 @@ html
     script(src="/javascripts/gdpr.js")
     script(src="/javascripts/md5.js")
     script(src="/javascripts/varListener.js")
+    script(src="/javascripts/loader.js")
+    //
+    script(src="https://accounts.google.com/gsi/client" async defer)

@@ -13,14 +13,11 @@ e.sequenceSearch=function(attributes){
   return db.Mature_miRNA
   .findAndCountAll({
     include: [{
-      model: db.Mature_has_Pre,
+      model:db.Feature,
       include: [{
-        model:db.Feature,
+        model: db.Genome,
         include: [{
-          model: db.Genome,
-          include: [{
-            model: db.Organism
-          }]
+          model: db.Organism
         }]
       }]
     },{
@@ -41,14 +38,11 @@ e.nameSearch=function(attributes){
   return db.Mature_miRNA
   .findAndCountAll({
     include: [{
-      model: db.Mature_has_Pre,
+      model:db.Feature,
       include: [{
-        model:db.Feature,
+        model: db.Genome,
         include: [{
-          model: db.Genome,
-          include: [{
-            model: db.Organism
-          }]
+          model: db.Organism
         }]
       }]
     }],
@@ -58,7 +52,7 @@ e.nameSearch=function(attributes){
     return res;
   })
   .catch(function(err){
-    console.log('getSequence - Err: '+ err);
+    console.log('getSequence by Name - Err: '+ err);
     return err;
   });
 }
@@ -73,14 +67,11 @@ e.getFeatures=function(attributes){
         include:[{
           model:db.Pre_miRNA_sequence
         },{
-          model:db.Pre_has_Feature,
-          include:[{
-            model:db.Feature
-          }]
+          model:db.Feature
         }]
-      },{
-        model:db.Feature,
       }]
+    },{
+      model:db.Feature
     }],
     where: attributes.where
   }).then(function(res){

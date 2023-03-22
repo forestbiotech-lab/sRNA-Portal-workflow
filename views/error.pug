@@ -2,7 +2,11 @@ extends layout
 
 block content
   - error= error? error : Object.keys(this)[0]
-  h1= message || "Unspecified error"
+  if error
+    if error.message
+      h1= error.message || "Unspecified error"
+  else
+    h1= message || "Unspecified error"
   - status= error ? error.status : null
   h2=status 
   pre #{error.stack}

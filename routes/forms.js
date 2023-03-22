@@ -12,7 +12,9 @@ const keylist=require('./../.config_res').cookie.keylist
 const keys = new Keygrip(keylist,'sha256','hex')
 const token=require('./../.config_res').cookie.seed
 const Auth = require('node_auth_module')
+const {authenticate} = require("../components/auth/authenticate");
 const authModule = new Auth(".config_auth.js")
+const lookUpManagedStudies = require('./../components/forms/lookupManagedStudies')
 
 const limitedAccessTables=["Study"]
 //Security issues? this might allow rendering pages that it shouldn't allow.
@@ -66,9 +68,41 @@ router.post('/factory/select/basic/:table', function(req, res, next){
     res.render('error',error)
   })
 })
+
+
+
+
+router.get('/factory/data/managedStudies',authenticate,lookUpManagedStudies)
+
+router.post('/factory/data/addCreatorToStudy',authenticate,async (req,res)=>{
+  const {getPerson} = require('./../components/auth/authorize')
+  let person=await getPerson(req,res) //Has_rol_..... table
+  person=person.person
+  study=req.body.newStudyId
+  scope="creator"
+  let options={inserts:{study,person,scope},tablename:"Managed_by"}
+  processPromiseAsJSON(saveSingleTableDynamic.create(options),res)
+})
+
+// Section for Vue templates
+router.get('/factory/vue/template/study-actions-for-selection', (req,res)=>{
+  res.render('factory/vue/study-actions-for-selection')
+})
+
+router.get('/factory/vue/template/file-submission', (req,res)=>{
+  res.render('factory/vue/file-submission')
+})
+
+router.get('/factory/vue/template/managedStudies',(req,res)=>{
+  res.render('factory/vue/table')
+})
+
+// End section for Vue templates
+
 router.get('/factory/table/basic/:table', async function(req, res, next){
   let tablename=req.params.table
   let attributes=req.body.attributes || {}
+  //TODO limitedAccessTables this is basically an implementation of pulicAccess tables
   if(limitedAccessTables.includes(tablename)){
     var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
     let userId=cookies.get('user-id',{signed:true})
@@ -85,19 +119,12 @@ router.get('/factory/table/basic/:table', async function(req, res, next){
 })
 router.post('/save/singletable/:tablename',function(req,res){
   let options={inserts:req.body,tablename:req.params.tablename}
-  saveSingleTableDynamic.create(options).then(function(data){
-    data instanceof Error ? res.render('error',{error:data}) : res.redirect('back')
-  }).catch(function(error){
-    res.render('error',error)
-  })
+  processPromiseAsJSON(saveSingleTableDynamic.create(options),res)
 })
+
 router.post('/create/entry/:tablename',function(req,res){
   let options={inserts:req.body,tablename:req.params.tablename}
-  saveSingleTableDynamic.create(options).then(function(data){
-    data instanceof Error ? res.status(304).json({error:data}) : res.json(data)
-  }).catch(function(error){
-    res.status(300).json(error)
-  })
+  processPromiseAsJSON(saveSingleTableDynamic.create(options),res)
 })
 router.post('/update/entry/:tablename',function(req,res){
   let options={inserts:req.body,tablename:req.params.tablename}
@@ -115,13 +142,9 @@ router.post('/destroy/entry/:tablename',function(req,res){
     res.status(300).json(error)
   })
 })
-router.post('/update/singletable/:tablename',function(req,res){
+router.post('/update/singletable/:tablename', authenticate,function(req,res){
   let options={inserts:req.body,tablename:req.params.tablename}
-    saveSingleTableDynamic.update(options).then(function(data){
-    data instanceof Error ? res.render('error',{error:data}) : res.redirect('back')
-  }).catch(function(error){
-    res.render('error',error)
-  })
+  processPromiseAsJSON(saveSingleTableDynamic.update(options),res)
 })
 
 router.post('/count/associatedTables',function(req,res){
@@ -136,5 +159,22 @@ router.post('/count/associatedTables',function(req,res){
     res.status(404).json(error)
   })
 })
+
+//TODO export elsewhere
+function processPromiseAsJSON(promise,res) {
+  if (res instanceof Object){
+    if (promise instanceof Promise)
+
+      promise.then(function (data) {
+        data instanceof Error ? res.status(400).json({error: {msg: data.message, stack: data.stack}}) : res.json(data)
+      }).catch(function (e) {
+        res.status(400).json({error: {msg: e.message, stack: e.stack}})
+      })
+  }else{
+    let e=new Error("Invalid_Res")
+    e.message="Could not resolve request because no adequate res object was given to processPromiseAsJSON"
+    throw e
+  }
+}
 
 module.exports=router

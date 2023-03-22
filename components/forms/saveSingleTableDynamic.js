@@ -7,12 +7,13 @@ const deletableTables=[
 	"Factor"
 ]
 
+//TODO this
 function correctBooleanAttributes(options){
 	let tableStructure=[]
 	var tableAttributes=db[options.tablename].tableAttributes
 	Object.keys( tableAttributes ).forEach(function(attribute){
 		let type=tableAttributes[attribute].type.key
-		if (type=="BOOLEAN") 
+		if (type=="BOOLEAN" || type=="TINYINT")
 			tableStructure.push({name:attribute,type})
 	})
 	if(tableStructure.length==0){
@@ -20,10 +21,12 @@ function correctBooleanAttributes(options){
 	}else{
 		let insertAttributes=options.inserts
 		tableStructure.forEach(function(attr){
+			//Check if exists
 			if(Object.keys(insertAttributes).indexOf(attr.name)==-1){
 				options.inserts[attr.name]=false
 			}else{
-				options.inserts[attr.name]=true
+				if(options.inserts[attr.name]=="true") options.inserts[attr.name]=true
+				else options.inserts[attr.name]=false
 			}
 		})
 		return options

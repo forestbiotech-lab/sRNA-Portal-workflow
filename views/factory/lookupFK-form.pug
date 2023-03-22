@@ -1,25 +1,30 @@
-form.basic-form.table-form(id=name,method="POST",action="/forms/save/singletable/"+name)
+.basic-form.table-form(id=name,method="POST",action="/forms/save/singletable/"+name)
   each attribute in table
-    -hide=""
-    if attribute.name=="id" 
-      -hide="d-none"
-    .form-group(class=hide)
-      - fk=""
-      if attribute.type=='select'
-        - fk=`(references table ${attribute.fk.targetTable})`
-      label(for=attribute.name) !{attribute.name} !{fk}
-        if attribute.metadata 
-          span.glyphicon.glyphicon-info-sign(title=attribute.metadata,data-container="body",data-toggle="popover",data-placement="right") 
-      if attribute.type=='select'
-        select.form-control(id=attribute.name,name=attribute.name,type="select-fk",foreignkey-table=attribute.fk.targetTable)
-          option(id="-1") select one
-          each value in attribute.fk.values
-            option=value
-        button.btn.btn-primary.make-new-fk(type="button",foreignkey-table=attribute.fk.targetTable) new entry on !{attribute.fk.targetTable}
-      else
-        if attribute.type=="date"
-          input.form-control(type=attribute.type,id=attribute.name,name=attribute.name,placeholder="AAAA-MM-DD")
-        else     
-          input.form-control(type=attribute.type,id=attribute.name,name=attribute.name)
-  input.btn.btn-primary(type="submit",value="Save")
+    - fk=""
+    if attribute.name=="id"
+      .form-group(:class="{ 'd-none': create }")
+        label(for=attribute.name) !{attribute.name} !{fk}
+        input.form-control(type=attribute.type,id=attribute.name,name=attribute.name,v-model="form['" + attribute.name + "']" :readonly="update")
+    else
+      .form-group
+        if attribute.type=='select'
+          - fk=`(references table ${attribute.fk.targetTable})`
+        label(for=attribute.name) !{attribute.name} !{fk}
+          if attribute.metadata
+            span.glyphicon.glyphicon-info-sign(title=attribute.metadata,data-container="body",data-toggle="popover",data-placement="right")
+        //TODO NOT VUE
+        if attribute.type=='select'
+          select.form-control(id=attribute.name,name=attribute.name,type="select-fk",foreignkey-table=attribute.fk.targetTable)
+            option(id="-1") select one
+            each value in attribute.fk.values
+              option=value
+          button.btn.btn-primary.make-new-fk(type="button",foreignkey-table=attribute.fk.targetTable) new entry on !{attribute.fk.targetTable}
+        else if attribute.type=="date"
+          input.form-control(type=attribute.type,id=attribute.name,name=attribute.name,placeholder="AAAA-MM-DD",v-model="form['"+attribute.name+"']")
+        else if attribute.type=="checkbox"
+          input.form-control(type=attribute.type,id=attribute.name,name=attribute.name,placeholder="false",v-model="form['"+attribute.name+"']")
+        else
+          input.form-control(type=attribute.type,id=attribute.name,name=attribute.name,v-model="form['" + attribute.name + "']")
+  button.btn.btn-primary.btn-block(v-if="create==true",@click="createStudy()") Create Study
+  button.btn.btn-primary.btn-block(v-if="update==true",@click="updateStudy()") Update Study
   

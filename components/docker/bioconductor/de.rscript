@@ -78,7 +78,7 @@ library("ggfortify")
 #library("svglite")
 title="PCA_Log_Color-factor_shape-modalites"
 filetype=".svg"
-pca=autoplot(prcomp(t(log(sRNA.matrix[,-1]+0.000001))), data=t(sRNA.data),color="factors",shape="modalities",label=FALSE,label.size=3,title=title)
+pca=autoplot(prcomp(t(log(sRNA.matrix[,-1]+0.000001))), data=t(sRNA.data),colour="factors",shape="modalities",label=FALSE,label.size=3,title=title)
 ggsave(file=paste(title,filetype,sep=""), plot=pca, width=10, height=8)
 
 

@@ -1,0 +1,8 @@
+div
+    table.table.table-bordered.table-hover
+        thead
+            th(v-if="!['Assays'].includes(key)", v-for="key in Object.keys(rows[0])") {{ key }}
+        tbody
+            tr(v-for="(row, index) in rows" @click="$emit('select-row',index)")
+                td(v-if="!['Assays'].includes(key)" v-for="(value,key) in row") {{ value }}
+

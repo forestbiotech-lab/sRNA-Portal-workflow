@@ -1,3 +1,4 @@
+
 $(document).ready(()=>{
 
   $.ajax({
@@ -197,3 +198,4 @@ function signOut() {
     })
   } 
 }
+

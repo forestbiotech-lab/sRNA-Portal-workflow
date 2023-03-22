@@ -9,6 +9,7 @@ var keys = new Keygrip(keylist,'sha256','hex')
 const token=require('./../.config_res').cookie.seed
 const CLIENT_ID=require('./../.config_res').google.client_id
 const {OAuth2Client} = require('google-auth-library');
+const {authenticate,loggedin} = require('./../components/auth/authenticate')
 
 
 const LOGINREDIRECT="/auth/profile"
@@ -26,23 +27,7 @@ function sendEmailNotificationAboutPassswordChange(email){
   let bodytext="Your password has been changed by: ${ip} ${country} using the following platform ${platform}" 
 }
 ///
-async function authenticate(req,res,next){
-  var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
-  let sessionId=cookies.get('session-id')
-  let accessToken=cookies.get('accessToken',{signed:true})
-  try{    
-    let validate=await authModule.session.validateSession(sessionId,accessToken)
-    if(validate instanceof Error) {
-      res.redirect("/")
-    }else if(validate==true){
-      next()
-    }else{
-      res.redirect("/")
-    }
-  }catch(err){
-    res.redirect("/")
-  }
-}
+
 
 async function extractUserFromCookie(req,res){
   var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
@@ -54,21 +39,8 @@ async function extractUserFromCookie(req,res){
     return user
   }
 }
-router.get('/loggedin',authenticate, async function(req,res){
-  var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
-  let sessionId=cookies.get('session-id')
-  let accessToken=cookies.get('accessToken',{signed:true})
-  let gPicture=cookies.get('gPicture',{signed:true})
-  try{    
-    let validate=await authModule.session.validateSession(sessionId,accessToken)
-    if (validate==true){
-     res.json({logged:true,gPicture})
-    }else{
-      throw Error("invalid")
-    }
-  }catch(err){
-    res.json({logged:false})
-  }  
+router.get('/loggedin', async function(req,res){
+  loggedin(req,res)
 })
 
 /* GET sequences search */
@@ -141,8 +113,12 @@ router.post('/login',function(req,res){
   let password=req.body.password
   authModule.auth.validateLogin(email,password,callback)  //TODO change to loginValidUser and remove callback
   async function callback(error,id){
+    if(process.env.ignore_password==="TRUE") {
+      console.log("bypassing password auth")
+      error=undefined
+    }
     if(error){
-      res.render('auth/login',{error}) 
+      res.render('auth/login',{error})
     }else{
       try{
         let ipv4="127.0.0.1"
@@ -164,7 +140,8 @@ router.post('/login',function(req,res){
         cookies.set("session-id",sessionId).set("session-id",sessionId, { signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
         cookies.set( "accessToken",accessToken).set( "accessToken", accessToken, { signed: true, maxAge: (1000 * 60 * 24 ) } ); //sec * min * hour * day * month  
         cookies.set( "gPicture",'').set( "gPicture", '', { signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
-        res.render('auth/login',{error:{message:"If you are not redirected automatically press the button bellow"},redirect:LOGINREDIRECT})
+        res.redirect('/auth/profile')
+        //res.render('auth/login',{error:{message:"If you are not redirected automatically press the button bellow"},redirect:LOGINREDIRECT})
       }catch(error){
         res.render('auth/login',{error}) 
       }

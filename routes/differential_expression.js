@@ -38,6 +38,8 @@ const authModule=new Auth(".config_auth.js")
 //Multiple Promises or single
 
 
+
+//TODO refactor to new implementation
 async function authenticate(req,res,next){
   var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
   let sessionId=cookies.get('session-id')
@@ -87,14 +89,15 @@ router.get('/',authenticate,async function(req,res){
     personId=user.person
   }
   let tablename="Person";
-  let associatedTable="Person"
+  let associatedTable="Study"
   let attributes={tablename,where:{id:personId}}
   let personInfo=formFromTable.tableEntry(attributes)
-  let studyCount=countAssociatedTables(tablename="Study",associatedTable,{responsible:personId})
+  //TODO could define a scope in last param in function
+  let studyCount=countAssociatedTables(tablename="Managed_by",associatedTable,{person:personId})
   Promise.all([personInfo,studyCount]).then(function(data){
     let personInfo=data[0]
-    let numOfStudies=data[1]
-    res.render('differential_expression',{personInfo,numOfStudies});
+    let numOfStudies=data[1]?data[1]:0
+    res.render('de/differential_expression',{personInfo,numOfStudies});
   },rej=>{
     res.status(404).render('err',{error:rej})
   }).catch(function(error){

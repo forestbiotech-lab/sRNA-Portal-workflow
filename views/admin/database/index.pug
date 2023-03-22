@@ -1,0 +1,13 @@
+extends ../../layout
+
+block content
+    #app Help
+        p {{ bar }}
+        p List Sequence Assemblies
+        .seqs(v-for="sequence in sequence_assemblies")
+            p {{ sequence.assembly_key }} : {{ sequence.assembly_value }}
+            p {{ sequence.organism }}
+            p {{ sequence.genome_build }}
+
+
+
