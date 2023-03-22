@@ -72,8 +72,12 @@ class Client{
         this.protocol=this.lowerCaseProtocol(protocol) 
         this.addProtocolToDB(protocol,routerResult).then(protocol=>{
             let connectionProtocol= process.env.mode=="PRODUCTION" ? "wss" : "ws"
-            client.connect(`${connectionProtocol}://${HOST}:${PORT}/`,protocol,self.options,self.origin,self.extraRequestOptions);
-            
+            try {
+                client.connect(`${connectionProtocol}://${HOST}:${PORT}/`, protocol, self.options, self.origin, self.extraRequestOptions);
+                routerResult.json(protocol)
+            }catch (e) {
+                routerResult.status(500).json({error:{msg:e.message,stack:e.stack}})
+            }
         })
 
     }
@@ -165,7 +169,6 @@ class Client{
         return models.saveSingleTableDynamic(attributes).then(model=>{
             if(model.dataValues){
                 let formedProtocol=`${model.type}-${model.hash}`
-                routerResult.json(formedProtocol)
                 return formedProtocol
             }else{
                 routerResult.status(500).json()
