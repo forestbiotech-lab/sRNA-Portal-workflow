@@ -5,10 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var fs= require('fs');
-if(!process.env.websocket=="DISABLE_WEBSOCKET"){
-  var Websocket = require('./websocket/server').websocketServer;
-  websocket = new Websocket()
-}
+
 
 var index = require('./routes/index');
 var users = require('./routes/users');
