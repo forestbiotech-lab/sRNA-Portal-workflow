@@ -1,3 +1,4 @@
+const MAX_CONNECTION_TRIES=3
 function hashRow(row){
 	if( typeof row == "string" ) return md5(row)
 	const reducer=(accumulator,currentValue) => accumulator+currentValue;
@@ -109,19 +110,32 @@ function startWebSocket(address,protocol,callBack){
     const PORT=8080    
     address=`${CONNECTIONPROTOCOL}://${HOSTNAME}:${PORT}`
   }
-  var ws = new WebSocket(address,protocol);
-  ws.onopen = function () {
-      console.log('socket connection opened properly');
-  };
-  ws.onmessage = function (evt) {
-      callBack(evt.data)
-      //console.log("Message received = " + evt.data);
-      //event=JSON.parse(evt.data)
-  };
-  ws.onclose = function () {
-       // websocket is closed.
-      console.log("Connection closed...");
-  };
+  establishConnection(address,protocol,callBack,0,false)
+  function establishConnection(address,protocol,callback,tries,hasConnected) {
+	  var ws = new WebSocket(address, protocol);
+	  ws.onopen = function () {
+		  console.log('socket connection opened properly');
+		  hasConnected=true
+	  };
+	  ws.onmessage = function (evt) {
+		  callBack(evt.data)
+		  //console.log("Message received = " + evt.data);
+		  //event=JSON.parse(evt.data)
+	  };
+	  ws.onclose = function () {
+		  // websocket is closed.
+		  console.log("Connection closed...");
+		  tries++
+		  if(tries<MAX_CONNECTION_TRIES && hasConnected==false){
+			  console.log("Trying to connect again in 5 sec")
+			  setTimeout(()=>{
+				  establishConnection(address,protocol,callback,tries,hasConnected)
+			  },5000)
+
+		  }
+
+	  };
+  }
 }
 
 function loadingPanel(){
