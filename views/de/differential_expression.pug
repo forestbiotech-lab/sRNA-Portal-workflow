@@ -32,7 +32,7 @@ block content
                     .card-body.info-on-selection
                       actions-for-selected-study(v-if="isRowSelected==true" v-on:edit-study="editStudy=true" v-on:upload-data="uploadData=true" :selected-p-k="selectedPK",:num-of-assays="rows[selectedRow].Assays.length")
       .row.file-submission(v-if="uploadData==true")
-        file-submission(:study-id="rows[selectedRow].id" :study-title="rows[selectedRow].title")
+        file-submission(:study-id="rows[selectedRow].id" :study-title="rows[selectedRow].title" :organisms="organisms")
       .row.metadata-edition(v-if="editStudy==true")
         .col-lg-12
           .card

@@ -1,11 +1,22 @@
 .col-lg-12
     .card.upload
         .card-body
-            h5.card-title Matrix with raw reads counts for:
-                span.badge.badge-secondary {{ studyTitle }}
-            p The uploaded file should be a tab separated value&nbsp;
-                span.badge.badge-secondary .tsv
-                | &nbsp;file. The file should start with the header as the first line, then consecutively a line for each sequence. The first column should contain the sequence, the second its annotation, and the following columns should contain the raw expression in each of the libraries. An assay will be created for each library once the upload process is concluded.
+            .row
+                .col-6
+                    h5.card-title Matrix with raw reads counts for:
+                        span.badge.badge-secondary {{ studyTitle }}
+                    p The uploaded file should be a tab separated value&nbsp;
+                        span.badge.badge-secondary .tsv
+                        | &nbsp;file. The file should start with the header as the first line, then consecutively a line for each sequence. The first column should contain the sequence, the second its annotation, and the following columns should contain the raw expression in each of the libraries. An assay will be created for each library once the upload process is concluded.
+                .col-6
+                    .form-group
+                        label.my-1.mr-2(for="organisms") Organism:&nbsp;
+                        v-select#organisms(:options="organisms" :reduce="common_name => common_name.ncbi_taxon_id", label="common_name", v-model="ncbi_taxon_id", @input="loadSequenceAssemblies")
+                            template(v-slot:option="option") {{ option.genus+" "+option.specific_name+" ("+option.common_name+")" }}
+                    .form-group(v-if="ncbi_taxon_id!=null")
+                        label.my-1.mr-2(for="organisms") Sequence Assembly:&nbsp;
+                        v-select( :options="sequence_assemblies", label="composite" v-model="sequence_assemblyComposite" )
+                            template(v-slot:option="option") {{ option.composite+" Genome Build:"+option.genome_build+" ("+option.representation+")" }}
             .row
                 .form-group
                     label.sr-only(for="upload-files-upload") Upload file
@@ -28,4 +39,5 @@
                         input(type="hidden",name="filename",id="filename")
                         input(type="hidden",name="studyId",id="studyId",v-model="studyId")
                         input(type="hidden",name="studyTitle",id="studyTitle" v-model="studyTitle")
+                        input(type="hidden",name="sequence_assemblyComposite",id="sequence_assecmblyComposite" v-model="sequence_assemblyComposite")
                         input.btn.btn-primary.disabled.btn-block.d-none(type="",role="button",value="View matrix",title="Set the study first to view matrix")

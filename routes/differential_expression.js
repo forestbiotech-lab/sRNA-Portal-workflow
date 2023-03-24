@@ -141,6 +141,7 @@ router.post('/uploadMatrix',function(req,res){
   rawReadsSaveController.saveRawReads(dataset,ws).then(data=>{
     ws.close()
   },rej=>{
+    console.log("rawReadSaveController Rejection: ",rej)
     ws.close()
   }).catch(function(err){
     ws.close()
