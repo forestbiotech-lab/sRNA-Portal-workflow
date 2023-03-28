@@ -47,10 +47,7 @@
             foreignKey: 'id',              //on Transcript
             targetKey: 'transcript_id',  //foreign key  
           });
-          Transcript.belongsTo(models.Feature, {
-            foreignKey: 'feature_id',              //on Transcript
-            targetKey: 'id',  //foreign key  
-          }); 
+
         }
       },
     });

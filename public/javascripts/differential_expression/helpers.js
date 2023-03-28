@@ -1,3 +1,4 @@
+
 const MAX_CONNECTION_TRIES=3
 function hashRow(row){
 	if( typeof row == "string" ) return md5(row)
@@ -101,7 +102,7 @@ function makeTableFromNestedArrayMatrix(matrix,customHeaders){ //rename to makeT
 	
 }
 
-function startWebSocket(address,protocol,callBack){
+function startWebSocket(address,protocol,callBack,closeCallback){
   if(typeof protocol=="function" && callBack==null){
     callBack=protocol
     protocol=address
@@ -110,8 +111,8 @@ function startWebSocket(address,protocol,callBack){
     const PORT=8080    
     address=`${CONNECTIONPROTOCOL}://${HOSTNAME}:${PORT}`
   }
-  establishConnection(address,protocol,callBack,0,false)
-  function establishConnection(address,protocol,callback,tries,hasConnected) {
+  establishConnection(address,protocol,callBack,0,false,closeCallback)
+  function establishConnection(address,protocol,callback,tries,hasConnected,closeCallback) {
 	  var ws = new WebSocket(address, protocol);
 	  ws.onopen = function () {
 		  console.log('socket connection opened properly');
@@ -129,9 +130,10 @@ function startWebSocket(address,protocol,callBack){
 		  if(tries<MAX_CONNECTION_TRIES && hasConnected==false){
 			  console.log("Trying to connect again in 5 sec")
 			  setTimeout(()=>{
-				  establishConnection(address,protocol,callback,tries,hasConnected)
+				  establishConnection(address,protocol,callback,tries,hasConnected,closeCallback)
 			  },5000)
-
+		  }else{
+			  closeCallback()
 		  }
 
 	  };

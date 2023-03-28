@@ -152,13 +152,13 @@ e.countAssayDataInStudy=function(attributes){
   })
 }
 
+//TODO switch
 e.getAssayDataWithAnnotations=(attributes)=>{
   return db.Assay_data
   .findAndCountAll({
     limit: 5000,
     order:[[
-      db.Assay_data.associations.Annotation, 
-      db.Annotation.associations.Mature_miRNA,
+      db.Assay_data.associations.Mature_miRNA,
       'name', 
       'ASC'
     ]], //203616
@@ -166,17 +166,9 @@ e.getAssayDataWithAnnotations=(attributes)=>{
       model:db.Assay,
       where: attributes.where    
     },{
-      model:db.Annotation,
+      model:db.Mature_miRNA,
       include:[{
-        model:db.Mature_miRNA,
-        include:[{
-          model:db.Target,
-          include:[{
-            model:db.Transcript
-          }]
-        },{
-          model:db.Mature_miRNA_sequence,
-        }]
+        model:db.Mature_miRNA_sequence,
       }]
     }]
   }).then( res => {

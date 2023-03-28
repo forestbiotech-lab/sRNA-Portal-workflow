@@ -40,7 +40,11 @@
           Feature_attribute_list.belongsTo(models.Feature, {
             foreignKey: 'feature_id',              //on Feature_attribute_list
             targetKey: 'id',  //foreign key  
-          }); 
+          });
+          Feature_attribute_list.belongsTo(models.Feature_composite, {
+            foreignKey: 'feature_id',              //on Feature_attribute_list
+            targetKey:  'id',  //foreign key
+          });
         }
       },
     });

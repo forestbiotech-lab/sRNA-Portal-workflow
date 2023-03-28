@@ -1,7 +1,7 @@
 extends ../layout
 
 block content
-  .card-block
+  .card-block#app(study-id=studyId)
     .container-fluid
       .row.navagation-buttons
         .col-lg-12
@@ -18,7 +18,7 @@ block content
         .col-lg-12
           .card.gen-info(studyId=studyId,api="true",call="assaydata",version="v1")
             .card-header.study
-              h4.card-title  Study gg id:&nbsp 
+              h4.card-title  Study #{studyTitle} id:&nbsp
                 span.badge.badge-secondary#studyId !{studyId}
           .card.upload-table
             .card-header
@@ -46,7 +46,7 @@ block content
                     button.btn.btn-secondary.clear(type="button") clear
                 .col-lg-3
                   .custom-control.custom-switch
-                    input#sequence-values-type.custom-control-input(type='checkbox')
+                    input#sequence-values-type.custom-control-input(type='checkbox',v-model="cpmExpression" @change="toogleExpression")
                     label.custom-control-label(for='sequence-values-type') RAW / CPM
                   .custom-control.custom-switch
                     input#customSwitch2.custom-control-input(type='checkbox', disabled='')
@@ -55,6 +55,7 @@ block content
               .wrapperDummy.scroll(style="overflow-x:scroll;")
                 .dummy(style="height:20px;width:2000px")  
               .wrapperTable(style="overflow-x:scroll;")
+                testing-grid(:study-id=studyId, :grid="grid",:schema="schema")
                 table.table.table-striped.upload-table
                   thead
                     th(id="sequence") Sequence

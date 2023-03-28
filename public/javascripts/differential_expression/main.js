@@ -1,14 +1,37 @@
-Vue.component('v-select,VueSelect.VueSelect')
-
 Vue.component('file-submission',(resolve,reject)=>{
     $.get('/forms/factory/vue/template/file-submission',(data,textStatus,jqXHR)=> {
         resolve({
             template:data,
             props:{
                 studyId:Number,
-                studyTitle:String
+                studyTitle:String,
+                organisms: Array,
+            },
+            data:function(){
+                return{
+                    ncbi_taxon_id:null,
+                    sequence_assemblies:[{}],
+                    sequence_assemblyComposite:null
+
+                }
             },
             methods:{
+                loadSequenceAssemblies:async function(){
+                    this.sequence_assemblyComposite=null
+                    let where={
+                        organism:this.ncbi_taxon_id
+                    }
+                    let that=this
+                    $.ajax({
+                      url:"/db/api/v1/publictableRows/Sequence_assembly_composite/where",
+                      method:"POST",
+                      data:where
+                    }).done((data,textStatus,jqXHR)=>{
+                        that.sequence_assemblies=data
+                    }).fail(err=>{
+                        displayToast("Unable to get sequence_assembly data",err.statusText)
+                    })
+                },
                 chooseMatrixFile:function(){
                     $('.row.file-submission .card-body #upload-files-upload').click();
                     $('.row.file-submission .card-body .progress-bar').text('0%');
@@ -34,6 +57,7 @@ Vue.component('file-submission',(resolve,reject)=>{
                             contentType: false,
                             success: that.success,
                             fail: function(jqXHR,textStatus,error){
+                                displayToast(`Error uploading file- ${textStatus}`, error)
                                 $('.row.file-submission .card-footer form.view-matrix input#filename').val('Error! Try again!')
                             },
                             xhr: that.xhr
@@ -72,7 +96,7 @@ Vue.component('file-submission',(resolve,reject)=>{
                             if (percentComplete === 100) {
                                 $('.row.file-submission .card-body .progress-bar').html('Done');
                                 $('.row.file-submission .card-footer form.view-matrix input.btn.disabled').removeClass('disabled')
-                                $('.row.file-submission .card-footer form.view-matrix input.btn').attr('type','submit')git s
+                                $('.row.file-submission .card-footer form.view-matrix input.btn').attr('type','submit')
                             }
                         }
                     }, false);
@@ -192,17 +216,20 @@ Vue.component('create-study-form',(resolve,reject)=>{
 
 })
 
-
+Vue.component('v-select', VueSelect.VueSelect)
 window.app=new Vue({
     el:"#app",
     data:{
         pk:"id",
         rows:[{}],
         isRowSelected:false,
-        selectedRow:-1,
+        //selectedRow:-1,
+        selectedRow:0,
         selectedPK:null,
         editStudy:false,
-        uploadData:false,
+        //uploadData:false,
+        uploadData:true,
+        organisms:[{}],
     },
     methods:{
         selectRow:function(index){
@@ -230,6 +257,7 @@ window.app=new Vue({
         try {
             window.data = {}
             this.rows=await $.get('/forms/factory/data/managedStudies')
+            this.organisms= await $.post('/db/api/v1/publictable/Organism')
         }catch(e){
             displayToast("Error loading table",JSON.stringify(e))
         }

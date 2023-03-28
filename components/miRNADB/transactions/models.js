@@ -16,5 +16,8 @@ e.saveSingleTableDynamic = function(attributes) {
     return db[attributes.tablename].create(attributes.inserts,{transaction:attributes.transaction})
 }
 
+e.findOrCreateSingleTableDynamic = function(attributes){
+    return db[attributes.tablename].findOrCreate({where:attributes.where,defaults:attributes.inserts,transaction:attributes.transaction})
+}
 
 module.exports=e

@@ -39,9 +39,9 @@ $(document).ready(function(){
     body.jqTable.find('tbody tr[datatype|="search-result"]').remove()
     body.jqTable.find('tbody tr').show()
   })
-
+  let apiNO=undefined
   //Specific 
-  if(api){  
+  if(apiNO){
     let apiInfo=$('.card.gen-info')
     let call=apiInfo.attr("call")
     let version=apiInfo.attr("version")

@@ -75,10 +75,10 @@
             foreignKey: 'modality2',              //on Differential_expression
             targetKey: 'id',  //foreign key  
           });
-          Differential_expression.belongsTo(models.Mature_miRNA, {
+          /*Differential_expression.belongsTo(models.Mature_miRNA, {
             foreignKey: 'annotation',              //on Differential_expression
             targetKey: 'id',  //foreign key  
-          }); 
+          });*/
         }
       },
     });

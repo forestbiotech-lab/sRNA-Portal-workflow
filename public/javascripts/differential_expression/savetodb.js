@@ -2,15 +2,22 @@ $(document).ready(function(){
   let rawReadsfilename=$('table tbody tr#lastRow').attr('filename')
   let iterStep=50
 
+
   $('.card.upload-table .card-body button.upload-matrix').click(function(){
-    sequence="ATAGTTTTTT"
-    occurence=0
-    killList=killList || {}
-    saveRows(studyId,rawReadsfilename,killList)
+    sequence="ATAGTTTTTT"   //TODO not even sure what this is.
+    occurence=0             //TODO humm???
+    killList=killList || {}  //TODO not implemented
+    if (!$(this).hasClass("disabled")){
+      $(this).addClass('disabled')
+      saveRows(studyId,sequenceAssemblyComposite,rawReadsfilename,killList,$(this))
+    }
   })
 
-  function saveRows(studyId,rawReadsfilename,killLines){
-   let data={studyId,rawReadsfilename,killLines}
+  function saveRows(studyId,sequenceAssemblyComposite,rawReadsfilename,killList,origin){
+    function closeCallback(){
+      origin.removeClass("disabled")
+    }
+   let data={studyId,sequenceAssemblyComposite,rawReadsfilename,killList,}
     $.ajax({
       url: '/de/uploadMatrix',
       type: 'POST',
@@ -20,7 +27,8 @@ $(document).ready(function(){
         const HOSTNAME=document.location.hostname
         const CONNECTIONPROTOCOL = HOSTNAME=="localhost" ? "ws" : "wss"
         const PORT=8080
-        startWebSocket(`${CONNECTIONPROTOCOL}://${HOSTNAME}:${PORT}`,data,processEvt)
+
+        startWebSocket(`${CONNECTIONPROTOCOL}://${HOSTNAME}:${PORT}`,data,processEvt,closeCallback)
       },error:function(jqXHR,textStatus,err){
         console.log(jqXHR)
         alert("Upload failed!")

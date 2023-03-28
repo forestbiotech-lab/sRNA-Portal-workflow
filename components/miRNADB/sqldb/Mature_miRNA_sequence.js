@@ -10,7 +10,7 @@
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
-        allowNull: false
+        allowNull: true
       },
       sequence: { 
         type: DataTypes.STRING(30),

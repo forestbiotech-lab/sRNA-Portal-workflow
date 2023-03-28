@@ -119,7 +119,7 @@ router.post('/upload/:studyId', function(req, res){
 router.post('/uploaded-file',function(req,res){ 	 
   let uploadedFilename=req.body.filename
   let studyId=req.body.studyId.trim()
-  let studyTitle=req.body.studyTitle
+  let {studyTitle,sequenceAssemblyComposite}=req.body
   if( req.body.responseType=="json"){
     var filePath=path.join(uploadDir, `/${studyId}/${destinationFolderRawReads}/${uploadedFilename}`)
     convertFileToMatrix(filePath).then(function(data){
@@ -129,23 +129,33 @@ router.post('/uploaded-file',function(req,res){
       res.status(404).json(err)
     }) 
   }else{
-    res.render('de/uploadedFile',{uploadedFilename,studyId,studyTitle});
+    res.render('de/uploadedFile',{uploadedFilename,studyId,studyTitle,sequenceAssemblyComposite});
   }
 })
 
-router.post('/uploadMatrix',function(req,res){
+router.post('/uploadMatrix',async function(req,res){
   rawReadsFilePath=path.join(uploadDir, `/${req.body.studyId}/${destinationFolderRawReads}/${req.body.rawReadsfilename}`)
   let dataset=Object.assign({rawReadsFilePath},req.body)
   let ws=new wsClient()
   ws.connect("rawreads",res)
-  rawReadsSaveController.saveRawReads(dataset,ws).then(data=>{
-    ws.close()
-  },rej=>{
-    console.log("rawReadSaveController Rejection: ",rej)
-    ws.close()
-  }).catch(function(err){
-    ws.close()
-  })
+  try {
+    let connectionStatus = await ws.isConnected()
+    if(connectionStatus!="connected"){
+      throw new Error("No websocket connection")
+    }
+    //TODO check connected
+    rawReadsSaveController.saveRawReads(dataset, ws).then(data => {
+      ws.close()
+    }, rej => {
+      console.log("rawReadSaveController Rejection: ", rej)
+      ws.close()
+    }).catch(function (err) {
+      ws.close()
+    })
+  }catch (e){
+    //TODO not the perfect response
+    res.json(e)
+  }
 })
 
 

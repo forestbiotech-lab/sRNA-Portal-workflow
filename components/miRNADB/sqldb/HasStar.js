@@ -31,14 +31,14 @@
 
       classMethods: {
         associate: function associate(models) {    
-          HasStar.belongsTo(models.Mature_miRNA, {
+          /*HasStar.belongsTo(models.Mature_miRNA, {
             foreignKey: 'miRNA_id',              //on HasStar
             targetKey: 'id',  //foreign key  
           });
           HasStar.belongsTo(models.Mature_miRNA, {
             foreignKey: 'star_miRNA_id',              //on HasStar
             targetKey: 'id',  //foreign key  
-          }); 
+          });*/
         }
       },
     });

@@ -73,10 +73,10 @@
 
       classMethods: {
         associate: function associate(models) {    
-          Target.belongsTo(models.Mature_miRNA, {
+          /*Target.belongsTo(models.Mature_miRNA, {
             foreignKey: 'mature_miRNA_id',              //on Target
             targetKey: 'id',  //foreign key  
-          });
+          });*/
           Target.belongsTo(models.Transcript, {
             foreignKey: 'transcript_id',              //on Target
             targetKey: 'id',  //foreign key  

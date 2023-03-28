@@ -1,23 +1,73 @@
-var db = require('./../sqldb/index');
+const db = require('./../sqldb/index');
+const Op= require('sequelize').Op
 var transactionModels=require('./../transactions/models')
 
 const fs = require('fs')
-const MINSIZE=2
+const MINSIZE=1
 const PREVIEW_LINES=10
-const MAX_TRANSACTIONS=4
+const MAX_TRANSACTIONS=1  //Otherwise it looses track
+const ACCESSION_PREFIX="MPMAT"
 
 var totalLines;
 var successes=0
 var errors=0
 var killList={}
+var indexNovel=0
+var indexTasi=0
 
 module.exports={saveRawReads}
 
-function saveRawReads(dataset,ws){
-  let studyId=dataset.studyId
-  let rawReadsfilename=dataset.rawReadsfilename
-  killList=dataset.killLines || {}
-  let rawReadsFilePath=dataset.rawReadsFilePath
+async function saveRawReads(dataset,ws){
+  let {studyId,sequenceAssemblyComposite,rawReadsfilename,rawReadsFilePath,killList}=dataset //Essentially to list what is in it
+  let metadata=dataset
+  metadata.filename=rawReadsfilename//Simple rename
+
+  metadata.lastNameTasi=await db["Feature"].findOne({
+    attributes:[[db.sequelize.col('name'),'lastName']],
+    order:[
+      [
+        db.sequelize.fn('length',db.sequelize.col('name')),
+        'DESC'
+      ],[
+        db.sequelize.col('name'),
+        'DESC'
+      ]
+    ],
+    where:{
+      "name":{ [Op.like]: "mirTASI%"}
+    }
+  })
+  metadata.lastNameNovel=await db["Feature"].findOne({
+    attributes:[[db.sequelize.col('name'),'lastName']],
+    order:[
+      [
+        db.sequelize.fn('length',db.sequelize.col('name')),
+        'DESC'
+      ],[
+        db.sequelize.col('name'),
+        'DESC'
+      ]
+    ],
+    where:{
+      "name": {[Op.like]:"mirNOVEL%"}
+  }})
+  //TODO improve this. Sorting sucks ordering and getting first
+  metadata.lastAccession=await db["Feature"].findOne({
+    attributes:[[db.sequelize.col('accession'),'lastAccession']],
+    order:[
+      [
+        db.sequelize.fn('length',db.sequelize.col('accession')),
+        'DESC'
+      ],[
+        db.sequelize.col('accession'),
+        'DESC'
+      ]
+    ],
+    where:{
+      "accession": {[Op.like]:ACCESSION_PREFIX+"%"}
+    }
+  })
+
   return new Promise((res,rej)=>{  
     fs.readFile(rawReadsFilePath,'utf8', (err, data) => {
       if (err) rej(err);
@@ -31,8 +81,9 @@ function saveRawReads(dataset,ws){
         let fieldOfPromises=[]
         let results=[]
         let index=lines.length
-        let date=new Date()
-        res(insertControl(fieldOfPromises, results, lines, rawReadsfilename, studyId, index, date, assayIds,ws))
+        metadata.date=new Date()
+        metadata.assay_ids=assayIds
+        res(insertControl(fieldOfPromises, results, lines, index, metadata, ws))
       },rejection=>{
         rej(rejection)
       })
@@ -40,7 +91,7 @@ function saveRawReads(dataset,ws){
   })
 }
 
-function screenLine(line){
+function screenLine(line,metadata){
   //
   // Break this into function 
   //
@@ -64,10 +115,10 @@ function screenLine(line){
           return substituteLine(killListProperities.substitute)
         }        
       }else{
-        return noAction(line)
+        return noAction(line, metada)
       }
     }else{ 
-      return noAction(line)
+      return noAction(line,metadata)
     }
   }else{ 
     return killLine()
@@ -101,20 +152,64 @@ function screenLine(line){
   function substituteLine(line){
     return {insertLine:true,line}
   }
-  function noAction(line){
-    return {insertLine:true,line}
+  function noAction(line,metadata){
+    sequenceType=""
+    let classification=classifyLine(line,metadata)
+    return {insertLine:true,line,classification}
   }
 }
 
-function insertControl(fieldOfPromises,results,lines,rawReadsfilename,study_id,index, date,assay_ids,ws){
+function classifyLine(line,metadata){
+  let name=""
+  if(line instanceof Array){
+    name=line[1]
+  }else if(line instanceof String){
+    name=line
+  }
+  if(name.search(".*novel.*")!=-1){
+    indexNovel++
+    let matIndex=indexNovel
+    if(metadata.lastName) {
+      let lastName = metadata.lastNameNovel.dataValues.lastName
+      if (lastName) {
+        let search = lastName.match("[0-9]+")
+        if (search) {
+          matIndex = parseInt(search[0]) + indexNovel
+        }
+      }
+    }
+    return {tag:"novel",index: matIndex}
+  }
+  if(name.search(".*tasi.*")!=-1) {
+    indexTasi++
+    let matIndex = indexTasi
+    if (metadata.lastName){
+      let lastName = metadata.lastNameTasi.dataValues.lastName
+      if (lastName) {
+        let search = lastName.match("[0-9]+")
+        if (search) {
+          matIndex = parseInt(search[0]) + indexTasi
+        }
+      }
+    }
+    return {tag:"tasi",index:matIndex}
+  }
+  if(name.search("mi[rR].*")!=-1){
+    return {tag:name,index:0}
+  }
+
+}
+function insertControl(fieldOfPromises, results, lines, index, metadata, ws){
   try{
     while(fieldOfPromises.length<MAX_TRANSACTIONS && lines.length >0){
       line=lines.pop()
       line=line.split("\t")
-      let screeningResult=screenLine(line)
+      let screeningResult=screenLine(line,metadata)
       if (screeningResult.insertLine){
         line=screeningResult.line
-        fieldOfPromises.push(insertLine(rawReadsfilename,line,study_id,index,date,assay_ids,ws))
+        metadata.classification=screeningResult.classification
+        metadata.index=index
+        fieldOfPromises.push(insertLine(line,index,metadata,ws))
       }
       index--
     }
@@ -127,7 +222,7 @@ function insertControl(fieldOfPromises,results,lines,rawReadsfilename,study_id,i
         updateTransactionsStatus(transactions)
         let msg=JSON.stringify({percentageComplete,successes,errors})
         ws.sendMsg(msg)
-        return insertControl(fieldOfPromises, results, lines, rawReadsfilename, study_id, index, date, assay_ids,ws)
+        return insertControl(fieldOfPromises, results, lines, index, metadata, ws)
       })
     }else{
       let msg=JSON.stringify({percentageComplete:100,successes,errors})
@@ -139,146 +234,190 @@ function insertControl(fieldOfPromises,results,lines,rawReadsfilename,study_id,i
   }
 }
 
-function insertLine(filename,line,study_id,index,date,assay_ids){
-  let lineNum=index
-  let sequence=line.shift().trim()
+
+function genAccession(metadata){
+  let accIndex=metadata.index
+  if(metadata.lastAccession) {
+    if (metadata.lastAccession.dataValues.lastAccession) {
+      let search = metadata.lastAccession.dataValues.lastAccession.match("[0-9]+")
+      if (search) {
+        accIndex = parseInt(search[0]) + parseInt(metadata.index)
+      }
+    }
+  }
+  metadata.accession=ACCESSION_PREFIX+accIndex
+  return metadata.accession
+}
+function genName(name,metadata) {
+    return "mir" + metadata.classification.tag.toUpperCase() + metadata.classification.index
+}
+function buildAnnotationsForLine(line,index,metadata){
+  function determineSource(name){
+    //Since this point is dedicated for miRPursuit input all reads are miRPursuit for now.
+    return "miRPursuit"
+  }
+
+  function getVersion(){
+    return 1
+  }
+
+  metadata.lineNum=index
+  metadata.sequence=line.shift().trim()
+  //TODO deal with sequence annotation Lookup specs for miRProf
   let name=line.shift().trim()
-  let accession=genAccession(name)
-  let rawCounts=line
-  let version=getVersion()
-  let metadata={filename,lineNum,sequence,study_id,assay_ids,date,version}
-  mature_attributes={accession,name}
-  return db.sequelize.transaction().then(function(t){
+  let sequence_assembly=metadata.sequenceAssemblyComposite.split(":")
+  if(sequence_assembly.length!=2)
+    throw new Error("MalformedSequencesAssemblyComposite")
 
-    function searchSequenceId(sequence,type,transaction){
-      let attributes={
-        tablename:"Mature_miRNA_sequence",
-        where:{sequence},
-        transaction
-      }
-      return transactionModels.getTableValuesWhere(attributes).then(model=>{
-        return extractId(model,type)
-      })      
-    } 
-    function createSequence(sequence,transaction){
-      let attributes={
-        tablename:"Mature_miRNA_sequence",
-        inserts:Object.assign({},sequence),
-        transaction
-      }
-      return transactionModels.saveSingleTableDynamic(attributes).then(model=>{
-        return extractId(model)
-      })      
+  metadata.rawCounts=line
+  metadata.version=getVersion()
+  metadata.feature_annotation_attributes={
+    accession:genAccession(metadata),
+    name:genName(name,metadata),
+    source:determineSource(metadata),
+    type:"mature_miRNA",
+    sequence_assembly_key:sequence_assembly[0],
+    sequence_assembly_value:sequence_assembly[1]
+  }
+  metadata.mature_attributes={
+    accession:genAccession(metadata),
+    name:genName(name,metadata),
+  }
+  return metadata
+}
+function insertLine(line, index, metadata, ws) {
+  metadata = buildAnnotationsForLine(line, index, metadata)
+
+  function searchSequenceAnnotation(sequence_id, transaction) {
+    let attributes = {
+      tablename: "Mature_miRNA",
+      where: {sequence_id},
+      transaction
     }
+    return transactionModels.getTableValuesWhere(attributes).then(model => {
+      return extractPk(model)
+    })
+  }
 
-    function searchSequenceAnnotation(sequence_id,transaction){
-      let attributes={
-        tablename:"Mature_miRNA",
-        where:{sequence_id},
-        transaction
-      }
-      return transactionModels.getTableValuesWhere(attributes).then(model=>{
-        return extractId(model)
-      })
+
+  function getOrCreateSequence(metadata, transaction) {
+    let sequence = metadata.sequence
+    let err = function () {
+      setCustomError("Sequence", metadata.sequence, metadata.lineNum, metadata.filename)
     }
+    let where = {sequence}
+    return createEntry("Mature_miRNA_sequence", {sequence}, transaction, err, where)
+  }
 
+  //NOT USED
+  async function createMature(metadata, transaction) {
+    let {sequence_id, mature_attributes} = metadata
+    let err = function () {
+      setCustomError("Mature_miRNA", metadata.sequence, metadata.lineNum, metadata.filename)
+    }
+    let tablename = 'Mature_miRNA'
+    let insert_attributes = Object.assign({sequence_id}, mature_attributes)
+    return await createEntry(tablename, insert_attributes, transaction, err)
+  }
 
-    function getOrCreateSequence(metadata,sequence,transaction){
-      let err=function(){
-        setCustomError("Sequence", metadata.sequence, metadata.lineNum, metadata.filename)
-      }
-      return searchSequenceId(sequence, type="try", transaction).then(sequence_id=>{
-        if( sequence_id > -1){
-          return sequence_id
-        }else{
-          return createEntry("Mature_miRNA_sequence",{sequence}, transaction,err)
+  function createAssayData(metadata, transaction) {
+    let err = function () {
+      setCustomError("AssayData", metadata.sequence, metadata.lineNum, metadata.filename)
+    }
+    let tablename = 'Assay_data'
+    let insert_attributes = Object.assign({}, metadata.assayData_attributes)
+    return createEntry(tablename, insert_attributes, transaction, err)
+  }
+
+  async function createFeature(metadata, sequence_id, transaction) {
+    //Creates a
+    metadata.sequence_id=sequence_id
+    let err = function () {
+      setCustomError("Annotation", metadata.sequence, metadata.lineNum, metadata.filename)
+    }
+    let tablename = 'Feature'
+    let insert_attributes = Object.assign({}, metadata.feature_annotation_attributes)
+    let accession = await createEntry(tablename, insert_attributes, transaction, err)
+    if(accession==metadata.accession) {
+      return accession
+    }else{
+      return err()
+    }
+  }
+
+  function loadAssay_data(metadata, transaction) {
+
+    ids = []
+    metadata.rawCounts.forEach((raw, index) => {
+      metadata.assayData_attributes = {assay: metadata.assay_ids[index], raw: raw.trim(),mature_miRNA: metadata.accession }
+      ids.push(createAssayData(metadata, transaction).then(assay_data_id => {
+        return assay_data_id
+
+        /*let {mature_miRNA_id, date, version} = metadata
+        metadata.annotation_attributes = {
+          mature_miRNA_id,
+          date,
+          version,
+          assay_data_id,
         }
-      })
-    }
+        return createAnnotation(metadata, transaction).then(annotation_id => {
+          return {annotation_id, assay_data_id}
+        })*/
+      }))
+    })
+    return Promise.all(ids)
+  }
 
-    function createMature(metadata, sequence_id,mature_attributes,transaction){
-      let err=function(){
-        setCustomError("Mature_miRNA", metadata.sequence, metadata.lineNum, metadata.filename)
+  function newFeatureAndSequence(metadata) {
+    return db.sequelize.transaction().then(async function (transactionFeatureAndSequence) {
+      try {
+        let sequence_id = await getOrCreateSequence(metadata, transactionFeatureAndSequence)
+        let accession = await createFeature(metadata, sequence_id, transactionFeatureAndSequence)
+        if(accession instanceof Error) throw accession
+        await transactionFeatureAndSequence.commit()
+        return {sequence_id, accession}
+      } catch (err) {
+        await transactionFeatureAndSequence.rollback()
+        return err
       }
-      let tablename='Mature_miRNA'
-      let insert_attributes=Object.assign({sequence_id},mature_attributes)
-      return createEntry(tablename,insert_attributes,transaction,err)
-    }
+    })
+  }
+  function newMatureAndAssayData(metadata){
+    return db.sequelize.transaction().then(async (transactionMatureAndAssayData)=>{
+      try{
+        await createMature(metadata,transactionMatureAndAssayData)
+        let assay_data=await loadAssay_data(metadata,transactionMatureAndAssayData)
+        await transactionMatureAndAssayData.commit()
+        let status = {
+          name: "Success",
+          message: `Line number: ${metadata.lineNum} inserted with success!`,
+          created:{sequence_id:metadata.sequence_id,mature_id:metadata.accession,annotations:metadata.accession,assay_data}, //Can add more info AssayData
+          referenced:{study_id:metadata.study_id, sequenceAssemblyComposite: metadata.sequenceAssemblyComposite},
+        }
+        return status;
+      }catch (err) {
+        await transactionMatureAndAssayData.rollback()
+        return err
+      }
+    })
+  }
 
-    function createAssayData(metadata,assayData_attributes,transaction){
-      let err=function(){
-        setCustomError("AssayData", metadata.sequence, metadata.lineNum, metadata.filename)
-      }
-      let tablename='Assay_data'
-      let insert_attributes=Object.assign({},assayData_attributes)
-      return createEntry(tablename,insert_attributes,transaction,err)
-    }
-    function createAnnotation(metadata,annotation_attributes,transaction){
-      let err=function(){
-        setCustomError("Annotation", metadata.sequence, metadata.lineNum, metadata.filename)
-      }
-      let tablename='Annotation'
-      let insert_attributes=Object.assign({},annotation_attributes)
-      return createEntry(tablename,insert_attributes,transaction,err)
-    }
-
-    function createAnnotationAndAssay_data(metadata,mature_miRNA_id,rawCounts,transaction){
-      ids=[]
-      rawCounts.forEach((raw,index)=>{
-        let assayData_attributes={assay:metadata.assay_ids[index],raw:raw.trim()}
-        ids.push(createAssayData(metadata,assayData_attributes,transaction).then(assay_data_id=>{
-          let annotation_attributes={
-            mature_miRNA_id,
-            date:metadata.date,
-            version:metadata.version,
-            assay_data_id,
-          }
-          return createAnnotation(metadata,annotation_attributes,transaction).then(annotation_id=>{
-            return {annotation_id,assay_data_id}
-          }) 
-        }))
-      })
-      return Promise.all(ids)
-    }
     //TODO iterate over each line creating an assay_data and an annotation_attributes
     //Build these attribute objects
     //Depends on the creation of the Mature_miRNA
     //Requires a function that dos 
 
-    function newSequence(metadata,sequence,mature_attributes,rawCounts,transaction){
-      return getOrCreateSequence(metadata,sequence,transaction).then(sequence_id=>{
-        return createMature(metadata, sequence_id, mature_attributes, transaction).then(mature_id=>{
-          return createAnnotationAndAssay_data(metadata,mature_id,rawCounts,transaction).then(annotation_data=>{
-            return {sequence_id,lineNum,created:{sequence_id,mature_id,annotations:annotation_data},referenced:{study_id:metadata.study_id}}
-          })
-        })
-      })      
+  async function newLine(metadata) {
+    try {
+      let results=await newFeatureAndSequence(metadata)
+      if (results instanceof  Error) return results
+      return await newMatureAndAssayData(metadata)
+    }catch (e) {
+      console.log("Failed to get a sequence_id and create a Feature")
+      return e
     }
-
-    return newSequence(metadata,sequence,mature_attributes,rawCounts,t).then(function(sequenceCreation){
-//      return t.rollback().then(()=>{
-      return t.commit().then(()=>{
-        let status={
-          name:"Success",
-          message:`Line number: ${sequenceCreation.lineNum} inserted with success!`,
-          created:sequenceCreation.created,
-          referenced:sequenceCreation.referenced
-        }
-        return status;
-      })
-    }).catch(function (err) {
-      return t.rollback().then(a=>{
-        return err
-      })
-    });
-  })
-  function genAccession(name){
-    //TODO something
-    return name
   }
-  function getVersion(){
-    return 1
-  }
+  return newLine(metadata)
 }
 
 function createAssays(headers,study,filename){
@@ -293,7 +432,8 @@ function createAssays(headers,study,filename){
         let err=function(){
           setCustomError("Assay", metadata.name, metadata.lineNum, metadata.filename)
         }
-        assay_ids.push(createEntry(tablename,attributes,t,err))
+        let where=attributes
+        assay_ids.push(createEntry(tablename,attributes,t,err,where))
       })
       Promise.all(assay_ids).then(assays=>{
         t.commit().then(()=>{
@@ -312,43 +452,62 @@ function createAssays(headers,study,filename){
   })
 }
 
-function createEntry(tablename,insert_attributes,transaction,err){
+function createEntry(tablename,insert_attributes,transaction,err,where){
+
   let attributes={
     tablename,
     inserts:insert_attributes,
     transaction
   }
-  return transactionModels.saveSingleTableDynamic(attributes).then(model=>{
-    return extractId(model,err)
-  })     
+  if(where){
+    attributes.where=where
+    return transactionModels.findOrCreateSingleTableDynamic(attributes).then(model=>{
+      return extractPk(model,err)
+    })
+  }else{
+    return transactionModels.saveSingleTableDynamic(attributes).then(model=>{
+      return extractPk(model,err)
+    })
+  }
+
 }
 
+
+
+
 function setCustomError(name,element,file_line,input_file){
-  let error=new Error(`${name} "${element}" not found! - Rollback has been triggered for this line`)
+  let error=new Error(name)
+  error.message=`${name} "${element}" not found! - Rollback has been triggered for this line`
   error.description={file_line,input_file}
   throw error
 }
-function extractId(model,type,err){
+function extractPk(model,type,err){
   err = typeof type == "string" ? err : type 
-  let id=""
+  let pk=""
   try{
+
     if(model instanceof Array ){
       if (model.length == 0){
-        id=-1
+        return -1
       }else{
-        id=model[0].dataValues.id
+        pk=Object.entries(model[0].rawAttributes).filter(attr=> {
+          return attr[1].primaryKey==true
+        })
+        return model[0].dataValues[pk[0][0]]
       }
     }else{
-      id=model.dataValues.id
-    } 
-    return id
+      pk=Object.entries(model.rawAttributes).filter(attr=> {
+        return attr[1].primaryKey==true
+      })
+      return model.dataValues[pk[0][0]]
+    }
   }
   catch(error){
     if(type=="try"){
       return id=-1
     }else{
       if(err) err() 
-      new Error('Rollback triggered - Create failed! Or at least produced no id')
+      new Error('Rollback triggered - Create failed! Or at least produced no pk')
     }
   }     
 }

@@ -8,3 +8,7 @@
         a.btn.btn-primary.assays(v-if="numOfAssays>0" :href='"/de/assays/"+selectedPK') View Assays
         a.btn.btn-primary.targets(v-if="numOfAssays>0" :href='"/de/targets/add/"+selectedPK') Add Targets
         button.btn.btn-primary.editStudy(@click="$emit('edit-study')") Edit Study
+        button.btn.btn-primary.editStudy(@click="",title="TODO read file definition /views/factory/vue/study-actions-for-selection") Associate people
+        //TODO Add new area to accept new associations
+        //TODO Start with person search by email or orcid
+        //TODO add scope

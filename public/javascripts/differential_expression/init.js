@@ -1,4 +1,4 @@
-$(document).ready(function(){
+
 
 
 var pathname=document.location.pathname
@@ -32,10 +32,10 @@ var paths=pathname.split("/").splice(1)
   }
   if(paths[1]=="assaydata"){
      scriptName=[
-      'helpers',
-      'infinityLoaderAPI',
+      //'helpers',
+      //'infinityLoaderAPI',
       'assaydata',
-      '../scoring/getBestOption'
+      //'../scoring/getBestOption'
     ]
   }
   if(paths[1]=="targets"){
@@ -54,7 +54,7 @@ var paths=pathname.split("/").splice(1)
   }
 
 
-  scriptTarget = $('script#actions')[0];
+ scriptTarget=document.getElementById('actions')
   for (s in scriptName){
     let url="/javascripts/differential_expression/"+scriptName[s]+".js";
     let script = document.createElement('script');
@@ -64,7 +64,7 @@ var paths=pathname.split("/").splice(1)
 
 
 
-});
+
 
 
 

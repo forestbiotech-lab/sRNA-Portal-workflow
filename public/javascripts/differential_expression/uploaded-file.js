@@ -1,1 +1,2 @@
-var studyId=$('.row .card.gen-info .card-header.study span#studyId').text().trim()
+const studyId=$('.row .card.gen-info .card-header.study span#studyId').text().trim()
+const sequenceAssemblyComposite=$('.row .card.gen-info .card-header.study span#sequenceAssemblyComposite').text().trim()

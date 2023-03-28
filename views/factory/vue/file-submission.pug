@@ -15,8 +15,10 @@
                             template(v-slot:option="option") {{ option.genus+" "+option.specific_name+" ("+option.common_name+")" }}
                     .form-group(v-if="ncbi_taxon_id!=null")
                         label.my-1.mr-2(for="organisms") Sequence Assembly:&nbsp;
-                        v-select( :options="sequence_assemblies", label="composite" v-model="sequence_assemblyComposite" )
+                        v-select( :options="sequence_assemblies", :reduce="option => option.composite" label="composite" v-model="sequence_assemblyComposite" )
                             template(v-slot:option="option") {{ option.composite+" Genome Build:"+option.genome_build+" ("+option.representation+")" }}
+                    //TODO add missing Org
+                    //TODO add missing Sequence Assembly
             .row
                 .form-group
                     label.sr-only(for="upload-files-upload") Upload file
@@ -39,5 +41,5 @@
                         input(type="hidden",name="filename",id="filename")
                         input(type="hidden",name="studyId",id="studyId",v-model="studyId")
                         input(type="hidden",name="studyTitle",id="studyTitle" v-model="studyTitle")
-                        input(type="hidden",name="sequence_assemblyComposite",id="sequence_assecmblyComposite" v-model="sequence_assemblyComposite")
+                        input(type="hidden",name="sequenceAssemblyComposite",id="sequence_assecmblyComposite" v-model="sequence_assemblyComposite")
                         input.btn.btn-primary.disabled.btn-block.d-none(type="",role="button",value="View matrix",title="Set the study first to view matrix")
