@@ -89,10 +89,11 @@ app=new Vue({
         this.$nextTick(function(){
             setTimeout(function(){
                 $('canvas-datagrid.data-grid.assay-data').height(400)
+                $('canvas-datagrid.data-grid.assay-data').width("100%")
                 that.hideCPMColumns()
                 that.groupRawColumns()
                 that.resizeRawColumns()
-
+                $('canvas-datagrid.data-grid.assay-data')[0].frozenColumn=1
             },1000)
 
         })
