@@ -14,7 +14,7 @@ var atob=require('atob');
 var btoa=require('btoa');
 var nameSearch = require('./../components/miRNADB/nameSearch');
 var fullAccess = require('./../components/auth/fullAccess');
-
+var getDomain = require('./../components/auth/getDomain')
 //local only
 process.env.local ? require('./../.env') : ""; 
 //process.env.local ? console.log(process.env): "";
@@ -26,7 +26,8 @@ process.env.local ? require('./../.env') : "";
 * */
 router.get('/', fullAccess, function(req, res, next) {
     //TODO make changes to index. Has no profile
-    res.render('index', { title: 'sRNA Plant Portal'})
+    let domain=getDomain(req)
+    res.render('index', { title: 'sRNA Plant Portal',domain})
 });
 
 /* GET home page. */     

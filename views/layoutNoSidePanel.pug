@@ -6,7 +6,7 @@ html
     script(async,src="https://www.googletagmanager.com/gtag/js?id=UA-116969748-1")
     title="sRNA Plant Portal"
     meta(name="google-site-verification", content="uGXz2DRW1SUD8840jAOrmBaVIK9G2HO4OeWZ7VpbBao")
-    meta(name='google-signin-client_id', content='379853658866-r31skptbhf4jc8uqtrokkjveqbtu53g4.apps.googleusercontent.com')
+    meta(name='google-signin-client_id', content='303843335390-icmdc0irh08d3g02g89rie5qkrs2sao2.apps.googleusercontent.com')
 
     link(rel="apple-touch-icon",sizes="180x180",href="/images/favicon/apple-touch-icon.png")
     link(rel="icon",type="image/png" sizes="32x32",href="/images/favicon/favicon-32x32.png")
@@ -54,33 +54,23 @@ html
               .form-group.form-check
                 input#exampleCheck1.form-check-input(type='checkbox')
                 label.form-check-label(for='exampleCheck1',title="I do absolutly nothing!") Check me out (I thought you might like to play with me.)
-              button.btn.g-signin2(onclick="onSignIn()",data-theme='dark')
+              .form-group
+                #g_id_onload(
+                  data-client_id="303843335390-icmdc0irh08d3g02g89rie5qkrs2sao2.apps.googleusercontent.com"
+                  data-context="signin"
+                  data-ux_mode="popup"
+                  data-login_uri=domain+"/auth/callback"
+                  data-auto_prompt="false")
+                .g_id_signin(
+                  data-type="standard"
+                  data-shape="rectangular"
+                  data-theme="filled_black"
+                  data-text="signin."
+                  data-size="large"
+                  data-logo_alignment="right")
               button.btn.btn-success(type='submit',form="login-form")
                 span.glyphicon.glyphicon-log-in
                 | &nbsp;Login
-
-
-              //NEW VERSION
-
-
-              //.g_id_signin(data-type="standard"
-              //data-shape="rectangular"
-              //data-theme="outline"
-              //data-text="signin_with."
-              //data-size="large"
-              //data-logo_alignment="left")
-
-              //#g_id_onload(data-client_id="379853658866-r31skptbhf4jc8uqtrokkjveqbtu53g4.apps.googleusercontent.com",data-context="signin",data-login_uri="http://localhost:3000",data-auto_select="true",data-itp_support="true")
-
-              //#g_id_onload(
-              //data-client_id="379853658866-r31skptbhf4jc8uqtrokkjveqbtu53g4.apps.googleusercontent.com"
-              //data-context="signin"
-              //data-ux_mode="redirect"
-              //data-login_uri="http://localhost:3000/oauth2callback"
-              //data-auto_prompt="false")
-
-
-
               a.btn.btn-success(type="button",href="/auth/register") 
                 span.glyphicon.glyphicon-edit
                 | &nbsp;Register
@@ -89,8 +79,7 @@ html
                 | &nbsp;Close
     include includes/thirdpartyScripts.pug
     script#actions(src="/javascripts/buildingblocks.js")
-    script(src='https://apis.google.com/js/platform.js?onload=init', async='', defer='')
-
+    script(src="https://accounts.google.com/gsi/client" async defer)
     //NEW VERSION
     script(src="/javascripts/goAnalytics.js")
     script(src="/javascripts/bootstrap3-typeahead.min.js")
