@@ -1,4 +1,5 @@
 
+
 $(document).ready(()=>{
 
   $.ajax({
@@ -13,6 +14,7 @@ $(document).ready(()=>{
   })
 
   function setupLoginbuttons(data){
+    $('.menu .row').removeClass('d-none')
     if(data.logged==true){
       setupLogout()
       loadGooglePic(null,data.gPicture)
@@ -38,33 +40,22 @@ $(document).ready(()=>{
   }
 
 })
-/*
-*  Check: https://developers.google.com/identity/sign-in/web/reference for help.
-*/
-//Not sure what to place here yet! But this way it is consistent amoung calls
-const cookie_policy='single_host_origin'
-
-function init(callback) {
-  gapi.load('auth2', function() {
-    /* Ready. Make a call to gapi.auth2.init or some other API */
-    if(callback){
-      callback()
-    }
-  });
-}
 
 
+// Refactored but not tested
+// NOT used currently directly
 async function onSignIn(googleUser){
   let attempt=0
   const maxTries=3
   if(googleUser==null){
-    if(gapi.auth2){
+    if(google){
       try{
-        googleUser=await getGoogleUser()
-        login(googleUser)
+        if(google.accounts.id.initialize) {
+          getGoogleUser()
+        }
       }catch(err){
         loadGoogleAuth()
-       }
+      }
     }else{
       loadGoogleAuth()
     }
@@ -72,24 +63,21 @@ async function onSignIn(googleUser){
     try{
       login(googleUser)  
     }catch(err){
-      loadGoogleAuth()
+
     }
-  }
-  function loadGoogleAuth(){
-    gapi.load("auth2",async function(){
-      let googleUser=await getGoogleUser()
-      login(googleUser)
-    })
   }
   async function getGoogleUser(){
-    //cookie_policy=document.location.origin=="http://localhost:3000"? 'single_host_origin' : document.location.host
-    GoogleAuth=await gapi.auth2.init({client_id:getClient_id_from_DOM(),cookie_policy})
-    if(!GoogleAuth.isSignedIn.get()){
-      return await signUser(GoogleAuth)
-    }else{
-      googleUser=await GoogleAuth.currentUser.get()
-      return googleUser
-    }
+    google.accounts.id.initialize({
+      client_id:getClient_id_from_DOM(),
+      callback:login
+    })
+  }
+  function loadGoogleAuth(){
+    let scriptTarget2 = $('script#actions')[0]
+    let script2 = document.createElement('script')
+    script2.src="https://accounts.google.com/gsi/client"
+    scriptTarget2.parentNode.insertBefore(script2, scriptTarget2)
+    getGoogleUser()
   }
   function get_id_token(googleUser){
     try{
@@ -128,6 +116,7 @@ async function onSignIn(googleUser){
     }
   }
 }
+
 function getClient_id_from_DOM(){
   let google_meta=document.getElementsByTagName('meta')
   return google_meta.namedItem('google-signin-client_id').getAttribute('content')
@@ -154,6 +143,7 @@ function loadGooglePic(googleUser,url){
 }
 
 function verifyGoogleUser(ginfo){
+  //might not be the most correct.
   $.ajax({
     url:"/auth/login/verify/google-token",
     method:"POST",
@@ -179,23 +169,12 @@ function verifyGoogleUser(ginfo){
 
 function signOut() {
   try{
-    var auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut().then(function () {
+    google.accounts.id.revoke('user@google.com', done => {
       console.log('User signed out.');
       document.location="/auth/logout"
     });
   }catch(err){
-    init(async function(){
-      GoogleAuth=await gapi.auth2.init({client_id:getClient_id_from_DOM(),cookie_policy})
-      if(GoogleAuth.isSignedIn.get()){
-        GoogleAuth.signOut().then(function () {
-          console.log('User signed out.');
-          document.location="/auth/logout"
-        });        
-      }else{
-        document.location="/auth/logout"
-      }
-    })
+    document.location="/auth/logout"
   } 
 }
 

@@ -1,6 +1,10 @@
 extends layoutNoSidePanel
 
 block content
+  .d-flex.flex-column.justify-content-center
+    if message
+      .pl-2.pr-2.flex-fill
+        .alert.alert-danger(role='alert')=message
   .row.summary-title
     .media.col-md-12.bg-light.rounded
       .align-self-center.mr-3
@@ -32,6 +36,7 @@ block content
         a.text-holder(href="/stats/organism")
           h2.text-center Species List            
       .col-sm
+
   br
   br
 

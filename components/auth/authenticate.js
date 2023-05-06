@@ -12,7 +12,7 @@ async function authenticate(req,res,next){
         let validate=await authModule.session.validateSession(sessionId,accessToken)
         if(validate instanceof Error) {
             res.redirect("/")
-        }else if(validate==true){
+        }else if(validate===true){
             next()
         }else{
             res.redirect("/")
@@ -21,6 +21,11 @@ async function authenticate(req,res,next){
         res.redirect("/")
     }
 }
+
+
+
+
+
 async function loggedin(req,res) {
     var cookies = new Cookies(req, res, {"keys": keys}), unsigned, signed, tampered;
     let sessionId = cookies.get('session-id')

@@ -2,6 +2,10 @@ extends ../layout
 
 block content
   link(rel='stylesheet', href='/stylesheets/thirdparty/password-strength-meter/password.min.css')
+  .d-flex.flex-column.justify-content-center
+    if message
+      .pl-2.pr-2.flex-fill
+        .alert.alert-danger(role='alert')=message
   h1 Personal profile
   h5 This is your configuration page where you can view persmissions and set personal configurations.
   a.btn.btn-success(role="button",href="/de") Goto to studies

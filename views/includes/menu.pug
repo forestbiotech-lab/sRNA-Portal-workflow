@@ -1,9 +1,11 @@
-button.menu-item.menu-item1.login-btn.btn.btn-success(data-toggle="modal" data-target="#login-modal")
-    span.glyphicon.glyphicon-log-in
-    | &nbsp;login
-button.menu-item.menu-item-right.menu-item1.logout-btn.btn.btn-success(onclick="signOut();")
-    span.glyphicon.glyphicon-log-out
-    | &nbsp;logout
-a.menu-item.menu-item-right.profile-btn.btn.btn-success(href="/auth/profile")
-    span.glyphicon.glyphicon-user
-    | &nbsp;Profile
+.container-fluid(style="margin:0px;padding:0px;")
+    .d-none.row.mr-2(style="float:right")
+        a.menu-item.menu-item-right.profile-btn.btn.btn-success(href="/auth/profile")
+            span.glyphicon.glyphicon-user
+            | &nbsp;Profile
+        button.menu-item.menu-item1.login-btn.btn.btn-success(data-toggle="modal" data-target="#login-modal")
+            span.glyphicon.glyphicon-log-in
+            | &nbsp;login
+        button.menu-item.menu-item-right.menu-item1.logout-btn.btn.btn-success(onclick="signOut();")
+            span.glyphicon.glyphicon-log-out
+            | &nbsp;logout

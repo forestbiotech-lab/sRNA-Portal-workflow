@@ -20,7 +20,11 @@ function fullAccess(req,res,next){
     }else{
         res.set({"Cross-Origin-Opener-Policy":"same-origin-allow-popups","Referrer-Policy":"no-referrer-when-downgrade","style-src":"https://accounts.google.com/gsi/style", "script-src":"https://accounts.google.com/gsi/client", "frame-src":"https://accounts.google.com/gsi/", "connect-src":"https://accounts.google.com/gsi/"})
         let domain=getDomain(req)
-        res.render('indexNoSidePanel', { title: 'Under construction!',domain})
+        let message
+        if(req.query.msg){
+            message=req.query.msg
+        }
+        res.render('indexNoSidePanel', { title: 'Under construction!',domain,message})
     }
 
 }
