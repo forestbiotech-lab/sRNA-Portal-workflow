@@ -66,7 +66,7 @@ class Gmail{
             this.client = client;
             this.api = google.gmail({version: 'v1', auth:client});
         }else {
-            console.log("Requires verification o browser")
+            console.log("Requires verification on browser")
             client = await authenticate({
                 scopes: this.credentials.SCOPES,
                 keyfilePath: this.credentials.CREDENTIALS_PATH,
@@ -231,14 +231,15 @@ class Message{
 
 }
 
-module.exports=async function(){
+module.exports=async function(email,subject,body,html,attachment){
     let gmail=new Gmail()
     await gmail.authorize(newAuth=false)
     //gmail.listMessages()
     //gmail.getMessage('186cc82ec3866340')
-    let msg=new Message("brunovasquescosta@gmail.com","New Message")
-    msg.body("This is how we roll this is not an authomated msg. Please get back to me.")
-    msg.fileAttachment("TinyIcon.png","/home/brunocosta/git/sRNA-Portal-workflow/public/images/favicon/favicon-32x32.png")
+    let msg=new Message(email,subject)
+    msg.body(body)
+    msg.html=html
+    msg.fileAttachment=attachment
     let result=await gmail.sendEmail(msg)
-    console.log(result)
+    return result
 }

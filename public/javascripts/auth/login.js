@@ -167,9 +167,11 @@ function verifyGoogleUser(ginfo){
   })
 }
 
-function signOut() {
+async function signOut() {
   try{
-    google.accounts.id.revoke('user@google.com', done => {
+    let response=await $.post("/auth/getId")
+    if(response instanceof Error) throw response
+    google.accounts.id.revoke(response.email, done => {
       console.log('User signed out.');
       document.location="/auth/logout"
     });

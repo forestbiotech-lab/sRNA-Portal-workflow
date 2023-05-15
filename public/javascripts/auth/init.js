@@ -19,7 +19,8 @@ var paths=pathname.split("/").splice(1)
   if(paths[1]=="login"){
      scriptName=[
       '/../javascripts/thirdparty/password-strength-meter/password.min.js',
-      'register'
+      'register',
+      'loginApp'
     ]
   }
   if(paths[1]=="profile"){

@@ -10,35 +10,39 @@ const token=require('./../.config_res').cookie.seed
 const CLIENT_ID=require('./../.config_res').google.client_id
 const {OAuth2Client} = require('google-auth-library');
 const {authenticate,loggedin} = require('./../components/auth/authenticate')
-
-
+const url=require("url")
+const externalAuth=require('./../components/auth/externalAuth')
+const getCityAndCountry = require('./../components/auth/procedures').getCityAndCountry
 const LOGINREDIRECT="/auth/profile"
-
+const {extractUserFromCookie,loginAction,setLoginMetadata} = require("./../components/auth/procedures")
+const gmail=require('./../components/auth/gmail')
+const getDomain=require('./../components/auth/getDomain')
+const passwordRecoveryTemplate=require('./../components/emailTemplates/passwordRecovery')
 //This is a function that must be packaged elsewhere afterwards
-function getCityAndCountry(ipv4){
-  return new Promise((res,rej)=>{
-    res({
-      city:null,
-      country:null
-    })
-  })
-}
-function sendEmailNotificationAboutPassswordChange(email){
-  let bodytext="Your password has been changed by: ${ip} ${country} using the following platform ${platform}" 
-}
-///
 
 
-async function extractUserFromCookie(req,res){
-  var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
-  let userId=cookies.get('user-id',{signed:true})
-  if(userId === undefined ){
-    throw Error("Undefined user id in cookie!")
+
+
+router.post('/callback',async function(req,res){
+  let retry=1
+  let login=await externalAuth.google(req,res)
+  if(login instanceof Error || login == undefined){
+    //Sends the error caught
+    res.redirect(`/`,{error:login})
   }else{
-    let user=await authModule.auth.getUserMetadata(parseInt(userId))
-    return user
+    await setLoginMetadata(req,res,login)
+    if(login.action=="json"){
+      res[login.action](login.payload)
+    }else if(login.action=="redirect"){
+      if(login.path.match("/?")!=null) login.path+=`&retry=${retry}`
+      res[login.action](`${login.path}&retry=${retry}`)
+    }else{
+      login.payload.retry=retry
+      res[login.action](login.path,login.payload)
+    }
   }
-}
+})
+
 router.get('/loggedin', async function(req,res){
   loggedin(req,res)
 })
@@ -63,7 +67,7 @@ router.post('/register', async function(req, res, next) {
   
 });
 
-router.get('/list/users', function(req, res, next) {
+router.get('/list/users',authenticate, function(req, res, next) {
   //Add condition to limit this to a specific scope. admin
   authModule.auth.listUsers().then(data=>{
     data instanceof Error? res.render('error',{error:data}) : res.render('auth/users', {entries:data});
@@ -84,10 +88,9 @@ router.post('/list/sessions',authenticate,async function(req,res){
 router.get('/profile',authenticate,async function(req,res,next){
   var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
   let userId=cookies.get('user-id',{signed:true})
-  let personId=null
-  let confirmationToken=null
-  let email=null
+  let personId,confirmationToken,email
   if(userId === undefined ){
+    ///Add message
     res.redirect('/')
   }else{
     let user=await authModule.auth.getUserMetadata(parseInt(userId))
@@ -96,118 +99,209 @@ router.get('/profile',authenticate,async function(req,res,next){
     email=user.email
   }
   let personInfo=await authModule.auth.getUserInfo(parseInt(userId))
-  //Hardcoded admin
+  //TODO
+  // Hardcoded admin
   let admin=false
   if(email=="brunovasquescosta@gmail.com") admin=true
-  res.render('auth/profile',{personInfo,confirmationToken,email,admin});
+  let message
+  if(req.query.msg){
+    message=req.query.msg
+  }
+  res.render('auth/profile',{personInfo,confirmationToken,email,admin,message});
 })
 
 router.get('/login',function(req,res,next){
-  res.render('auth/login',{})
+  //TODO can be removed not valid here. Not doing the google login here at this point headers can be removed
+  let error={}
+  error.message=req.query.msg || undefined
+  let retry=req.query.retry || undefined
+  if(error.message) {
+    res.render('auth/login', {error, retry})
+  }else {
+    res.render('auth/login', {retry})
+  }
 })
 
 
 //Can be subs for login valid user.
-router.post('/login',function(req,res){
-  let email=req.body.email
-  let password=req.body.password
-  authModule.auth.validateLogin(email,password,callback)  //TODO change to loginValidUser and remove callback
-  async function callback(error,id){
-    if(process.env.ignore_password==="TRUE") {
-      console.log("bypassing password auth")
-      error=undefined
-    }
-    if(error){
-      res.render('auth/login',{error})
-    }else{
-      try{
-        let ipv4="127.0.0.1"
-        let ipv6 = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-        if (ipv6.substr(0, 7) == "::ffff:") {
-          ipv4 = ipv6.substr(7)
+router.post('/login',async function(req,res){
+  let retry=parseInt(req.body.retry) || parseInt(req.query.retry) || 0
+  try {
+    let email = req.body.email
+    let password = req.body.password
+    retry++
+    if (email != "") {
+      let callback = loginAction
+      let login = await authModule.auth.validateLogin(email, password, callback)
+      if (login instanceof Error) {
+        //Sends the error caught
+        res.render(`auth/login`, {error: login, retry})
+      } else {
+        await setLoginMetadata(req, res, login)  //TODO gPicture
+        if (login.action == "json") {
+          res[login.action](login.payload)
+        } else if(login.action == "redirect") {
+          login.payload.retry = retry
+          res[login.action](login.path)
+        }else{
+          login.payload.retry = retry
+          res[login.action](login.path, login.payload)
         }
-        let valid=1
-        let cityCountry=await getCityAndCountry(ipv4)
-        let city=cityCountry.city
-        let country=cityCountry.coutry
-        let platform=req.headers['user-agent']
-        let session=await authModule.session.saveSession(id,ipv4,ipv6,platform,valid,city,country)
-        let personInfo=await authModule.auth.getUserInfo(id)
-        let accessToken=session.accessToken
-        let sessionId=session.id
-        var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
-        cookies.set("user-id",id).set("user-id",id,{ signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
-        cookies.set("session-id",sessionId).set("session-id",sessionId, { signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
-        cookies.set( "accessToken",accessToken).set( "accessToken", accessToken, { signed: true, maxAge: (1000 * 60 * 24 ) } ); //sec * min * hour * day * month  
-        cookies.set( "gPicture",'').set( "gPicture", '', { signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
-        res.redirect('/auth/profile')
-        //res.render('auth/login',{error:{message:"If you are not redirected automatically press the button bellow"},redirect:LOGINREDIRECT})
-      }catch(error){
-        res.render('auth/login',{error}) 
       }
+    } else {
+      throw new Error('No email provided')
     }
+  }catch (error) {
+    if (retry > 2) error.message += " Try resetting your password."
+    res.render(`auth/login`, {error, retry})
+  }
+
+})
+
+//Request a confirmation token to Email
+router.post('/login/reset',async (req,res)=>{
+  let retry=parseInt(req.body.retry) || 0
+  try {
+    if (req.body.email) {
+      let email=req.body.email
+
+      //TODO add some challenge
+      let id=await authModule.auth.getIdFromEmail(req.body.email)
+      if(id instanceof Error){
+        throw id
+      }
+
+      let confirmationToken=await authModule.auth.setNewConfirmationToken(id)
+      if(confirmationToken instanceof Error) throw confirmationToken
+      //send email with confirmation
+      let confirmationCode=confirmationToken.toString().split("").join(" ")
+      let domain=getDomain(req)
+      let url=`${domain}/auth/login/reset/${encodeURI(email)}/${encodeURIComponent(confirmationToken)}`
+      let subject="Email recovery"
+      let body=''
+      let html=passwordRecoveryTemplate(url,confirmationCode)
+      let emailResult=await gmail(email,subject,body,html)
+
+        //TODO remove this fail safe vunerability
+      let redirectMsg=`Unable to send recovery email use ${domain}/auth/login/reset/${encodeURI(email)}/${encodeURIComponent(confirmationToken)} to reset password.`
+      if( process.env.mode == "PRODUCTION" ){
+        redirectMsg="Unable to send recovery email use please contact administrator."
+      }
+      if(emailResult){
+        if(emailResult.id){
+          redirectMsg="Recovery procedure sent to email address, please check your spam folder if necessary"
+        }
+      }
+      res.render('auth/confirmation_token',{retry,error:{message:redirectMsg},email})
+    }
+  }catch (e) {
+    res.redirect(`/auth/login?msg=${e}&retry=${retry}`)
   }
 })
+
+router.post('/login/reset/manual',async (req,res)=>{
+  try{
+    let email=req.body.email
+    let token=req.body.token
+    if(email && token){
+      let validUrl=await authModule.auth.validateEmailConfirmationToken(email,token)
+      if(validUrl===true){
+        let id=await authModule.auth.getIdFromEmail(email)
+        if (id instanceof Error) throw id
+        let password=await authModule.auth.resetPassword(id)
+        if(password instanceof Error) throw password
+        res.render('auth/reset_password',{email,password})
+      }else{
+        throw new Error('Invalid Confirmation token')
+      }
+    }else{
+      throw new Error("Invalid parameters")
+    }
+  }catch(err){
+    res.redirect(`/?msg=${err}`)
+  }
+})
+
+router.get('/login/reset/:email/:token',async (req,res)=>{
+  try{
+    let email=req.params.email
+    let token=req.params.token
+    if(email && token){
+      let validUrl=await authModule.auth.validateEmailConfirmationToken(email,token)
+      if(validUrl===true){
+        let id=await authModule.auth.getIdFromEmail(email)
+        if (id instanceof Error) throw id
+        let password=await authModule.auth.resetPassword(id)
+        if(password instanceof Error) throw password
+        res.render('auth/reset_password',{email,password})
+      }else{
+        throw new Error('Invalid Confirmation token')
+      }
+    }else{
+      throw new Error("Invalid url")
+    }
+  }catch(error){
+    res.redirect(`/?msg=${error}`)
+  }
+})
+
+// For authenticated users to change password
 router.get('/login/reset',authenticate,async (req,res)=>{
-  //Procedure for reset deactivate user if inactive and confirmationToken is ok
   try{
     let user=await extractUserFromCookie(req,res)
     let email=user.email
     res.render('auth/reset_password',{email})
   }catch(err){
-    res.redirect('/')
+    res.redirect(`/?msg=${err}`)
   }
-})
-router.get('/login/reset/:email/:token',async (req,res)=>{
-  //Procedure for reset deactivate user
-  //User must be authenticated
-  let email=req.params.email
-  let token=req.params.token
-  try{
-    let validUrl=await authModule.auth.validateEmailConfirmationToken(email,token)
-    if(validUrl===true){
-      res.render('resetpassword',{email})
-    }else{
-      res.redirect("/")
-    }
-  }catch(error){
-    res.redirect("/")
-  }
-})
-router.post('/login/reset',async (req,res)=>{
-  //How do I verify origin of request
-  //Needs confirmation token or validate to allow reset
-  if(req.body.confirmationToken && req.body.email){
-    let validUrl=await authModule.session.validateConfirmationToken(email,token)
-    if(validUrl===true){
-      resetpassword(req,res)
-    }
-  }else{
-    authenticate(req,res,resetpassword)
-  }
-  function resetpassword(req,res){
-      
-  }
-  // 
 })
 
-router.get('/logout',function(req,res){
-  var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
-  cookies.set( "user-id",{expires: Date.now()}).set( "user-id", "",{ signed: true, maxAge: 0 } ); //sec * min * hour * day * month  
-  cookies.set( "session-id",{expires: Date.now()}).set( "session-id", "",{ signed: true, maxAge: 0 } ); //sec * min * hour * day * month  
-  cookies.set( "accessToken",{expires: Date.now()}).set( "accessToken", "",{ signed: true, maxAge: 0 } ); //sec * min * hour * day * month  
-  res.redirect('/')
+router.post('/change_password',async (req,res)=>{
+  try{
+    let email=req.body.email
+    let id=await authModule.auth.getIdFromEmail(email)
+    if (id instanceof Error) throw id
+    let oldPassword=req.body.oldpassword
+    let newPassword=req.body.newpassword
+    if(await authModule.auth.changePassword(id,oldPassword,newPassword)===true){
+      ct=await authModule.auth.setNewConfirmationToken(id)
+      if(ct instanceof Error) throw ct
+      let msg="Please try to login with the new password"
+      res.redirect(`/?msg=${msg}`)
+    }
+    throw new Error("Something went wrong, unable to change password")
+  }catch (e) {
+    res.redirect(`/?msg=${e}`)
+  }
 })
-router.post('/active',function(req,res){
+
+
+router.get('/logout',authenticate,async function(req,res){
+  //TODO Invalidate session
+  try {
+    var cookies = new Cookies(req, res, {"keys": keys}), unsigned, signed, tampered;
+    let sessionId = cookies.get('session-id', {signed: true})
+    let sessionResult = await authModule.session.revokeSession(sessionId)
+    cookies.set("user-id", {expires: Date.now()}).set("user-id", "", {signed: true, maxAge: 0}); //sec * min * hour * day * month
+    cookies.set("session-id", {expires: Date.now()}).set("session-id", "", {signed: true, maxAge: 0}); //sec * min * hour * day * month
+    cookies.set("accessToken", {expires: Date.now()}).set("accessToken", "", {signed: true, maxAge: 0}); //sec * min * hour * day * month
+    res.redirect('/')
+  }catch (e) {
+    res.redirect(`/?msg=${e}`)
+  }
+})
+
+router.post('/active',authenticate,function(req,res){
   let newState=req.body.newState
   let userId=req.body.userId
-  if(newState=="true"){ 
+  if(newState==="true" && userId){
     authModule.auth.activateUser(userId)
   }else{
+    //TODO do this???
     authModule.auth.inactivateUser(userId)
   }
 })
-router.post('/ban',async function(req,res){
+router.post('/ban',authenticate,async function(req,res){
   let newState=req.body.newState
   let userId=req.body.userId
   if(newState=="true"){ 
@@ -219,96 +313,15 @@ router.post('/ban',async function(req,res){
   }
 })
 
-router.post('/login/verify/google-token',function(req,res){
-  
-  const client = new OAuth2Client(CLIENT_ID);
-  async function verify() {
-    const ticket = await client.verifyIdToken({
-      idToken: req.body.id_token,
-      audience: CLIENT_ID
-    });
-    const payload = ticket.getPayload();
-    const userid = payload['sub'];
-
-    var firstName=payload.given_name
-    var lastName=payload.family_name
-    var email=payload.email
-    var gPicture=payload.picture
-
-    loginEmail(firstName,lastName,email)
-    async function loginEmail(firstName,lastName,email){
-      try{
-        let error=null
-        let userId=await authModule.auth.getIdFromEmail(email)
-        if(userId instanceof Error){
-          //TODO 
-          //create new user 
-          //creatingNewUSer
-          let userId= await authModule.auth.register(firstName,lastName,email,password=null,thirdparty=true)
-          loginValidUser(error,userId,req,res,thirdparty=true,successMessage="New user create from thirdparty account! Reloading page!",gPicture)
-          //The user has been created
-        }else{
-          loginValidUser(error,userId,req,res,thirdparty=true,successMessage="Logged in! Reloading page!",gPicture)
-          //No res and req ???
-        }
-      }catch(error){
-        let msg = error.message
-          res.json(msg)
-      }      
-    }
-    //const active= await tpAuth.lookUpPersonByEmailAuthentication(payload,options,callBack)
-    
-
-    // If request specified a G Suite domain:
-    // const domain = payload['hd'];
-  }
-  verify().catch(console.error);
+router.post("/getId",authenticate,async (req,res)=>{
+  var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
+  let email=cookies.get('email',{signed:true})
+  res.json({email})
 })
 
-async function loginValidUser(error,id,req,res,thirdparty,successMessage,gPicture){
-  if(error){
-    if(thirdparty){
-      let message=error.message
-      res.json(message)
-    }else{
-      res.render('auth/login',{error}) 
-    }
-  }else{
-    try{
-      let ipv4="127.0.0.1"
-      let ipv6 = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-      if (ipv6.substr(0, 7) == "::ffff:") {
-        ipv4 = ipv6.substr(7)
-      }
-      let valid=1
-      let cityCountry=await getCityAndCountry(ipv4)
-      let city=cityCountry.city
-      let country=cityCountry.coutry
-      let platform=req.headers['user-agent']
-      let session=await authModule.session.saveSession(id,ipv4,ipv6,platform,valid,city,country)
-      let personInfo=await authModule.auth.getUserInfo(id)
-      let accessToken=session.accessToken
-      let sessionId=session.id
-      var cookies = new Cookies( req, res, { "keys": keys } ), unsigned, signed, tampered;
-      cookies.set("user-id",id).set("user-id",id,{ signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
-      cookies.set("session-id",sessionId).set("session-id",sessionId, { signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
-      cookies.set( "accessToken",accessToken).set( "accessToken", accessToken, { signed: true, maxAge: (1000 * 60 * 24 ) } ); //sec * min * hour * day * month  
-      cookies.set( "gPicture",gPicture).set( "gPicture", gPicture, { signed: true, maxAge: (1000 * 60 * 60 * 24 * 30 ) } ); //sec * min * hour * day * month  
-      if(thirdparty){
-        res.json(successMessage)
-      }else{
-        res.render('auth/login',{error:{message:"If you are not redirected automatically press the button bellow"},redirect:LOGINREDIRECT})
-      }
-    }catch(error){
-      if(thirdparty){
-        let message=error.message
-        res.json(message)
-      }else{
-        res.render('auth/login',{error}) 
-      }
-    }
-  }
-}
+
+
+
 
 
 

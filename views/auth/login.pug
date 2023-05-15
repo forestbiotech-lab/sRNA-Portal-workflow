@@ -5,24 +5,29 @@ block content
   .d-flex.flex-column.justify-content-center
     if error  
       .pl-2.pr-2.flex-fill
-        .alert.alert-danger(role='alert')=error.message
+        if error.message
+          .alert.alert-danger(role='alert')=error.message
     if redirect
       .pb-4.flex-fill.justify-content-center
         a.btn.btn-success.btn-block.redirect(role="button",href=redirect) redirect
   form#login-form(action="/auth/login",method="post")
     .form-group
       label(for='login-email1') Email address
-      input#login-email1.form-control(name="email",type='email', aria-describedby='emailHelp',autocomplete="username")
+      input#login-email1.form-control(name="email",type='email', aria-describedby='emailHelp',autocomplete="username", v-model="email")
       small#emailHelp.form-text.text-muted We'll never share your email with anyone else.
     .form-group
       label(for='login-password') Password
       input#login-password1.form-control(name="password",type='password',autocomplete="current-password")
+    input#retry(name="retry" type="hidden" value=retry v-model="retry")
     .form-group.form-check
       input#exampleCheck2.form-check-input(type='checkbox')
       label.form-check-label(for='exampleCheck2',title="I do absolutly nothing!") Check me out (I thought you might like to play with me.)
-    button.btn.btn-success(type='submit',form="login-form")
+    button#submit.btn.btn-success(type='submit',form="login-form")
       span.glyphicon.glyphicon-log-in
       | &nbsp;Login  
     a.btn.btn-success(type="button",href="/auth/register") 
       span.glyphicon.glyphicon-edit
       | &nbsp;Register
+    button.btn.btn-success(type="button",href="/auth/reset", v-if="retry>2" @click="resetPassword")
+      span.glyphicon.glyphicon-refresh
+      | &nbsp;Reset password

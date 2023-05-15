@@ -2,111 +2,113 @@ extends ../layout
 
 block content
   link(rel='stylesheet', href='/stylesheets/thirdparty/password-strength-meter/password.min.css')
-  .d-flex.flex-column.justify-content-center
-    if message
-      .pl-2.pr-2.flex-fill
-        .alert.alert-danger(role='alert')=message
-  h1 Personal profile
-  h5 This is your configuration page where you can view persmissions and set personal configurations.
-  a.btn.btn-success(role="button",href="/de") Goto to studies
-  if admin
-    a.btn.btn-success(role="button",href="/auth/list/users") 
-      span.glyphicon.glyphicon-list-alt
-      | &nbsp;List users
-  .card
-    .card-body
-      p 
-        span.badge.badge-success First name: 
-        input.form-control(type="text",value=personInfo.firstName,disabled)
-      p
-        span.badge.badge-success Last name: 
-        input.form-control(type="text",value=personInfo.lastName,disabled)
-      p
-        span.badge.badge-success Email: 
-        input.form-control(type="email",value=email,disabled)
-      p
-        span.badge.badge-success Confirmation token
-        input.form-control.confirmationToken(type="text",disabled)
-        input.form-control.hidden-confirmationToken(type="hidden",value=confirmationToken,disabled)  
-  button.btn.btn-secondary change name
-  button.btn.btn-secondary change orcid
-  a.btn.btn-secondary(type="button",href=`/auth/login/reset/${email}/${confirmationToken}`) reset password
-  a.btn.btn-secondary(type="button",href="/auth/login/reset") change password
-  .card             
-    .card-header
-      h3 Studies privacy&nbsp;
-        button.btn.btn-success.btn-sm(type='button', data-toggle='collapse', data-target='#studies', aria-expanded='false', aria-controls='studies')
-          span.glyphicon.glyphicon-menu-down
-  .collapse(id="studies")
-    .card.card-body
-      table.table
-        thead
-          th Id
-          th Title
-          th Public
-          th publish
-        tbody
-          tr
-            td 1
-            td Uncovering defense marker for C.arabica defense against H.vastarix
-            td
-              input.form-control-inline(type="checkbox")
-            td
-              
-          tr
-            td 2
-            td Trait selection for flooing in rice
-            td
-              input.form-control-inline(type="checkbox")
-            td
-             button.btn.btn-secondary Make public
+  #app
+    .d-flex.flex-column.justify-content-center
+      if message
+        .pl-2.pr-2.flex-fill
+          .alert.alert-success(role='alert')=message
+    h1 Personal profile
+    h5 This is your configuration page where you can view permissions and set personal configurations.
+    a.btn.btn-success(role="button",href="/de") Goto to studies
+    if admin
+      a.btn.btn-success(role="button",href="/auth/list/users")
+        span.glyphicon.glyphicon-list-alt
+        | &nbsp;List users
+        span.badge.badge-success {{ active }}
+    .card
+      .card-body
+        p
+          span.badge.badge-success First name:
+          input.form-control(type="text",value=personInfo.firstName,disabled)
+        p
+          span.badge.badge-success Last name:
+          input.form-control(type="text",value=personInfo.lastName,disabled)
+        p
+          span.badge.badge-success Email:
+          input.form-control(type="email",value=email,disabled)
+        p
+          span.badge.badge-success Confirmation token
+          input.form-control.confirmationToken(type="text",disabled)
+          input.form-control.hidden-confirmationToken(type="hidden",value=confirmationToken,disabled)
+    button.btn.btn-secondary change name
+    button.btn.btn-secondary change orcid
+    a.btn.btn-secondary(type="button",href="/auth/login/reset") change password
+    .card
+      .card-header
+        h3 Studies privacy&nbsp;
+          button.btn.btn-success.btn-sm(type='button', data-toggle='collapse', data-target='#studies', aria-expanded='false', aria-controls='studies')
+            span.glyphicon.glyphicon-menu-down
+      .collapse(id="studies")
+        .card.card-body
+          table.table
+            thead
+              th Id
+              th Title
+              th Public
+              th publish
+            tbody
+              tr
+                td 1
+                td Uncovering defense marker for C.arabica defense against H.vastarix
+                td
+                  input.form-control-inline(type="checkbox")
+                td
 
-  .card             
-    .card-header
-      h3.card-title Authorizations&nbsp;
-        button.btn.btn-success.btn-sm(type='button', data-toggle='collapse', data-target='#authorizations', aria-expanded='false', aria-controls='authorizations')
-          span.glyphicon.glyphicon-menu-down
-  .collapse(id="authorizations")
-    .card.card-body
-      table.table
-        thead
-          th Id
-          th Title
-          th Active API keys
-          th Generate key
-        tbody
-          tr
-            td 1
-            td Uncovering defense marker for C.arabica defense against H.vastarix
-            td
-              button.btn.btn-primary
-                span.glyphicon.glyphicon-tag
-                span.badge.bagde-primary 2
-            td
-              button.btn.btn-secondary Generate API key
-          tr
-            td 2
-            td Trait selection for flooing in rice
-            td
-              button.btn.btn-primary
-                span.glyphicon.glyphicon-tag
-                span.badge.bagde-primary 0
-            td
-             button.btn.btn-secondary Generate API key
-  .card             
-    .card-header
-      h3 Active sessions&nbsp;
-        button.btn.btn-success.btn-sm.active-sessions(type='button', data-toggle='collapse', data-target='#active-sessions', aria-expanded='false', aria-controls='active-sessions')
-          span.glyphicon.glyphicon-menu-down
-  .collapse(id="active-sessions")
-    .card.card-body
-  .card             
-    .card-header
-      h3 Applications with access to you account&nbsp;
-        button.btn.btn-success.btn-sm(type='button', data-toggle='collapse', data-target='#apps', aria-expanded='false', aria-controls='apps')
-          span.glyphicon.glyphicon-menu-down
-  .collapse(id="apps")
-    .card.card-body
-      p.text-center not available  
+              tr
+                td 2
+                td Trait selection for flooing in rice
+                td
+                  input.form-control-inline(type="checkbox")
+                td
+                 button.btn.btn-secondary Make public
 
-    
+    .card
+      .card-header
+        h3.card-title Authorizations&nbsp;
+          button.btn.btn-success.btn-sm(type='button', data-toggle='collapse', data-target='#authorizations', aria-expanded='false', aria-controls='authorizations')
+            span.glyphicon.glyphicon-menu-down
+      .collapse(id="authorizations")
+        .card.card-body
+          table.table
+            thead
+              th Id
+              th Title
+              th Active API keys
+              th Generate key
+            tbody
+              tr
+                td 1
+                td Uncovering defense marker for C.arabica defense against H.vastarix
+                td
+                  button.btn.btn-primary
+                    span.glyphicon.glyphicon-tag
+                    span.badge.bagde-primary 2
+                td
+                  button.btn.btn-secondary Generate API key
+              tr
+                td 2
+                td Trait selection for flooing in rice
+                td
+                  button.btn.btn-primary
+                    span.glyphicon.glyphicon-tag
+                    span.badge.bagde-primary 0
+                td
+                 button.btn.btn-secondary Generate API key
+    .card
+      .card-header
+        h3 Active sessions&nbsp;
+          button.btn.btn-success.btn-sm.active-sessions(type='button', data-toggle='collapse', data-target='#active-sessions', aria-expanded='false', aria-controls='active-sessions')
+            span.glyphicon.glyphicon-menu-down
+      .collapse(id="active-sessions")
+        .card.card-body
+
+    .card
+      .card-header
+        h3 Applications with access to you account&nbsp;
+          button.btn.btn-success.btn-sm(type='button', data-toggle='collapse', data-target='#apps', aria-expanded='false', aria-controls='apps')
+            span.glyphicon.glyphicon-menu-down
+      .collapse(id="apps")
+        .card.card-body
+          p.text-center not available
+
+

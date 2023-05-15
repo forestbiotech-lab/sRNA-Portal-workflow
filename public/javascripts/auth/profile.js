@@ -1,3 +1,10 @@
+window.app=new Vue({
+  data:{
+    active:2
+  },
+
+
+})
 $(document).ready(function(){
   function getSessions(self){
     $.ajax({
@@ -13,7 +20,7 @@ $(document).ready(function(){
     })
   }
   function loadTable(data,self){
-    let deployRow=self.closest('h3').next('#active-sessions').find('.card-body')
+    let deployRow=self.closest('.card-header').next('#active-sessions').find('.card-body')
     if (data.length>0){    
       let table=mkel("table",{class:"table"})
       let headerNames=Object.keys(data[0])

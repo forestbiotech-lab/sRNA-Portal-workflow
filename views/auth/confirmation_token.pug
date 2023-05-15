@@ -1,0 +1,15 @@
+extends ../layout
+
+block content
+    if error
+        .alert.alert-danger(role='alert')=error.message
+    form(action="/auth/login/reset/manual",method="post")
+        .form-group
+            label(for='login-email') Email address
+            input#login-email-hidden.form-control(name="email",type='hidden', aria-describedby='emailHelp',value=email)
+            input#login-email.form-control(name="email-visible",type='email', aria-describedby='emailHelp',value=email,disabled)
+            small#emailHelp.form-text.text-muted We'll never share your email with anyone else.
+        .form-group
+            label(for='confirmation-token') Confirmation Code
+            input#confirmation-token.form-control(type='number',min=10000000,max=99999999,name="token")
+        input.btn.btn-primary(role="button",type='submit',value="Reset password")
