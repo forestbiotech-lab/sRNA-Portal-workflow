@@ -69,7 +69,7 @@
         associate: function associate(models) {
               Mature_miRNA.belongsTo(models.Mature_has_Pre, {
                 foreignKey: 'accession',              //on Mature_miRNA
-                targetKey: 'mature_miRNA',  //foreign key
+                targetKey: 'mature',  //foreign key
               });
               Mature_miRNA.belongsTo(models.Mature_miRNA_sequence, {
                 foreignKey:'sequence_id',              //on Mature_miRNA

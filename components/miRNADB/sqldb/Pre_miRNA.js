@@ -6,12 +6,6 @@
 
   module.exports = function(sequelize, DataTypes) {
     const Pre_miRNA = sequelize.define('Pre_miRNA', {
-      id: {
-        type: DataTypes.INTEGER(11),
-        autoIncrement: false,
-        primaryKey: false,
-        allowNull: false
-      },
       accession: {
         type: DataTypes.STRING(254),
         autoIncrement: false,
@@ -46,13 +40,13 @@
         type: DataTypes.STRING(254),
         autoIncrement: false,
         primaryKey: false,
-        allowNull: false
+        allowNull: true
       },
       sequence_id: {
         type: DataTypes.INTEGER(20),
         autoIncrement: false,
         primaryKey: false,
-        allowNull: false
+        allowNull: true
       },
     }, {
       tableName: 'Pre_miRNA',
@@ -63,7 +57,7 @@
         associate: function associate(models) {    
               Pre_miRNA.belongsTo(models.Mature_has_Pre, {
                 foreignKey: 'accession',              //on Pre_miRNA
-                targetKey: 'pre_miRNA',  //foreign key
+                targetKey: 'pre',  //foreign key
               });
               Pre_miRNA.belongsTo(models.Feature, {
                 foreignKey: 'accession',              //on Pre_miRNA

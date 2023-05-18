@@ -12,8 +12,8 @@
         primaryKey: true,
         allowNull: false
       },
-      feature_id: { 
-        type: DataTypes.INTEGER,
+      accession: {
+        type: DataTypes.STRING(254),
         autoIncrement: false,
         primaryKey: false,
         allowNull: false
