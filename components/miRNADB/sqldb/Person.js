@@ -6,9 +6,9 @@
 
   module.exports = function(sequelize, DataTypes) {
     const Person = sequelize.define('Person', {
-      id: {
-        type: DataTypes.INTEGER(11),
-        autoIncrement: true,
+      email: {
+        type: DataTypes.STRING(254),
+        autoIncrement: false,
         primaryKey: true,
         allowNull: false
       },
@@ -36,30 +36,20 @@
         primaryKey: false,
         allowNull: true
       },
-      email: {
-        type: DataTypes.STRING(254),
-        autoIncrement: false,
-        primaryKey: false,
-        allowNull: true
-      },
     }, {
       tableName: 'Person',
       timestamps: false,
       underscored: false,
 
       classMethods: {
-        associate: function associate(models) {    
-              Person.belongsTo(models.Has_user_with_role, {
-                foreignKey: 'id',              //on Person
-                targetKey: 'person',  //foreign key
-              });
+        associate: function associate(models) {
               Person.belongsTo(models.Managed_by, {
-                foreignKey: 'id',              //on Person
+                foreignKey: 'email',              //on Person
                 targetKey: 'person',  //foreign key
               });
               Person.belongsTo(models.User, {
-                foreignKey: 'id',              //on Person
-                targetKey: 'person',  //foreign key
+                foreignKey: 'email',              //on Person
+                targetKey: 'email',  //foreign key
               });
         }
       },

@@ -51,3 +51,8 @@ SQL/OLD/*
 SQL/ncbitaxonDUMP.tar.gz
 SQL/NCBItaxon-processing
 SQL/ncbitaxonDUMP/*
+
+public/webpack/*
+
+#JetBrains folder
+.idea

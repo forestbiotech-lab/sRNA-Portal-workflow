@@ -1,4 +1,4 @@
--- MariaDB dump 10.19  Distrib 10.11.2-MariaDB, for Linux (x86_64)
+-- MariaDB dump 10.19  Distrib 10.11.3-MariaDB, for Linux (x86_64)
 --
 -- Host: localhost    Database: sRNA_Plant_Portal
 -- ------------------------------------------------------
@@ -37,7 +37,7 @@ CREATE TABLE `Access` (
   PRIMARY KEY (`id`),
   KEY `Access_fk0` (`user_id`),
   CONSTRAINT `Access_fk0` FOREIGN KEY (`user_id`) REFERENCES `User` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=124 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=199 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -79,8 +79,74 @@ CREATE TABLE `Assay` (
   KEY `Assay_fk1` (`sample`),
   CONSTRAINT `Assay_fk0` FOREIGN KEY (`study`) REFERENCES `Study` (`id`),
   CONSTRAINT `Assay_fk1` FOREIGN KEY (`sample`) REFERENCES `Sample` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=147 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=165 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Temporary table structure for view `AssayData7`
+--
+
+DROP TABLE IF EXISTS `AssayData7`;
+/*!50001 DROP VIEW IF EXISTS `AssayData7`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE VIEW `AssayData7` AS SELECT
+ 1 AS `Sequence`,
+  1 AS `Name`,
+  1 AS `Accession`,
+  1 AS `Raw.Lib29`,
+  1 AS `Raw.Lib30`,
+  1 AS `Raw.Lib31`,
+  1 AS `Raw.Lib32`,
+  1 AS `Raw.Lib33`,
+  1 AS `Raw.Lib34`,
+  1 AS `Raw.Lib35`,
+  1 AS `Raw.Lib36`,
+  1 AS `Raw.Lib37`,
+  1 AS `CPM.Lib29`,
+  1 AS `CPM.Lib30`,
+  1 AS `CPM.Lib31`,
+  1 AS `CPM.Lib32`,
+  1 AS `CPM.Lib33`,
+  1 AS `CPM.Lib34`,
+  1 AS `CPM.Lib35`,
+  1 AS `CPM.Lib36`,
+  1 AS `CPM.Lib37`,
+  1 AS `active` */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `AssayData8`
+--
+
+DROP TABLE IF EXISTS `AssayData8`;
+/*!50001 DROP VIEW IF EXISTS `AssayData8`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE VIEW `AssayData8` AS SELECT
+ 1 AS `Sequence`,
+  1 AS `Name`,
+  1 AS `Accession`,
+  1 AS `Raw.Lib29`,
+  1 AS `Raw.Lib30`,
+  1 AS `Raw.Lib31`,
+  1 AS `Raw.Lib32`,
+  1 AS `Raw.Lib33`,
+  1 AS `Raw.Lib34`,
+  1 AS `Raw.Lib35`,
+  1 AS `Raw.Lib36`,
+  1 AS `Raw.Lib37`,
+  1 AS `CPM.Lib29`,
+  1 AS `CPM.Lib30`,
+  1 AS `CPM.Lib31`,
+  1 AS `CPM.Lib32`,
+  1 AS `CPM.Lib33`,
+  1 AS `CPM.Lib34`,
+  1 AS `CPM.Lib35`,
+  1 AS `CPM.Lib36`,
+  1 AS `CPM.Lib37`,
+  1 AS `active` */;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `Assay_Modality`
@@ -117,11 +183,34 @@ CREATE TABLE `Assay_data` (
   `cpm` float DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `Assay_data_fk0` (`assay`),
-  KEY `mature_miRNA` (`mature_miRNA`),
+  KEY `Assay_data_ibfk_1` (`mature_miRNA`),
   CONSTRAINT `Assay_data_fk0` FOREIGN KEY (`assay`) REFERENCES `Assay` (`id`),
-  CONSTRAINT `Assay_data_ibfk_1` FOREIGN KEY (`mature_miRNA`) REFERENCES `Mature_miRNA` (`accession`)
-) ENGINE=InnoDB AUTO_INCREMENT=305675 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  CONSTRAINT `Assay_data_ibfk_1` FOREIGN KEY (`mature_miRNA`) REFERENCES `Mature_miRNA` (`accession`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=708705 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Temporary table structure for view `Assaydata8`
+--
+
+DROP TABLE IF EXISTS `Assaydata8`;
+/*!50001 DROP VIEW IF EXISTS `Assaydata8`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE VIEW `Assaydata8` AS SELECT
+ 1 AS `id`,
+  1 AS `mature_miRNA`,
+  1 AS `Raw.Lib29`,
+  1 AS `Raw.Lib30`,
+  1 AS `Raw.Lib31`,
+  1 AS `Raw.Lib32`,
+  1 AS `Raw.Lib33`,
+  1 AS `Raw.Lib34`,
+  1 AS `Raw.Lib35`,
+  1 AS `Raw.Lib36`,
+  1 AS `Raw.Lib37`,
+  1 AS `active` */;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `Differential_expression`
@@ -201,8 +290,10 @@ CREATE TABLE `Feature_attribute_list` (
   `accession` varchar(254) NOT NULL,
   `key` varchar(254) NOT NULL,
   `value` varchar(254) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=30911 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  PRIMARY KEY (`id`),
+  KEY `Feature_attribute_list_ibfk_1` (`accession`),
+  CONSTRAINT `Feature_attribute_list_ibfk_1` FOREIGN KEY (`accession`) REFERENCES `Feature` (`accession`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1826 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -265,26 +356,6 @@ CREATE TABLE `HasStar` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `Has_user_with_role`
---
-
-DROP TABLE IF EXISTS `Has_user_with_role`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Has_user_with_role` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `role` enum('admin','curator','researcher') NOT NULL,
-  `person` int(11) NOT NULL,
-  `user` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `has_user_with_role_fk0` (`person`),
-  KEY `has_user_with_role_fk1` (`user`),
-  CONSTRAINT `has_user_with_role_fk0` FOREIGN KEY (`person`) REFERENCES `Person` (`id`),
-  CONSTRAINT `has_user_with_role_fk1` FOREIGN KEY (`user`) REFERENCES `User` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `Managed_by`
 --
 
@@ -294,14 +365,14 @@ DROP TABLE IF EXISTS `Managed_by`;
 CREATE TABLE `Managed_by` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `study` int(10) NOT NULL,
-  `person` int(10) NOT NULL,
+  `person` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `scope` enum('creator','curator','editor') NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `person` (`person`),
   KEY `study` (`study`),
-  CONSTRAINT `Managed_by_ibfk_1` FOREIGN KEY (`person`) REFERENCES `Person` (`id`),
-  CONSTRAINT `Managed_by_ibfk_2` FOREIGN KEY (`study`) REFERENCES `Study` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  KEY `person` (`person`),
+  CONSTRAINT `Managed_by_ibfk_2` FOREIGN KEY (`study`) REFERENCES `Study` (`id`),
+  CONSTRAINT `Managed_by_ibfk_3` FOREIGN KEY (`person`) REFERENCES `Person` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -312,15 +383,22 @@ DROP TABLE IF EXISTS `Mature_has_Pre`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Mature_has_Pre` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `mature_miRNA` varchar(254) NOT NULL,
-  `pre_miRNA` varchar(254) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `pre_miRNA` (`pre_miRNA`),
-  KEY `mature_miRNA` (`mature_miRNA`),
-  CONSTRAINT `Mature_has_Pre_ibfk_1` FOREIGN KEY (`pre_miRNA`) REFERENCES `Pre_miRNA` (`accession`),
-  CONSTRAINT `Mature_has_Pre_ibfk_2` FOREIGN KEY (`mature_miRNA`) REFERENCES `Mature_miRNA` (`accession`)
-) ENGINE=InnoDB AUTO_INCREMENT=1868 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `mature` varchar(254) NOT NULL,
+  `pre` varchar(254) NOT NULL,
+  `accession` varchar(254) NOT NULL,
+  `name` varchar(254) NOT NULL,
+  `family` int(20) DEFAULT NULL,
+  `lettered_suffix` varchar(10) DEFAULT NULL,
+  `numbered_suffix` int(10) DEFAULT NULL,
+  `description` varchar(254) DEFAULT NULL,
+  `xref` varchar(254) DEFAULT NULL,
+  PRIMARY KEY (`accession`),
+  KEY `Mature_has_Pre_ibfk_1` (`pre`),
+  KEY `Mature_has_Pre_ibfk_2` (`mature`),
+  CONSTRAINT `Mature_has_Pre_ibfk_1` FOREIGN KEY (`pre`) REFERENCES `Pre_miRNA` (`accession`) ON DELETE CASCADE,
+  CONSTRAINT `Mature_has_Pre_ibfk_2` FOREIGN KEY (`mature`) REFERENCES `Mature_miRNA` (`accession`) ON DELETE CASCADE,
+  CONSTRAINT `Mature_has_Pre_ibfk_3` FOREIGN KEY (`accession`) REFERENCES `Feature` (`accession`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -343,7 +421,7 @@ CREATE TABLE `Mature_miRNA` (
   PRIMARY KEY (`accession`),
   KEY `Mature_miRNA_fk0` (`sequence_id`),
   CONSTRAINT `Mature_miRNA_fk_0` FOREIGN KEY (`sequence_id`) REFERENCES `Mature_miRNA_sequence` (`id`),
-  CONSTRAINT `Mature_miRNA_fk_1` FOREIGN KEY (`accession`) REFERENCES `Feature` (`accession`)
+  CONSTRAINT `Mature_miRNA_fk_1` FOREIGN KEY (`accession`) REFERENCES `Feature` (`accession`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -359,7 +437,7 @@ CREATE TABLE `Mature_miRNA_sequence` (
   `sequence` varchar(30) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sequence` (`sequence`)
-) ENGINE=InnoDB AUTO_INCREMENT=37425 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=92217 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -424,14 +502,13 @@ DROP TABLE IF EXISTS `Person`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Person` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `email` varchar(254) NOT NULL,
   `orcid` varchar(254) DEFAULT NULL,
   `firstName` varchar(254) NOT NULL,
   `lastName` varchar(254) NOT NULL,
   `institutional_address` varchar(254) DEFAULT NULL,
-  `email` varchar(254) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  PRIMARY KEY (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -442,17 +519,16 @@ DROP TABLE IF EXISTS `Pre_miRNA`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Pre_miRNA` (
-  `id` int(11) NOT NULL,
   `accession` varchar(254) NOT NULL,
   `name` varchar(254) DEFAULT NULL,
   `family` int(6) DEFAULT NULL,
   `lettered_suffix` varchar(3) DEFAULT NULL,
   `numbered_suffix` int(3) DEFAULT NULL,
-  `description` varchar(254) NOT NULL,
-  `sequence_id` int(20) NOT NULL,
+  `description` varchar(254) DEFAULT NULL,
+  `sequence_id` int(20) DEFAULT NULL,
   PRIMARY KEY (`accession`),
   KEY `Pre_miRNA_fk2` (`sequence_id`),
-  CONSTRAINT `Pre_miRNA_fk0` FOREIGN KEY (`accession`) REFERENCES `Feature` (`accession`),
+  CONSTRAINT `Pre_miRNA_fk0` FOREIGN KEY (`accession`) REFERENCES `Feature` (`accession`) ON DELETE CASCADE,
   CONSTRAINT `Pre_miRNA_fk2` FOREIGN KEY (`sequence_id`) REFERENCES `Pre_miRNA_sequence` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -583,7 +659,7 @@ CREATE TABLE `Study` (
   `active` tinyint(1) NOT NULL DEFAULT 1,
   `public` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -655,7 +731,7 @@ DROP TABLE IF EXISTS `User`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `User` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `email` varchar(254) NOT NULL,
+  `email` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `person` int(11) DEFAULT NULL,
   `hash` varchar(254) NOT NULL,
   `createdOn` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -663,11 +739,11 @@ CREATE TABLE `User` (
   `active` tinyint(1) DEFAULT 0,
   `attempt` int(5) DEFAULT 0,
   `ban` tinyint(1) DEFAULT 0,
+  `role` enum('admin','researcher','curator') NOT NULL DEFAULT 'researcher',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`),
-  KEY `User_fk0` (`person`),
-  CONSTRAINT `User_fk0` FOREIGN KEY (`person`) REFERENCES `Person` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=168 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  KEY `email` (`email`),
+  CONSTRAINT `User_ibfk_1` FOREIGN KEY (`email`) REFERENCES `Person` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=169 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -683,8 +759,62 @@ CREATE TABLE `Websocket_protocols` (
   `hash` varchar(254) NOT NULL,
   `date` datetime DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=489 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=821 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Final view structure for view `AssayData7`
+--
+
+/*!50001 DROP VIEW IF EXISTS `AssayData7`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`srna`@`%` SQL SECURITY DEFINER */
+/*!50001 VIEW `AssayData7` AS select `seq`.`sequence` AS `Sequence`,`m`.`name` AS `Name`,`ad0`.`mature_miRNA` AS `Accession`,`ad0`.`raw` AS `Raw.Lib29`,`ad1`.`raw` AS `Raw.Lib30`,`ad2`.`raw` AS `Raw.Lib31`,`ad3`.`raw` AS `Raw.Lib32`,`ad4`.`raw` AS `Raw.Lib33`,`ad5`.`raw` AS `Raw.Lib34`,`ad6`.`raw` AS `Raw.Lib35`,`ad7`.`raw` AS `Raw.Lib36`,`ad8`.`raw` AS `Raw.Lib37`,`ad0`.`cpm` AS `CPM.Lib29`,`ad1`.`cpm` AS `CPM.Lib30`,`ad2`.`cpm` AS `CPM.Lib31`,`ad3`.`cpm` AS `CPM.Lib32`,`ad4`.`cpm` AS `CPM.Lib33`,`ad5`.`cpm` AS `CPM.Lib34`,`ad6`.`cpm` AS `CPM.Lib35`,`ad7`.`cpm` AS `CPM.Lib36`,`ad8`.`cpm` AS `CPM.Lib37`,`s`.`active` AS `active` from ((((((((((((((((((((`Mature_miRNA_sequence` `seq` join `Mature_miRNA` `m`) join `Assay_data` `ad0`) join `Assay` `a0`) join `Assay_data` `ad1`) join `Assay` `a1`) join `Assay_data` `ad2`) join `Assay` `a2`) join `Assay_data` `ad3`) join `Assay` `a3`) join `Assay_data` `ad4`) join `Assay` `a4`) join `Assay_data` `ad5`) join `Assay` `a5`) join `Assay_data` `ad6`) join `Assay` `a6`) join `Assay_data` `ad7`) join `Assay` `a7`) join `Assay_data` `ad8`) join `Assay` `a8`) join `Study` `s`) where `s`.`id` = `a0`.`study` and `a0`.`id` = `ad0`.`assay` and `a0`.`id` = 147 and `ad0`.`mature_miRNA` = `ad0`.`mature_miRNA` and `ad0`.`mature_miRNA` = `ad1`.`mature_miRNA` and `ad0`.`mature_miRNA` = `ad2`.`mature_miRNA` and `ad0`.`mature_miRNA` = `ad3`.`mature_miRNA` and `ad0`.`mature_miRNA` = `ad4`.`mature_miRNA` and `ad0`.`mature_miRNA` = `ad5`.`mature_miRNA` and `ad0`.`mature_miRNA` = `ad6`.`mature_miRNA` and `ad0`.`mature_miRNA` = `ad7`.`mature_miRNA` and `ad0`.`mature_miRNA` = `ad8`.`mature_miRNA` and `s`.`id` = `a1`.`study` and `a1`.`id` = `ad1`.`assay` and `a1`.`id` = 148 and `ad1`.`mature_miRNA` = `ad1`.`mature_miRNA` and `ad1`.`mature_miRNA` = `ad2`.`mature_miRNA` and `ad1`.`mature_miRNA` = `ad3`.`mature_miRNA` and `ad1`.`mature_miRNA` = `ad4`.`mature_miRNA` and `ad1`.`mature_miRNA` = `ad5`.`mature_miRNA` and `ad1`.`mature_miRNA` = `ad6`.`mature_miRNA` and `ad1`.`mature_miRNA` = `ad7`.`mature_miRNA` and `ad1`.`mature_miRNA` = `ad8`.`mature_miRNA` and `s`.`id` = `a2`.`study` and `a2`.`id` = `ad2`.`assay` and `a2`.`id` = 149 and `ad2`.`mature_miRNA` = `ad2`.`mature_miRNA` and `ad2`.`mature_miRNA` = `ad3`.`mature_miRNA` and `ad2`.`mature_miRNA` = `ad4`.`mature_miRNA` and `ad2`.`mature_miRNA` = `ad5`.`mature_miRNA` and `ad2`.`mature_miRNA` = `ad6`.`mature_miRNA` and `ad2`.`mature_miRNA` = `ad7`.`mature_miRNA` and `ad2`.`mature_miRNA` = `ad8`.`mature_miRNA` and `s`.`id` = `a3`.`study` and `a3`.`id` = `ad3`.`assay` and `a3`.`id` = 150 and `ad3`.`mature_miRNA` = `ad3`.`mature_miRNA` and `ad3`.`mature_miRNA` = `ad4`.`mature_miRNA` and `ad3`.`mature_miRNA` = `ad5`.`mature_miRNA` and `ad3`.`mature_miRNA` = `ad6`.`mature_miRNA` and `ad3`.`mature_miRNA` = `ad7`.`mature_miRNA` and `ad3`.`mature_miRNA` = `ad8`.`mature_miRNA` and `s`.`id` = `a4`.`study` and `a4`.`id` = `ad4`.`assay` and `a4`.`id` = 151 and `ad4`.`mature_miRNA` = `ad4`.`mature_miRNA` and `ad4`.`mature_miRNA` = `ad5`.`mature_miRNA` and `ad4`.`mature_miRNA` = `ad6`.`mature_miRNA` and `ad4`.`mature_miRNA` = `ad7`.`mature_miRNA` and `ad4`.`mature_miRNA` = `ad8`.`mature_miRNA` and `s`.`id` = `a5`.`study` and `a5`.`id` = `ad5`.`assay` and `a5`.`id` = 152 and `ad5`.`mature_miRNA` = `ad5`.`mature_miRNA` and `ad5`.`mature_miRNA` = `ad6`.`mature_miRNA` and `ad5`.`mature_miRNA` = `ad7`.`mature_miRNA` and `ad5`.`mature_miRNA` = `ad8`.`mature_miRNA` and `s`.`id` = `a6`.`study` and `a6`.`id` = `ad6`.`assay` and `a6`.`id` = 153 and `ad6`.`mature_miRNA` = `ad6`.`mature_miRNA` and `ad6`.`mature_miRNA` = `ad7`.`mature_miRNA` and `ad6`.`mature_miRNA` = `ad8`.`mature_miRNA` and `s`.`id` = `a7`.`study` and `a7`.`id` = `ad7`.`assay` and `a7`.`id` = 154 and `ad7`.`mature_miRNA` = `ad7`.`mature_miRNA` and `ad7`.`mature_miRNA` = `ad8`.`mature_miRNA` and `s`.`id` = `a8`.`study` and `a8`.`id` = `ad8`.`assay` and `a8`.`id` = 155 and `s`.`id` = 7 and `ad0`.`mature_miRNA` = `m`.`accession` and `m`.`sequence_id` = `seq`.`id` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `AssayData8`
+--
+
+/*!50001 DROP VIEW IF EXISTS `AssayData8`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`srna`@`%` SQL SECURITY DEFINER */
+/*!50001 VIEW `AssayData8` AS select `seq`.`sequence` AS `Sequence`,`m`.`name` AS `Name`,`ad0`.`mature_miRNA` AS `Accession`,`ad0`.`raw` AS `Raw.Lib29`,`ad1`.`raw` AS `Raw.Lib30`,`ad2`.`raw` AS `Raw.Lib31`,`ad3`.`raw` AS `Raw.Lib32`,`ad4`.`raw` AS `Raw.Lib33`,`ad5`.`raw` AS `Raw.Lib34`,`ad6`.`raw` AS `Raw.Lib35`,`ad7`.`raw` AS `Raw.Lib36`,`ad8`.`raw` AS `Raw.Lib37`,`ad0`.`cpm` AS `CPM.Lib29`,`ad1`.`cpm` AS `CPM.Lib30`,`ad2`.`cpm` AS `CPM.Lib31`,`ad3`.`cpm` AS `CPM.Lib32`,`ad4`.`cpm` AS `CPM.Lib33`,`ad5`.`cpm` AS `CPM.Lib34`,`ad6`.`cpm` AS `CPM.Lib35`,`ad7`.`cpm` AS `CPM.Lib36`,`ad8`.`cpm` AS `CPM.Lib37`,`s`.`active` AS `active` from ((((((((((((((((((((`Mature_miRNA_sequence` `seq` join `Mature_miRNA` `m`) join `Assay_data` `ad0`) join `Assay` `a0`) join `Assay_data` `ad1`) join `Assay` `a1`) join `Assay_data` `ad2`) join `Assay` `a2`) join `Assay_data` `ad3`) join `Assay` `a3`) join `Assay_data` `ad4`) join `Assay` `a4`) join `Assay_data` `ad5`) join `Assay` `a5`) join `Assay_data` `ad6`) join `Assay` `a6`) join `Assay_data` `ad7`) join `Assay` `a7`) join `Assay_data` `ad8`) join `Assay` `a8`) join `Study` `s`) where `s`.`id` = `a0`.`study` and `a0`.`id` = `ad0`.`assay` and `a0`.`id` = 156 and `ad0`.`mature_miRNA` = `ad0`.`mature_miRNA` and `ad0`.`mature_miRNA` = `ad1`.`mature_miRNA` and `ad0`.`mature_miRNA` = `ad2`.`mature_miRNA` and `ad0`.`mature_miRNA` = `ad3`.`mature_miRNA` and `ad0`.`mature_miRNA` = `ad4`.`mature_miRNA` and `ad0`.`mature_miRNA` = `ad5`.`mature_miRNA` and `ad0`.`mature_miRNA` = `ad6`.`mature_miRNA` and `ad0`.`mature_miRNA` = `ad7`.`mature_miRNA` and `ad0`.`mature_miRNA` = `ad8`.`mature_miRNA` and `s`.`id` = `a1`.`study` and `a1`.`id` = `ad1`.`assay` and `a1`.`id` = 157 and `ad1`.`mature_miRNA` = `ad1`.`mature_miRNA` and `ad1`.`mature_miRNA` = `ad2`.`mature_miRNA` and `ad1`.`mature_miRNA` = `ad3`.`mature_miRNA` and `ad1`.`mature_miRNA` = `ad4`.`mature_miRNA` and `ad1`.`mature_miRNA` = `ad5`.`mature_miRNA` and `ad1`.`mature_miRNA` = `ad6`.`mature_miRNA` and `ad1`.`mature_miRNA` = `ad7`.`mature_miRNA` and `ad1`.`mature_miRNA` = `ad8`.`mature_miRNA` and `s`.`id` = `a2`.`study` and `a2`.`id` = `ad2`.`assay` and `a2`.`id` = 158 and `ad2`.`mature_miRNA` = `ad2`.`mature_miRNA` and `ad2`.`mature_miRNA` = `ad3`.`mature_miRNA` and `ad2`.`mature_miRNA` = `ad4`.`mature_miRNA` and `ad2`.`mature_miRNA` = `ad5`.`mature_miRNA` and `ad2`.`mature_miRNA` = `ad6`.`mature_miRNA` and `ad2`.`mature_miRNA` = `ad7`.`mature_miRNA` and `ad2`.`mature_miRNA` = `ad8`.`mature_miRNA` and `s`.`id` = `a3`.`study` and `a3`.`id` = `ad3`.`assay` and `a3`.`id` = 159 and `ad3`.`mature_miRNA` = `ad3`.`mature_miRNA` and `ad3`.`mature_miRNA` = `ad4`.`mature_miRNA` and `ad3`.`mature_miRNA` = `ad5`.`mature_miRNA` and `ad3`.`mature_miRNA` = `ad6`.`mature_miRNA` and `ad3`.`mature_miRNA` = `ad7`.`mature_miRNA` and `ad3`.`mature_miRNA` = `ad8`.`mature_miRNA` and `s`.`id` = `a4`.`study` and `a4`.`id` = `ad4`.`assay` and `a4`.`id` = 160 and `ad4`.`mature_miRNA` = `ad4`.`mature_miRNA` and `ad4`.`mature_miRNA` = `ad5`.`mature_miRNA` and `ad4`.`mature_miRNA` = `ad6`.`mature_miRNA` and `ad4`.`mature_miRNA` = `ad7`.`mature_miRNA` and `ad4`.`mature_miRNA` = `ad8`.`mature_miRNA` and `s`.`id` = `a5`.`study` and `a5`.`id` = `ad5`.`assay` and `a5`.`id` = 161 and `ad5`.`mature_miRNA` = `ad5`.`mature_miRNA` and `ad5`.`mature_miRNA` = `ad6`.`mature_miRNA` and `ad5`.`mature_miRNA` = `ad7`.`mature_miRNA` and `ad5`.`mature_miRNA` = `ad8`.`mature_miRNA` and `s`.`id` = `a6`.`study` and `a6`.`id` = `ad6`.`assay` and `a6`.`id` = 162 and `ad6`.`mature_miRNA` = `ad6`.`mature_miRNA` and `ad6`.`mature_miRNA` = `ad7`.`mature_miRNA` and `ad6`.`mature_miRNA` = `ad8`.`mature_miRNA` and `s`.`id` = `a7`.`study` and `a7`.`id` = `ad7`.`assay` and `a7`.`id` = 163 and `ad7`.`mature_miRNA` = `ad7`.`mature_miRNA` and `ad7`.`mature_miRNA` = `ad8`.`mature_miRNA` and `s`.`id` = `a8`.`study` and `a8`.`id` = `ad8`.`assay` and `a8`.`id` = 164 and `s`.`id` = 8 and `ad0`.`mature_miRNA` = `m`.`accession` and `m`.`sequence_id` = `seq`.`id` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `Assaydata8`
+--
+
+/*!50001 DROP VIEW IF EXISTS `Assaydata8`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`pma`@`172.27.0.2` SQL SECURITY DEFINER */
+/*!50001 VIEW `Assaydata8` AS select `s`.`id` AS `id`,`ad0`.`mature_miRNA` AS `mature_miRNA`,`ad0`.`raw` AS `Raw.Lib29`,`ad1`.`raw` AS `Raw.Lib30`,`ad2`.`raw` AS `Raw.Lib31`,`ad3`.`raw` AS `Raw.Lib32`,`ad4`.`raw` AS `Raw.Lib33`,`ad5`.`raw` AS `Raw.Lib34`,`ad6`.`raw` AS `Raw.Lib35`,`ad7`.`raw` AS `Raw.Lib36`,`ad8`.`raw` AS `Raw.Lib37`,`s`.`active` AS `active` from ((((((((((((((((((`Assay_data` `ad0` join `Assay` `a0`) join `Assay_data` `ad1`) join `Assay` `a1`) join `Assay_data` `ad2`) join `Assay` `a2`) join `Assay_data` `ad3`) join `Assay` `a3`) join `Assay_data` `ad4`) join `Assay` `a4`) join `Assay_data` `ad5`) join `Assay` `a5`) join `Assay_data` `ad6`) join `Assay` `a6`) join `Assay_data` `ad7`) join `Assay` `a7`) join `Assay_data` `ad8`) join `Assay` `a8`) join `Study` `s`) where `s`.`id` = `a0`.`study` and `a0`.`id` = `ad0`.`assay` and `a0`.`id` = 156 and `s`.`id` = `a1`.`study` and `a1`.`id` = `ad1`.`assay` and `a1`.`id` = 157 and `s`.`id` = `a2`.`study` and `a2`.`id` = `ad2`.`assay` and `a2`.`id` = 158 and `s`.`id` = `a3`.`study` and `a3`.`id` = `ad3`.`assay` and `a3`.`id` = 159 and `s`.`id` = `a4`.`study` and `a4`.`id` = `ad4`.`assay` and `a4`.`id` = 160 and `s`.`id` = `a5`.`study` and `a5`.`id` = `ad5`.`assay` and `a5`.`id` = 161 and `s`.`id` = `a6`.`study` and `a6`.`id` = `ad6`.`assay` and `a6`.`id` = 162 and `s`.`id` = `a7`.`study` and `a7`.`id` = `ad7`.`assay` and `a7`.`id` = 163 and `s`.`id` = `a8`.`study` and `a8`.`id` = `ad8`.`assay` and `a8`.`id` = 164 and `s`.`id` = 8 */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
 -- Final view structure for view `Feature_composite`
@@ -731,4 +861,4 @@ CREATE TABLE `Websocket_protocols` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-27  0:22:28
+-- Dump completed on 2023-05-18 11:10:55

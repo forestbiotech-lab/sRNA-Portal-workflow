@@ -19,7 +19,7 @@
         allowNull: false
       },
       person: {
-        type: DataTypes.INTEGER(10),
+        type: DataTypes.STRING(254),
         autoIncrement: false,
         primaryKey: false,
         allowNull: false
@@ -39,7 +39,7 @@
         associate: function associate(models) {    
               Managed_by.belongsTo(models.Person, {
                 foreignKey: 'person',              //on Managed_by
-                targetKey: 'id',  //foreign key
+                targetKey: 'email',  //foreign key
               });
               Managed_by.belongsTo(models.Study, {
                 foreignKey: 'study',              //on Managed_by

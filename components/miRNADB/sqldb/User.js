@@ -18,12 +18,6 @@
         primaryKey: false,
         allowNull: false
       },
-      person: {
-        type: DataTypes.INTEGER(11),
-        autoIncrement: false,
-        primaryKey: false,
-        allowNull: true
-      },
       hash: {
         type: DataTypes.STRING(254),
         autoIncrement: false,
@@ -60,6 +54,12 @@
         primaryKey: false,
         allowNull: true
       },
+      role: {
+        type: DataTypes.ENUM('admin','curator','researcher'),
+        autoIncrement: false,
+        primaryKey: false,
+        allowNull: true
+      },
     }, {
       tableName: 'User',
       timestamps: false,
@@ -67,18 +67,14 @@
 
       classMethods: {
         associate: function associate(models) {    
-              User.belongsTo(models.Access, {
-                foreignKey: 'id',              //on User
-                targetKey: 'user_id',  //foreign key
-              });
-              User.belongsTo(models.Has_user_with_role, {
-                foreignKey: 'id',              //on User
-                targetKey: 'user',  //foreign key
-              });
-              User.belongsTo(models.Person, {
-                foreignKey: 'person',              //on User
-                targetKey: 'id',  //foreign key
-              });
+          User.belongsTo(models.Access, {
+            foreignKey: 'id',              //on User
+            targetKey: 'user_id',  //foreign key
+          });
+          User.belongsTo(models.Person, {
+            foreignKey: 'email',              //on User
+            targetKey: 'email',  //foreign key
+          });
         }
       },
     });

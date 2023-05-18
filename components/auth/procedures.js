@@ -79,6 +79,7 @@ async function setLoginMetadata(req,res,login){
         let sessionId = session.id
         var cookies = new Cookies(req, res, {"keys": keys}), unsigned, signed, tampered;
         cookies.set("user-id", login.id).set("user-id", login.id, {signed: true, maxAge: (1000 * 60 * 60 * 24 * 30)}); //sec * min * hour * day * month
+        cookies.set("email", login.email).set("email", login.email, {signed: true, maxAge: (1000 * 60 * 60 * 24 * 30)}); //sec * min * hour * day * month
         cookies.set("session-id", sessionId).set("session-id", sessionId, {
             signed: true,
             maxAge: (1000 * 60 * 60 * 24 * 30)

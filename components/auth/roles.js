@@ -28,11 +28,11 @@ async function getRoles(req,res) {
 }
 
 async function loadRoles(userId){
-    let roles = await db.Has_user_with_role.findAll({where: {user: userId}})
-    if (roles=== null)
+    let user = await db.User.findOne({where: {id: userId}})
+    if (user=== null)
         return []
     else
-        return roles.map(row=>row.role)
+        return user.role
 }
 async function hasRequireRole(req,res,next,requiredRole) {
     let roles=await getRoles(req,res)
