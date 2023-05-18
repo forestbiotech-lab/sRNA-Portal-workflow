@@ -11,12 +11,9 @@ html
     link(rel='stylesheet', href='/stylesheets/glyphicon.css')
     link(rel='stylesheet', href='/stylesheets/footer.css')
     link(rel='stylesheet', href='/stylesheets/miRPursuitPanel.css')
-    link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css' integrity='sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh' crossorigin='anonymous')
-    link(rel="stylesheet", href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css", type="text/css")
     link(rel="stylesheet", href="/stylesheets/bootstrap-multiselect.css",type="text/html")
     link(rel='stylesheet', href='/stylesheets/sidePanel.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
-    link(rel="stylesheet" href="/stylesheets/thirdparty/vue-select/3.20.0/vue-select.css")
   body
     .header
       a(href="/")
@@ -46,17 +43,5 @@ html
             block content
     .footer
       include includes/footer.pug
-
     include includes/thirdpartyScripts.pug
-    script(src="/javascripts/auth/login.js")
-    script(id="actions",src="/javascripts/actions.js")
-    script(src="/javascripts/buildingblocks.js")
-    script(src="/javascripts/goAnalytics.js")
-    script(src="/javascripts/bootstrap3-typeahead.min.js")
-    script(src="/javascripts/jquery.tablesorter.js")
-    script(src="/javascripts/widget-resizable.js")
-    script(src="/javascripts/graph.js")
-    script(src="/javascripts/gdpr.js")
-    script(src="/javascripts/md5.js")
-    script(src="/javascripts/varListener.js")
-    script(src="/javascripts/loader.js")
+    include includes/commonScripts

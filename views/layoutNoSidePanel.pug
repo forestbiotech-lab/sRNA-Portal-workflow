@@ -7,17 +7,14 @@ html
     title="sRNA Plant Portal"
     meta(name="google-site-verification", content="uGXz2DRW1SUD8840jAOrmBaVIK9G2HO4OeWZ7VpbBao")
     meta(name='google-signin-client_id', content='303843335390-icmdc0irh08d3g02g89rie5qkrs2sao2.apps.googleusercontent.com')
-
     link(rel="apple-touch-icon",sizes="180x180",href="/images/favicon/apple-touch-icon.png")
     link(rel="icon",type="image/png" sizes="32x32",href="/images/favicon/favicon-32x32.png")
     link(rel="icon",type="image/png" sizes="16x16",href="/images/favicon/favicon-16x16.png")
     link(rel="manifest",href="/images/favicon/site.webmanifest")
-
     link(rel='stylesheet', href='/stylesheets/fonts.css')
     link(rel='stylesheet', href='/stylesheets/footer.css')
     link(rel='stylesheet', href='/stylesheets/frontpage.css')
     link(rel='stylesheet', href='/stylesheets/glyphicon.css')
-    link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css' integrity='sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh' crossorigin='anonymous')
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
     .header
@@ -77,10 +74,7 @@ html
               button.btn.btn-secondary(type='button', data-dismiss='modal') 
                 span.glyphicon.glyphicon-remove
                 | &nbsp;Close
-    include includes/thirdpartyScripts.pug
-    script#actions(src="/javascripts/buildingblocks.js")
+    include includes/thirdpartyScripts
+    include includes/commonScripts
+    //Keep here for now this limits the scope of action for the thirdparty JS from google
     script(src="https://accounts.google.com/gsi/client" async defer)
-    //NEW VERSION
-    script(src="/javascripts/goAnalytics.js")
-    script(src="/javascripts/bootstrap3-typeahead.min.js")
-    script(src="/javascripts/loader.js")
