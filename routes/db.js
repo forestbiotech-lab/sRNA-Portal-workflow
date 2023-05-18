@@ -15,7 +15,59 @@ const getTable=require('../components/miRNADB/getTable')
 const getFK=require('../components/miRNADB/getFK')
 const getRow=require('../components/miRNADB/getRow')
 const getRowsWhere=require('../components/miRNADB/getRows')
+const tailorMultiTableLookup = require("../components/forms/tailorMultiTableLookup");
 /// --------------End -------------------------------------------------
+
+
+router.get('/', function(req, res){
+  res.render('db', { title: 'Express',tableValues:[] });
+})
+
+
+//Old version To be deprecated
+//################################# Should be seperated #############################
+var sequenceSearch = require('./../components/miRNADB/sequenceSearch2');
+const fullAccess = require("../components/auth/fullAccess");
+router.get('/sequence/:sequence',fullAccess, function(req, res){
+  req.query.searchText=req.params.sequence;
+  sequenceSearch(req.query)
+      .then(function(sequenceSearchRes){
+        console.log(sequenceSearchRes)
+        res.render('db',{tableValues: sequenceSearchRes});
+      }).catch(function(err){
+    var statusCode;
+    try{
+      statusCode=err.metadata.status[0].code;
+    }
+    catch(error){
+      statusCode=500;
+    }
+    res.status(statusCode).json(err.err);
+  })
+
+})
+
+
+//OLD version, to be deprecated
+router.get('/name/:name',fullAccess, function(req, res){
+  req.query.searchText=req.params.name;
+  nameSearch(req.query)
+      .then(function(nameSearchRes){
+        console.log(nameSearchRes)
+        res.render('db',{tableValues: nameSearchRes});
+      }).catch(function(err){
+    var statusCode;
+    try{
+      statusCode=err.metadata.status[0].code;
+    }
+    catch(error){
+      statusCode=500;
+    }
+    res.status(statusCode).json(err.err);
+  })
+
+})
+
 
 
 /* GET sequences search */
@@ -95,6 +147,23 @@ router.get('/assaydata/:studyId', async function(req, res, next) {
     res.status(400).json({err:{msg:e.message,stack:e.stack}})
   }
 });
+
+router.post('/assaydata/:studyId', async function(req, res, next) {
+  try {
+    let where={}
+    if(req.body.value)
+      where[req.body.key]=req.body.value
+    let page=req.body.page
+    let data=await getAssayDataForStudy(req.params.studyId,where,page)
+    if (data instanceof Error) throw data
+    res.json(data)
+  }catch (e) {
+    res.status(400).json({err:{msg:e.message,stack:e.stack}})
+  }
+});
+
+
+
 router.get('/assaydata/:study/raw_reads.tsv',function(req,res,next){
   exportFile.rawReadsFile(req).then(data=>{
     res.set('Content-Type','text/tsv')
@@ -120,6 +189,24 @@ router.get('/assays/:study/design/study_design.tsv',function(req,res){
   })
 })
 
+router.post('/tailored-query',(req,res)=>{
+   try{
+    let sourceTable=req.body.sourceTable
+    let tableConnections=req.body.tableConnections
+    let callOutputStructure=req.body.callOutputStructure
+    tailorMultiTableLookup(sourceTable,tableConnections,callOutputStructure).then(data=>{
+      res.json(data)
+    }).catch(err=>{
+      let message=err.message
+      res.writeHead( 500, message, {'content-type' : 'text/plain'});
+      res.end(message);
+    })
+  }catch(err){
+    let message=err.message
+    res.writeHead( 500, message, {'content-type' : 'text/plain'});
+    res.end(message);
+  }
+})
 
 
 router.get('/*',function(req,res){
