@@ -11,8 +11,8 @@ const MailComposer = require("nodemailer/lib/mail-composer");
 class Gmail{
     constructor(SCOPES, TOKEN_PATH, CREDENTIALS_PATH){
         const credentials={}
-        credentials.TOKEN_PATH= TOKEN_PATH? TOKEN_PATH : path.join(process.cwd(), 'token.json');
-        credentials.CREDENTIALS_PATH= CREDENTIALS_PATH? CREDENTIALS_PATH : path.join(process.cwd(), 'credentials.json');
+        credentials.TOKEN_PATH= TOKEN_PATH? TOKEN_PATH : path.join(process.cwd(), '.token.json');
+        credentials.CREDENTIALS_PATH= CREDENTIALS_PATH? CREDENTIALS_PATH : path.join(process.cwd(), '.credentials.json');
         // If modifying these scopes, delete token.json.
         credentials.SCOPES=SCOPES? SCOPES : ['https://www.googleapis.com/auth/gmail.compose','https://www.googleapis.com/auth/gmail.readonly',]; //'https://www.googleapis.com/auth/gmail.metadata'
         // The file token.json stores the user's access and refresh tokens, and is
